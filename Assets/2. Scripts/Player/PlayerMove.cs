@@ -9,20 +9,27 @@ public class PlayerMove : MonoBehaviour
 {
     [SerializeField] private float _moveSpeed;
     [SerializeField] private float _jumpPower;
-    
+    [SerializeField] private float _staminaMax = 100f;
+    [SerializeField] private float _speedFactor = 1.5f;
+    [SerializeField] private float _staminaConsumeForTime = 5f;
     private CharacterController _characterController;
     private float _yVelocity = 0f;
-    
+    private float _curStamina = 0f;
     private const float Gravity = -9.81f;
-        
+
+    private Vector3 direction;
+
     private void Awake()
     {
         _characterController = GetComponent<CharacterController>();
+
+        _curStamina = _staminaMax;
     }
     private void Update()
     {
         // 0 . 중력을 누적한다
         _yVelocity += Gravity * Time.deltaTime;
+        
         
         // 1. 키보드 입력 받기
         float inputX = Input.GetAxisRaw("Horizontal");
@@ -31,7 +38,7 @@ public class PlayerMove : MonoBehaviour
         // 2. 입력에 따른 방향 구하기
         // 현재는 유니티 세상의 절대적인 방향이 기준(글로벌 좌표계)
         // 내가 원하는 것은 카메라가 쳐다보는 방향 기준
-        Vector3 direction = new Vector3(inputX, 0, inputZ).normalized;
+        direction = new Vector3(inputX, 0, inputZ).normalized;
 
         Debug.Log(_characterController.collisionFlags);
         
@@ -46,9 +53,22 @@ public class PlayerMove : MonoBehaviour
         // 2. 카메라가 쳐다보는 방향으로 변환한다 (즉 월드 -> 로컬)
         direction = Camera.main.transform.TransformDirection(direction);
         direction.y = _yVelocity;
+
+        float applyspeed = 0f;
+        if (Input.GetKey(KeyCode.LeftShift) && _curStamina > 0f)
+        {
+            applyspeed = _moveSpeed * _speedFactor;
+            _curStamina -= _staminaConsumeForTime * Time.deltaTime;
+        }
+        else
+        {
+            applyspeed = _moveSpeed;
+        }
         
         // 3. 방향으로 이동시키기
         //transform.position += direction * _moveSpeed * Time.deltaTime;
-        _characterController.Move(direction * _moveSpeed * Time.deltaTime);
+        _characterController.Move(direction * applyspeed * Time.deltaTime);
     }
+
+  
 }
