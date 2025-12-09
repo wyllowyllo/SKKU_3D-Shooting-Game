@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,7 +13,12 @@ public class CameraFollow : MonoBehaviour
     [Header("Target in TPS")]
     [SerializeField] private Transform _tpsTarget;
 
+    [Header("스위칭 시간")]
+    [SerializeField] private float _switchDuration;
+    
     private bool _isTpsMode = false;
+    private bool _isSwitching = false;
+    private Transform _target;
     private void LateUpdate()
     {
         if (_fpsTarget == null || _tpsTarget == null) return;
@@ -23,10 +29,18 @@ public class CameraFollow : MonoBehaviour
 
     private void FollowTarget()
     {
-        if (_isTpsMode)
-            transform.position = _tpsTarget.position;
-        else
-            transform.position = _fpsTarget.position;
+        if (_isSwitching) return;
+        
+        transform.position = _target.position;
+        
+    }
+
+    IEnumerator SwitchView(Transform _followTarget)
+    {
+        
+        yield return new WaitForSeconds(_switchDuration);
+        
+        _target = _followTarget;
     }
 
     private void UpdateViewMode()
@@ -35,6 +49,9 @@ public class CameraFollow : MonoBehaviour
         if (!_input.ViewToggle) return;
       
         _isTpsMode = !_isTpsMode;
+        
+        Transform followTarget = _isTpsMode ? _tpsTarget : _fpsTarget;
+        StartCoroutine(SwitchView(followTarget));
     }
     
     

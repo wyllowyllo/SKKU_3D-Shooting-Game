@@ -74,10 +74,10 @@ public class PlayerMove : MonoBehaviour
         
         if (_input.Dash && IsMove && IsGrounded)
         {
-            if (_playerStats.Stamina.Value > 0)
+            if (_playerStats.StaminaStat.Value > 0)
             {
                 applySpeed = _playerStats.RunSpeed;
-                _playerStats.Stamina.Decrease(_runStaminaPerSec * Time.deltaTime);
+                _playerStats.StaminaStat.Decrease(_runStaminaPerSec * Time.deltaTime);
             }
         }
         else
@@ -86,7 +86,7 @@ public class PlayerMove : MonoBehaviour
 
             if (IsGrounded)
             {
-                _playerStats.Stamina.Regenerate(Time.deltaTime);
+                _playerStats.StaminaStat.Regenerate(Time.deltaTime);
             }
             
         }
@@ -104,7 +104,7 @@ public class PlayerMove : MonoBehaviour
         }
         else if (!_isSecondJump)
         {
-            if (!_playerStats.Stamina.TryConsume(_secondJumpStamina))
+            if (!_playerStats.StaminaStat.TryConsume(_secondJumpStamina))
             {
                 Debug.Log("스테미나가 부족합니다");
                 return;

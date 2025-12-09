@@ -3,10 +3,10 @@
 public class PlayerStats : MonoBehaviour
 {
    [Header("체력")] 
-   [SerializeField] private ComsumableStat _health;
+   [SerializeField] private ComsumableStat healthStat;
    
    [Header("스테미나")]
-   [SerializeField] private ComsumableStat _stamina;
+   [SerializeField] private ComsumableStat staminaStat;
   
    
    [Header("스텟 (값스텟)")]
@@ -16,14 +16,14 @@ public class PlayerStats : MonoBehaviour
    [SerializeField] private ValueStat _jumpPower;
 
    // 프로퍼티
-   public ComsumableStat Health => _health;
+   public ComsumableStat HealthStat => healthStat;
 
-   public ComsumableStat Stamina => _stamina;
+   public ComsumableStat StaminaStat => staminaStat;
    
-   public float CurHealth => _health.Value;
-   public float MaxHealth => _health.MaxValue;
-   public float CurStamina => _stamina.Value;
-   public float MaxStamina => _stamina.MaxValue;
+   public float CurHealth => healthStat.Value;
+   public float MaxHealth => healthStat.MaxValue;
+   public float CurStamina => staminaStat.Value;
+   public float MaxStamina => staminaStat.MaxValue;
    
    public float Damage => _damage.Value;
 
@@ -38,15 +38,15 @@ public class PlayerStats : MonoBehaviour
 
    private void Start()
    {
-      Health.Initialize();
-      Stamina.Initialize();
+      HealthStat.Initialize();
+      StaminaStat.Initialize();
    }
 
    private void Update()
    {
       float deltaTime = Time.deltaTime;
       
-      Health.Regenerate(deltaTime);
-      Stamina.Regenerate(deltaTime);
+      HealthStat.Regenerate(deltaTime);
+      StaminaStat.Regenerate(deltaTime);
    }
 }
