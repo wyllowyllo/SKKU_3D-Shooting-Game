@@ -24,11 +24,15 @@ public class PlayerMove : MonoBehaviour
 
     private Vector3 direction;
 
+    public float CurStamina => _curStamina;
+
+    public float StaminaMax => _staminaMax;
+
     private void Awake()
     {
         _characterController = GetComponent<CharacterController>();
 
-        _curStamina = _staminaMax;
+        _curStamina = StaminaMax;
     }
     private void Update()
     {
@@ -68,19 +72,19 @@ public class PlayerMove : MonoBehaviour
         float boost = 1f;
         if (Input.GetKey(KeyCode.LeftShift))
         {
-            if (_curStamina <= 0) return;
+            if (CurStamina <= 0) return;
             
             boost = _speedFactor;
-            _curStamina -= _staminaUnitForTime * Time.deltaTime;
-            _curStamina = Mathf.Max(_curStamina, 0);
+            _curStamina = CurStamina - _staminaUnitForTime * Time.deltaTime;
+            _curStamina = Mathf.Max(CurStamina, 0);
         }
         else
         {
             boost = 1f;
 
            
-            _curStamina += _staminaUnitForTime * Time.deltaTime;
-            _curStamina = Mathf.Min(_curStamina, _staminaMax);
+            _curStamina = CurStamina + _staminaUnitForTime * Time.deltaTime;
+            _curStamina = Mathf.Min(CurStamina, StaminaMax);
             
         }
         
