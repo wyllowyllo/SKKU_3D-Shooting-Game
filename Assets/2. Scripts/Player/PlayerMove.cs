@@ -26,7 +26,8 @@ public class PlayerMove : MonoBehaviour
     private Vector3 direction;
 
     private bool _isMove;
-
+    private bool _isFirstJump;
+    private bool _isSecondJump;
     public float CurStamina => _curStamina;
 
     public float StaminaMax => _staminaMax;
@@ -40,6 +41,7 @@ public class PlayerMove : MonoBehaviour
     private void Update()
     {
        GetDirection();
+       Jump();
        Move();
     }
 
@@ -59,11 +61,7 @@ public class PlayerMove : MonoBehaviour
         direction = new Vector3(inputX, 0, inputZ).normalized;
        
         
-        // 점프
-        if (Input.GetButtonDown("Jump") && _characterController.isGrounded)
-        {
-            _yVelocity = _jumpPower;
-        }
+       
         
         // 따라서
         // 1. 글로벌 좌표 방향을 구한다
@@ -98,5 +96,28 @@ public class PlayerMove : MonoBehaviour
         //transform.position += direction * _moveSpeed * Time.deltaTime;
         _characterController.Move(direction * _moveSpeed * boost * Time.deltaTime);
     }
-  
+
+    private void Jump()
+    {
+        if (!Input.GetButtonDown("Jump")) return;
+
+        if (_characterController.isGrounded)
+        {
+            _isFirstJump = false;
+            _isSecondJump = false;
+        }
+        
+        
+        if (!_isFirstJump)
+        {
+            _yVelocity = _jumpPower;
+            _isFirstJump = true;
+        }
+        else if (!_isSecondJump)
+        {
+            _yVelocity = _jumpPower;
+            _isSecondJump = true;
+        }
+    }
+    
 }
