@@ -18,7 +18,13 @@ public class CameraFollow : MonoBehaviour
     
     private bool _isTpsMode = false;
     private bool _isSwitching = false;
+    
     private Transform _target;
+
+    private void Awake()
+    {
+        Init();
+    }
     private void LateUpdate()
     {
         if (_fpsTarget == null || _tpsTarget == null) return;
@@ -27,6 +33,11 @@ public class CameraFollow : MonoBehaviour
         FollowTarget();
     }
 
+    private void Init()
+    {
+        _target = _fpsTarget;
+    }
+    
     private void FollowTarget()
     {
         if (_isSwitching) return;
@@ -53,6 +64,8 @@ public class CameraFollow : MonoBehaviour
         Transform followTarget = _isTpsMode ? _tpsTarget : _fpsTarget;
         StartCoroutine(SwitchView(followTarget));
     }
+
+   
     
     
 }
