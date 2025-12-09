@@ -5,7 +5,7 @@ using UnityEngine.UI;
 public class StaminaUI : MonoBehaviour
 {
     [Header("참조")]
-    [SerializeField] private PlayerMove _player ;
+    [SerializeField] private PlayerStats _player ;
 
     private Slider _slider;
 
@@ -17,6 +17,6 @@ public class StaminaUI : MonoBehaviour
     {
         if (_player == null || _slider == null) return;
 
-        _slider.value = (_player.CurStamina / _player.StaminaMax);
+       _slider.value = (_player.Stamina.Value / _player.Stamina.MaxValue);
     }
 }

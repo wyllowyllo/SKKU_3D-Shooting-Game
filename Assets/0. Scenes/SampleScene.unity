@@ -872,7 +872,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f59c920e66b01e41992e6d535e31732, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _player: {fileID: 1728481974}
+  _player: {fileID: 1728481977}
 --- !u!114 &713379182
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1438,7 +1438,7 @@ GameObject:
   - component: {fileID: 1728481972}
   - component: {fileID: 1728481971}
   - component: {fileID: 1728481970}
-  - component: {fileID: 1728481969}
+  - component: {fileID: 1728481977}
   - component: {fileID: 1728481973}
   - component: {fileID: 1728481974}
   - component: {fileID: 1728481976}
@@ -1450,29 +1450,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!136 &1728481969
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1728481968}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5
-  m_Height: 2
-  m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!23 &1728481970
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1568,12 +1545,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f24c396b7c158c48ac079484ae0a1ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _moveSpeed: 5
-  _staminaMax: 100
-  _speedFactor: 1.5
-  _staminaUnitForTime: 20
-  _jumpPower: 5
-  _staminaForSecondJump: 50
+  _runStaminaPerSec: 20
+  _secondJumpStamina: 50
 --- !u!143 &1728481975
 CharacterController:
   m_ObjectHideFlags: 0
@@ -1611,6 +1584,34 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49e70113edad2ff49a6ac0f5801e7d5c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1728481977
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1728481968}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f819a475c394352af4a85684e193e3a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _health:
+    _value: 0
+    _maxValue: 100
+    _regenValue: 10
+  _stamina:
+    _value: 0
+    _maxValue: 100
+    _regenValue: 10
+  _damage:
+    _value: 5
+  _moveSpeed:
+    _value: 5
+  _runSpeed:
+    _value: 8
+  _jumpPower:
+    _value: 5
 --- !u!1 &1773967943
 GameObject:
   m_ObjectHideFlags: 0
