@@ -362,7 +362,7 @@ MonoBehaviour:
   _input: {fileID: 1728481976}
   _fpsTarget: {fileID: 470969227}
   _tpsTarget: {fileID: 1679637499}
-  _switchDuration: 0
+  _switchDuration: 0.5
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0

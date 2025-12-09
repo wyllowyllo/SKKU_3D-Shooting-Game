@@ -1,4 +1,5 @@
 using System.Collections;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,7 +15,7 @@ public class CameraFollow : MonoBehaviour
     [SerializeField] private Transform _tpsTarget;
 
     [Header("스위칭 시간")]
-    [SerializeField] private float _switchDuration;
+    [SerializeField] private float _switchDuration = 0.5f;
     
     private bool _isTpsMode = false;
     private bool _isSwitching = false;
@@ -46,12 +47,30 @@ public class CameraFollow : MonoBehaviour
         
     }
 
-    IEnumerator SwitchView(Transform _followTarget)
+    IEnumerator SwitchView(Transform followTarget)
     {
+        _isSwitching = true;
         
-        yield return new WaitForSeconds(_switchDuration);
+        _target = followTarget;
         
-        _target = _followTarget;
+        transform.DOKill();
+        
+        Sequence seq = DOTween.Sequence();
+
+        seq.Join(
+            transform.DOMove(followTarget.position, _switchDuration)
+        );
+
+        seq.Join(
+            transform.DORotateQuaternion(followTarget.rotation, _switchDuration)
+        );
+        
+        yield return seq.WaitForCompletion();
+
+       
+        
+        _isSwitching = false;
+       
     }
 
     private void UpdateViewMode()
