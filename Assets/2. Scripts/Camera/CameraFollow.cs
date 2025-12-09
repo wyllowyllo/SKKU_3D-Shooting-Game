@@ -43,36 +43,11 @@ public class CameraFollow : MonoBehaviour
     {
         if (_isSwitching) return;
         
-        transform.position = _target.position;
+        transform.DOMove(_target.position, _switchDuration);
         
     }
 
-    IEnumerator SwitchView(Transform followTarget)
-    {
-        _isSwitching = true;
-        
-        _target = followTarget;
-        
-        transform.DOKill();
-        
-        Sequence seq = DOTween.Sequence();
-
-        seq.Join(
-            transform.DOMove(followTarget.position, _switchDuration)
-        );
-
-        seq.Join(
-            transform.DORotateQuaternion(followTarget.rotation, _switchDuration)
-        );
-        
-        yield return seq.WaitForCompletion();
-
-       
-        
-        _isSwitching = false;
-       
-    }
-
+    
     private void UpdateViewMode()
     {
         if (_input == null) return;
@@ -80,8 +55,7 @@ public class CameraFollow : MonoBehaviour
       
         _isTpsMode = !_isTpsMode;
         
-        Transform followTarget = _isTpsMode ? _tpsTarget : _fpsTarget;
-        StartCoroutine(SwitchView(followTarget));
+       _target = _isTpsMode ? _tpsTarget : _fpsTarget;
     }
 
    
