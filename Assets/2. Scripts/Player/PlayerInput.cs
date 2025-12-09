@@ -9,6 +9,7 @@ public class PlayerInput : MonoBehaviour
     public bool Jump => Input.GetButtonDown("Jump");
     public bool Rotate => Input.GetMouseButton(1);
     public float MouseX => Input.GetAxis("Mouse X");
+    public float MouseY => Input.GetAxis("Mouse Y");
     
     public Vector3 Direction
     {

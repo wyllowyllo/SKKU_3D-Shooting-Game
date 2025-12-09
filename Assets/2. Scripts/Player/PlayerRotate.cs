@@ -4,7 +4,7 @@ using UnityEngine;
 public class PlayerRotate : MonoBehaviour
 {
     [Header("회전 설정")]
-    private float _rotatationSpeed = 200f;
+    [SerializeField] private float _rotatationSpeed = 200f;
     private float _accumulationX = 0f;
     
     //참조
@@ -12,7 +12,7 @@ public class PlayerRotate : MonoBehaviour
 
     private void Awake()
     {
-        _input = GetComponent<PlayerInput>();
+        Init();
     }
 
     private void Update()
@@ -24,8 +24,11 @@ public class PlayerRotate : MonoBehaviour
 
         
         _accumulationX += mouseX * _rotatationSpeed * Time.deltaTime;
-       
-       
         transform.eulerAngles = new Vector3(0, _accumulationX, 0);
+    }
+
+    private void Init()
+    {
+        _input = GetComponent<PlayerInput>();
     }
 }
