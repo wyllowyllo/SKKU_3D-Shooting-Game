@@ -9,29 +9,43 @@ public class PlayerMove : MonoBehaviour
 {
     [Header("기본 이동")]
     [SerializeField] private float _moveSpeed;
-    [SerializeField] private float _jumpPower;
+   
     
     [Header("빠른 이동")]
     [SerializeField] private float _staminaMax = 100f;
     [SerializeField] private float _speedFactor = 1.5f;
-    [SerializeField] private float _staminaUnitForTime = 10f;
+    [SerializeField] private float _staminaUnitForTime = 20f;
     
+    [Header("점프")]
+    [SerializeField] private float _jumpPower;
+    [SerializeField] private float _staminaForSecondJump = 50f;
     
+    // 참조
     private CharacterController _characterController;
+   
+
+    // 이동 관련 
+    private float inputX;
+    private float inputZ;
+    private Vector3 direction;
     private float _yVelocity = 0f;
     private float _curStamina = 0f;
-    private const float Gravity = -9.81f;
-
+   
     
-    private Vector3 direction;
-
-    private bool _isMove;
+    // 플래그 변수
     private bool _isFirstJump;
     private bool _isSecondJump;
+    
+    
+    // 프로퍼티;
     public float CurStamina => _curStamina;
-
     public float StaminaMax => _staminaMax;
-
+    public bool IsGrounded => _characterController.isGrounded;
+    private bool IsMove => (inputX!=0 || inputZ!=0);
+    
+    // 상수
+    private const float Gravity = -9.81f;
+    
     private void Awake()
     {
         _characterController = GetComponent<CharacterController>();
@@ -51,9 +65,9 @@ public class PlayerMove : MonoBehaviour
         _yVelocity += Gravity * Time.deltaTime;
         
         // 1. 키보드 입력 받기
-        float inputX = Input.GetAxisRaw("Horizontal");
-        float inputZ = Input.GetAxisRaw("Vertical");
-        _isMove = (inputX != 0 || inputZ != 0);
+        inputX = Input.GetAxisRaw("Horizontal");
+        inputZ = Input.GetAxisRaw("Vertical");
+       
         
         // 2. 입력에 따른 방향 구하기
         // 현재는 유니티 세상의 절대적인 방향이 기준(글로벌 좌표계)
@@ -73,7 +87,7 @@ public class PlayerMove : MonoBehaviour
     private void Move()
     {
         float boost = 1f;
-        if (Input.GetKey(KeyCode.LeftShift) && _isMove)
+        if (Input.GetKey(KeyCode.LeftShift) && IsMove && IsGrounded)
         {
             if (CurStamina > 0)
             {
@@ -86,9 +100,11 @@ public class PlayerMove : MonoBehaviour
         {
             boost = 1f;
 
-           
-            _curStamina = CurStamina + _staminaUnitForTime * Time.deltaTime;
-            _curStamina = Mathf.Min(CurStamina, StaminaMax);
+            if (IsGrounded)
+            {
+                _curStamina = CurStamina + _staminaUnitForTime * Time.deltaTime;
+                _curStamina = Mathf.Min(CurStamina, StaminaMax);
+            }
             
         }
         
@@ -101,7 +117,7 @@ public class PlayerMove : MonoBehaviour
     {
         if (!Input.GetButtonDown("Jump")) return;
 
-        if (_characterController.isGrounded)
+        if (IsGrounded)
         {
             _isFirstJump = false;
             _isSecondJump = false;
@@ -113,11 +129,13 @@ public class PlayerMove : MonoBehaviour
             _yVelocity = _jumpPower;
             _isFirstJump = true;
         }
-        else if (!_isSecondJump)
+        else if (!_isSecondJump && _curStamina >= _staminaForSecondJump)
         {
             _yVelocity = _jumpPower;
+            _curStamina =  Mathf.Max(0,  _curStamina - _staminaForSecondJump);
             _isSecondJump = true;
         }
     }
-    
+
+   
 }
