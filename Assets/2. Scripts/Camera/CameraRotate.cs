@@ -6,6 +6,10 @@ using UnityEngine;
 public class CameraRotate : MonoBehaviour
 {
 
+    [Header("참조")]
+    [SerializeField] private PlayerInput _input;
+    
+    [Header("카메라 회전 설정")]
     [SerializeField] private float _rotateSpeed = 200f;
     
     // 게임 시작하면 y축이 0도에서 시작. 살짝 아래 쳐다보면 -> -1도가 되어야 함
@@ -17,14 +21,13 @@ public class CameraRotate : MonoBehaviour
     
     private void Update()
     {
-        if (!Input.GetMouseButton(1)) return;
+        if (_input == null) return;
+        if (!_input.Rotate) return;
         
         // 1. 마우스 입력 받기
-        float mouseX = Input.GetAxis("Mouse X");
-        float mouseY = Input.GetAxis("Mouse Y");
+        float mouseX = _input.MouseX;
+        float mouseY = _input.MouseY;
         
-       Debug.Log($"mouseX: {mouseX}, mouseY: {mouseY}");
-       
        // 2. 마우스 입력을 누적한다 (누적된 회전 방향)
        _accumulationX += mouseX * _rotateSpeed * Time.deltaTime;
        _accumulationY += -mouseY * _rotateSpeed * Time.deltaTime;

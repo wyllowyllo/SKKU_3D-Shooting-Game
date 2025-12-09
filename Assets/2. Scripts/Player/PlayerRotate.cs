@@ -1,21 +1,34 @@
 using UnityEngine;
 
+[RequireComponent(typeof(PlayerInput))]
 public class PlayerRotate : MonoBehaviour
 {
-    private float _rotatationSpeed = 200f;
+    [Header("회전 설정")]
+    [SerializeField] private float _rotatationSpeed = 200f;
     private float _accumulationX = 0f;
+    
+    //참조
+    private PlayerInput _input;
+
+    private void Awake()
+    {
+        Init();
+    }
 
     private void Update()
     {
-        if (!Input.GetMouseButton(1)) return;
+        if (!_input.Rotate) return;
         
       
-        float mouseX = Input.GetAxis("Mouse X");
+        float mouseX = _input.MouseX;
 
         
         _accumulationX += mouseX * _rotatationSpeed * Time.deltaTime;
-       
-       
         transform.eulerAngles = new Vector3(0, _accumulationX, 0);
+    }
+
+    private void Init()
+    {
+        _input = GetComponent<PlayerInput>();
     }
 }
