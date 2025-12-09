@@ -22,7 +22,10 @@ public class PlayerMove : MonoBehaviour
     private float _curStamina = 0f;
     private const float Gravity = -9.81f;
 
+    
     private Vector3 direction;
+
+    private bool _isMove;
 
     public float CurStamina => _curStamina;
 
@@ -48,11 +51,13 @@ public class PlayerMove : MonoBehaviour
         // 1. 키보드 입력 받기
         float inputX = Input.GetAxisRaw("Horizontal");
         float inputZ = Input.GetAxisRaw("Vertical");
+        _isMove = (inputX != 0 || inputZ != 0);
         
         // 2. 입력에 따른 방향 구하기
         // 현재는 유니티 세상의 절대적인 방향이 기준(글로벌 좌표계)
         // 내가 원하는 것은 카메라가 쳐다보는 방향 기준
         direction = new Vector3(inputX, 0, inputZ).normalized;
+       
         
         // 점프
         if (Input.GetButtonDown("Jump") && _characterController.isGrounded)
@@ -70,13 +75,14 @@ public class PlayerMove : MonoBehaviour
     private void Move()
     {
         float boost = 1f;
-        if (Input.GetKey(KeyCode.LeftShift))
+        if (Input.GetKey(KeyCode.LeftShift) && _isMove)
         {
-            if (CurStamina <= 0) return;
-            
-            boost = _speedFactor;
-            _curStamina = CurStamina - _staminaUnitForTime * Time.deltaTime;
-            _curStamina = Mathf.Max(CurStamina, 0);
+            if (CurStamina > 0)
+            {
+                boost = _speedFactor;
+                _curStamina = CurStamina - _staminaUnitForTime * Time.deltaTime;
+                _curStamina = Mathf.Max(CurStamina, 0);
+            }
         }
         else
         {
