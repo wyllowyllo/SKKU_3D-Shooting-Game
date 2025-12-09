@@ -4,7 +4,7 @@ using UnityEngine;
 /// <summary>
 /// 키보드 누르면 캐릭터 그 방향으로 이동
 /// </summary>
-[RequireComponent(typeof(CharacterController))]
+[RequireComponent(typeof(CharacterController), typeof(PlayerInput))]
 public class PlayerMove : MonoBehaviour
 {
     [Header("기본 이동")]
@@ -22,11 +22,9 @@ public class PlayerMove : MonoBehaviour
     
     // 참조
     private CharacterController _characterController;
-   
+    private PlayerInput _input;
 
     // 이동 관련 
-    private float inputX;
-    private float inputZ;
     private Vector3 direction;
     private float _yVelocity = 0f;
     private float _curStamina = 0f;
@@ -41,7 +39,7 @@ public class PlayerMove : MonoBehaviour
     public float CurStamina => _curStamina;
     public float StaminaMax => _staminaMax;
     public bool IsGrounded => _characterController.isGrounded;
-    private bool IsMove => (inputX!=0 || inputZ!=0);
+    private bool IsMove => (_input.X!=0 || _input.Z!=0);
     
     // 상수
     private const float Gravity = -9.81f;
@@ -49,7 +47,8 @@ public class PlayerMove : MonoBehaviour
     private void Awake()
     {
         _characterController = GetComponent<CharacterController>();
-
+        _input = GetComponent<PlayerInput>();
+        
         _curStamina = StaminaMax;
     }
     private void Update()
@@ -61,18 +60,9 @@ public class PlayerMove : MonoBehaviour
 
     private void GetDirection()
     {
-        // 0 . 중력을 누적한다
         _yVelocity += Gravity * Time.deltaTime;
-        
-        // 1. 키보드 입력 받기
-        inputX = Input.GetAxisRaw("Horizontal");
-        inputZ = Input.GetAxisRaw("Vertical");
-       
-        
-        // 2. 입력에 따른 방향 구하기
-        // 현재는 유니티 세상의 절대적인 방향이 기준(글로벌 좌표계)
-        // 내가 원하는 것은 카메라가 쳐다보는 방향 기준
-        direction = new Vector3(inputX, 0, inputZ).normalized;
+
+        direction = _input.Direction;
        
         
        
@@ -87,7 +77,7 @@ public class PlayerMove : MonoBehaviour
     private void Move()
     {
         float boost = 1f;
-        if (Input.GetKey(KeyCode.LeftShift) && IsMove && IsGrounded)
+        if (_input.Dash && IsMove && IsGrounded)
         {
             if (CurStamina > 0)
             {
@@ -115,7 +105,7 @@ public class PlayerMove : MonoBehaviour
 
     private void Jump()
     {
-        if (!Input.GetButtonDown("Jump")) return;
+        if (!_input.Jump) return;
 
         if (IsGrounded)
         {
