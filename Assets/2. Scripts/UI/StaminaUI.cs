@@ -18,6 +18,5 @@ public class StaminaUI : MonoBehaviour
         if (_player == null || _slider == null) return;
 
         _slider.value = (_player.CurStamina / _player.StaminaMax);
-        Debug.Log(_player.CurStamina / _player.StaminaMax);
     }
 }

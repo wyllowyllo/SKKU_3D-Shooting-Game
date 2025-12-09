@@ -23,6 +23,7 @@ public class PlayerMove : MonoBehaviour
     // 참조
     private CharacterController _characterController;
     private PlayerInput _input;
+    private Camera _cam;
 
     // 이동 관련 
     private Vector3 direction;
@@ -46,35 +47,36 @@ public class PlayerMove : MonoBehaviour
     
     private void Awake()
     {
-        _characterController = GetComponent<CharacterController>();
-        _input = GetComponent<PlayerInput>();
-        
-        _curStamina = StaminaMax;
+        Init();
     }
     private void Update()
     {
-       GetDirection();
-       Jump();
-       Move();
+       SetMoveDirection();
+       ApplyMovement();
     }
 
-    private void GetDirection()
+    private void Init()
+    {
+        _characterController = GetComponent<CharacterController>();
+        _input = GetComponent<PlayerInput>();
+        _cam = Camera.main;
+        
+        _curStamina = StaminaMax;
+    }
+    private void SetMoveDirection()
     {
         _yVelocity += Gravity * Time.deltaTime;
-
         direction = _input.Direction;
-       
+
+        TryJump();
         
-       
-        
-        // 따라서
         // 1. 글로벌 좌표 방향을 구한다
         // 2. 카메라가 쳐다보는 방향으로 변환한다 (즉 월드 -> 로컬)
-        direction = Camera.main.transform.TransformDirection(direction);
+        direction = _cam.transform.TransformDirection(direction);
         direction.y = _yVelocity;
     }
 
-    private void Move()
+    private void ApplyMovement()
     {
         float boost = 1f;
         if (_input.Dash && IsMove && IsGrounded)
@@ -105,26 +107,39 @@ public class PlayerMove : MonoBehaviour
 
     private void Jump()
     {
-        if (!_input.Jump) return;
-
-        if (IsGrounded)
-        {
-            _isFirstJump = false;
-            _isSecondJump = false;
-        }
-        
         
         if (!_isFirstJump)
         {
             _yVelocity = _jumpPower;
             _isFirstJump = true;
         }
-        else if (!_isSecondJump && _curStamina >= _staminaForSecondJump)
+        else if (!_isSecondJump)
         {
+            if (_curStamina < _staminaForSecondJump)
+            {
+                Debug.Log("스테미나가 부족합니다");
+                return;
+            }
+            
             _yVelocity = _jumpPower;
             _curStamina =  Mathf.Max(0,  _curStamina - _staminaForSecondJump);
             _isSecondJump = true;
         }
+    }
+    
+    private void TryJump()
+    {
+        // 점프 상태 업데이트
+        if (IsGrounded)
+        {
+            _isFirstJump = false;
+            _isSecondJump = false;
+        }
+
+        // 점프 적용
+        if (!_input.Jump) return;
+        
+        Jump();
     }
 
    

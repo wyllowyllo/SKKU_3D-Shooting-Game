@@ -28,8 +28,6 @@ public class CameraRotate : MonoBehaviour
         float mouseX = _input.MouseX;
         float mouseY = _input.MouseY;
         
-       Debug.Log($"mouseX: {mouseX}, mouseY: {mouseY}");
-       
        // 2. 마우스 입력을 누적한다 (누적된 회전 방향)
        _accumulationX += mouseX * _rotateSpeed * Time.deltaTime;
        _accumulationY += -mouseY * _rotateSpeed * Time.deltaTime;
