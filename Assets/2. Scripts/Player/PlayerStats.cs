@@ -20,6 +20,11 @@ public class PlayerStats : MonoBehaviour
 
    public ComsumableStat Stamina => _stamina;
    
+   public float CurHealth => _health.Value;
+   public float MaxHealth => _health.MaxValue;
+   public float CurStamina => _stamina.Value;
+   public float MaxStamina => _stamina.MaxValue;
+   
    public float Damage => _damage.Value;
 
    public float MoveSpeed => _moveSpeed.Value;

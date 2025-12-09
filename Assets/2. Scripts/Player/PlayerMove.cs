@@ -91,8 +91,6 @@ public class PlayerMove : MonoBehaviour
             
         }
         
-        // 3. 방향으로 이동시키기
-        //transform.position += direction * _moveSpeed * Time.deltaTime;
         _characterController.Move(direction * applySpeed * Time.deltaTime);
     }
 
