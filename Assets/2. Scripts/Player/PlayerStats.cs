@@ -20,13 +20,13 @@ public class PlayerStats : MonoBehaviour
 
    public ComsumableStat Stamina => _stamina;
    
-   public ValueStat Damage => _damage;
+   public float Damage => _damage.Value;
 
-   public ValueStat MoveSpeed => _moveSpeed;
+   public float MoveSpeed => _moveSpeed.Value;
 
-   public ValueStat RunSpeed => _runSpeed;
+   public float RunSpeed => _runSpeed.Value;
 
-   public ValueStat JumpPower => _jumpPower;
+   public float JumpPower => _jumpPower.Value;
 
    
 

@@ -76,13 +76,13 @@ public class PlayerMove : MonoBehaviour
         {
             if (_playerStats.Stamina.Value > 0)
             {
-                applySpeed = _playerStats.RunSpeed.Value;
+                applySpeed = _playerStats.RunSpeed;
                 _playerStats.Stamina.Decrease(_runStaminaPerSec * Time.deltaTime);
             }
         }
         else
         {
-            applySpeed = _playerStats.MoveSpeed.Value;
+            applySpeed = _playerStats.MoveSpeed;
 
             if (IsGrounded)
             {
@@ -101,7 +101,7 @@ public class PlayerMove : MonoBehaviour
         
         if (!_isFirstJump)
         {
-            _yVelocity = _playerStats.JumpPower.Value;
+            _yVelocity = _playerStats.JumpPower;
             _isFirstJump = true;
         }
         else if (!_isSecondJump)
@@ -112,7 +112,7 @@ public class PlayerMove : MonoBehaviour
                 return;
             }
             
-            _yVelocity = _playerStats.JumpPower.Value;
+            _yVelocity = _playerStats.JumpPower;
             _isSecondJump = true;
         }
     }
