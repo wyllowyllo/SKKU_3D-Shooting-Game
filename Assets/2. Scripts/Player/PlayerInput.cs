@@ -12,6 +12,7 @@ public class PlayerInput : MonoBehaviour
     public float MouseY => Input.GetAxis("Mouse Y");
     
     public bool BombThrow => Input.GetKeyDown(KeyCode.G);
+    public bool Fire => Input.GetMouseButton(0);
     public bool ViewToggle => Input.GetKeyDown(KeyCode.T);
     public Vector3 Direction
     {

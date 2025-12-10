@@ -2169,8 +2169,8 @@ GameObject:
   - component: {fileID: 1728481974}
   - component: {fileID: 1728481976}
   - component: {fileID: 1728481978}
-  - component: {fileID: 1728481975}
   - component: {fileID: 1728481979}
+  - component: {fileID: 1728481975}
   m_Layer: 3
   m_Name: Player
   m_TagString: Untagged
@@ -2369,6 +2369,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1481dc5b10274a4d8625b52bb0d5640, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  curWeapon: {fileID: 11400000, guid: cbd4426f8f404604db6bd8dd5c60c659, type: 2}
   _hitEffect: {fileID: 473237723}
 --- !u!1 &1731884580
 GameObject:
