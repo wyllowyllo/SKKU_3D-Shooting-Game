@@ -18,7 +18,7 @@ public class PlayerBombFire : MonoBehaviour
    // 참조
    private PlayerInput _input;
    private Camera _cam;
-
+   
    public int MaxBombCnt => _maxBombCnt;
 
    public int CurBombCnt => _curBombCnt;

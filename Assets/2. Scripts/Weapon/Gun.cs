@@ -1,0 +1,111 @@
+using System.Collections;
+using UnityEngine;
+
+public class Gun : MonoBehaviour
+{
+    [Header("Stat")]
+    [SerializeField] private GunStat _gunStat;
+
+    [Header("Hit VFX")]
+    [SerializeField] private ParticleSystem _hitEffect;
+    
+    // 참조
+    private Camera _cam;
+    
+    // 현재 총 상태
+    private int _remainBullets;
+    private int _bulletCntForAmmo;
+    private int _totalBulletCnt;
+    
+    // 플래그 변수
+    private bool _isReloading;
+    
+    // 타이머
+    private float _shotTimer = 0f;
+
+    // 프로퍼티
+    public int RemainBullets => _remainBullets;
+    public int TotalBulletCnt => _totalBulletCnt;
+
+    private void Awake()
+    {
+        Init();
+    }
+
+    private void Update()
+    {
+        _shotTimer += Time.deltaTime;
+    }
+    
+    public void Shoot()
+    {
+        if (_shotTimer < _gunStat.ShotInterval) return;
+        if (_isReloading) return;
+        if (RemainBullets <= 0)
+        {
+            Reload();
+            _shotTimer = 0f;
+            return;
+        }
+        
+        Ray ray = new Ray(_cam.transform.position, Camera.main.transform.forward);
+        
+        RaycastHit hitInfo = new RaycastHit();
+        
+        bool isHit =  Physics.Raycast(ray, out hitInfo);
+        if (isHit)
+        {
+            
+            // 파티클 생성과 플레이 방식
+            // 1. Instantiate 방식 ( + 풀링) -> 새로 생성(메모리, cpu) -> 한 화면에 여러가지 수정 후 여러 개 그릴 경우 주로 사용
+            
+            // 2. 하나를 캐싱해두고 Play ->단점 : 재실행이므로 기존 것이 삭제 -> 인스펙터 설정 그대로 그릴 경우
+            Debug.Log("Hit " + hitInfo.transform.name);
+            _hitEffect.transform.position = hitInfo.point;
+            _hitEffect.transform.forward = hitInfo.normal;
+            _hitEffect.Play(true);
+            
+            // 3. 하나를 캐싱해두고 Emit -> 인스펙터 설정을 수정 후 그릴 경우
+            // 파티클을 어떻게 분출할지 정보를 넘겨줌
+            /*ParticleSystem.EmitParams emitParams = new ParticleSystem.EmitParams();
+            emitParams.position = hitInfo.point;
+            emitParams.rotation3D = Quaternion.LookRotation(hitInfo.normal).eulerAngles;
+            _hitEffect.Emit(emitParams, 1);*/
+        }
+
+        _remainBullets = RemainBullets - 1;
+        _shotTimer = 0f;
+    }
+    public void Reload()
+    {
+        if (_isReloading) return;
+        
+        int loadBulletCnt = _bulletCntForAmmo - RemainBullets;
+        if (loadBulletCnt <= _totalBulletCnt)
+        {
+            StartCoroutine(ReloadCoroutine(loadBulletCnt));
+        }
+    }
+
+    private IEnumerator ReloadCoroutine(int loadBulletCnt)
+    {
+        _isReloading = true;
+        
+        yield return new WaitForSeconds(_gunStat.ReloadTime);
+        
+        _totalBulletCnt -= loadBulletCnt;
+        _remainBullets = _bulletCntForAmmo; // 재장전
+        
+        _isReloading = false;
+    }
+
+    private void Init()
+    {
+        _cam = Camera.main;
+        
+        _remainBullets = _gunStat.BulletCntForAmmo;
+        _bulletCntForAmmo = _gunStat.BulletCntForAmmo;
+        _totalBulletCnt = _gunStat.BulletCntForAmmo *_bulletCntForAmmo;
+        
+    }
+}
