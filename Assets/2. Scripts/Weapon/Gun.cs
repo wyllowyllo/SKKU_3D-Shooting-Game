@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Gun : MonoBehaviour
 {
@@ -9,6 +10,7 @@ public class Gun : MonoBehaviour
     [Header("Hit VFX")]
     [SerializeField] private ParticleSystem _hitEffect;
     
+    private UnityEvent _onReload;
     // 참조
     private Camera _cam;
     
@@ -16,6 +18,7 @@ public class Gun : MonoBehaviour
     private int _remainBullets;
     private int _bulletCntForAmmo;
     private int _totalBulletCnt;
+    private float _reloadDuration;
     
     // 플래그 변수
     private bool _isReloading;
@@ -27,6 +30,8 @@ public class Gun : MonoBehaviour
     public int RemainBullets => _remainBullets;
     public int TotalBulletCnt => _totalBulletCnt;
 
+    public UnityEvent OnReload => _onReload;
+
     private void Awake()
     {
         Init();
@@ -37,7 +42,7 @@ public class Gun : MonoBehaviour
         _shotTimer += Time.deltaTime;
     }
     
-    public void Shoot()
+    public void Fire()
     {
         if (_shotTimer < _gunStat.ShotInterval) return;
         if (_isReloading) return;
@@ -47,7 +52,7 @@ public class Gun : MonoBehaviour
             _shotTimer = 0f;
             return;
         }
-        Debug.Log("Shoot");
+        
         
         Ray ray = new Ray(_cam.transform.position, Camera.main.transform.forward);
         
@@ -95,6 +100,7 @@ public class Gun : MonoBehaviour
     private IEnumerator ReloadCoroutine(int loadBulletCnt)
     {
         _isReloading = true;
+        _onReload?.Invoke();
         
         yield return new WaitForSeconds(_gunStat.ReloadTime);
         
@@ -112,6 +118,8 @@ public class Gun : MonoBehaviour
         _remainBullets = _bulletCntForAmmo;
         
         _totalBulletCnt = _gunStat.AmmoCnt *_bulletCntForAmmo;
+        
+        _onReload = new UnityEvent();
         
     }
 }

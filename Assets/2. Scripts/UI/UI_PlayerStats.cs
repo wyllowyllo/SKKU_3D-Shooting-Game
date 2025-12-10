@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -31,6 +32,12 @@ public class UI_PlayerStats : MonoBehaviour
          Init();
     }
 
+    private void Start()
+    {
+        // 재장전 이벤트 리스너 등록
+        _gunInfo?.OnReload.AddListener(UpdateReloadBar);
+    }
+    
     private void LateUpdate()
     {
         UpdateStatBars();
@@ -76,4 +83,14 @@ public class UI_PlayerStats : MonoBehaviour
         
         _bulletText.text = $"{_gunInfo.RemainBullets} / {_gunInfo.TotalBulletCnt}";
     }
+
+    private void UpdateReloadBar()
+    {
+        //StartCoroutine(UpdateReloadBarRoutine());
+    }
+
+    /*private IEnumerator UpdateReloadBarRoutine()
+    {
+        
+    }*/
 }

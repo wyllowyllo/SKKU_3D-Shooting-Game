@@ -18,7 +18,8 @@ public class PlayerGunFire : MonoBehaviour
 
     private void Update()
     {
-       Fire();
+       TryFire();
+       TryReload();
     }
 
     private void Init()
@@ -28,10 +29,20 @@ public class PlayerGunFire : MonoBehaviour
         if(_curGun == null)
             _curGun = GetComponentInChildren<Gun>();
     }
-    private void Fire()
+
+  
+
+    private void TryFire()
     {
         if (!_input.Fire) return;
         
-        _curGun?.Shoot();
+        _curGun?.Fire();
+    }
+
+    private void TryReload()
+    {
+        if (!_input.Reload) return;
+        
+        _curGun?.Reload();
     }
 }

@@ -30,7 +30,7 @@ public class CameraRotate : MonoBehaviour
         
        // 2. 마우스 입력을 누적한다 (누적된 회전 방향)
        _accumulationX += mouseX * _rotateSpeed * Time.deltaTime;
-       _accumulationY += -mouseY * _rotateSpeed * Time.deltaTime;
+       _accumulationY -= mouseY * _rotateSpeed * Time.deltaTime;
        
        // 3. 사람처럼 -90 ~ 90 도 사이로 제한한다.
        _accumulationY = Mathf.Clamp(_accumulationY, -90f, 90f);

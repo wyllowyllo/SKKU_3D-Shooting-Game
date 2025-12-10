@@ -40,7 +40,7 @@ public class CameraFollow : MonoBehaviour
     
     private void FollowTarget()
     {
-        transform.position = _target.position + _camOffset;
+        transform.position = _target.position + transform.TransformDirection(_camOffset);
     }
 
     
