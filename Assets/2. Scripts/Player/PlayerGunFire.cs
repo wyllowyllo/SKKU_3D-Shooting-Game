@@ -24,7 +24,9 @@ public class PlayerGunFire : MonoBehaviour
     private void Init()
     {
         _input = GetComponent<PlayerInput>();
-       
+        
+        if(_curGun == null)
+            _curGun = GetComponentInChildren<Gun>();
     }
     private void Fire()
     {

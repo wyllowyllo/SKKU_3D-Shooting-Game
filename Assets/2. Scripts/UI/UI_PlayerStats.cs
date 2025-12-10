@@ -18,9 +18,13 @@ public class UI_PlayerStats : MonoBehaviour
     [Header("Bomb Text")]
     [SerializeField] private TextMeshProUGUI _bombText;
     
+    [Header("Bullet UI")]
+    [SerializeField] private TextMeshProUGUI _bulletText;
+    [SerializeField] private Slider _reloadGuage;
     
     private PlayerStats _playerStats ;
     private PlayerBombFire _playerBombFire ;
+    private Gun _gunInfo;
 
     private void Awake()
     { 
@@ -31,6 +35,7 @@ public class UI_PlayerStats : MonoBehaviour
     {
         UpdateStatBars();
         UpdateBombText();
+        UpdateBulletText();
     }
 
     private void Init()
@@ -39,6 +44,7 @@ public class UI_PlayerStats : MonoBehaviour
         
         _playerStats = _player.GetComponent<PlayerStats>();
         _playerBombFire = _player.GetComponent<PlayerBombFire>();
+        _gunInfo = _player.GetComponentInChildren<Gun>();
     }
 
     private void UpdateStatBars()
@@ -62,5 +68,12 @@ public class UI_PlayerStats : MonoBehaviour
 
 
         _bombText.text = $"{_playerBombFire.CurBombCnt} / {_playerBombFire.MaxBombCnt}";
+    }
+
+    private void UpdateBulletText()
+    {
+        if (_gunInfo == null || _bulletText == null ) return;
+        
+        _bulletText.text = $"{_gunInfo.RemainBullets} / {_gunInfo.TotalBulletCnt}";
     }
 }

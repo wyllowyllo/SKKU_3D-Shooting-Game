@@ -1,7 +1,6 @@
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "WeaponStat", menuName = "WeaponSO/CreateWeaponData")]
-[System.Serializable]
 public class GunStat : ScriptableObject
 {
     [Header("기본 총 스텟")]

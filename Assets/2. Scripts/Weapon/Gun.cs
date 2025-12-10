@@ -47,6 +47,7 @@ public class Gun : MonoBehaviour
             _shotTimer = 0f;
             return;
         }
+        Debug.Log("Shoot");
         
         Ray ray = new Ray(_cam.transform.position, Camera.main.transform.forward);
         
@@ -61,9 +62,13 @@ public class Gun : MonoBehaviour
             
             // 2. 하나를 캐싱해두고 Play ->단점 : 재실행이므로 기존 것이 삭제 -> 인스펙터 설정 그대로 그릴 경우
             Debug.Log("Hit " + hitInfo.transform.name);
-            _hitEffect.transform.position = hitInfo.point;
-            _hitEffect.transform.forward = hitInfo.normal;
-            _hitEffect.Play(true);
+
+            if (_hitEffect != null)
+            {
+                _hitEffect.transform.position = hitInfo.point;
+                _hitEffect.transform.forward = hitInfo.normal;
+                _hitEffect.Play(true);
+            }
             
             // 3. 하나를 캐싱해두고 Emit -> 인스펙터 설정을 수정 후 그릴 경우
             // 파티클을 어떻게 분출할지 정보를 넘겨줌
@@ -73,7 +78,7 @@ public class Gun : MonoBehaviour
             _hitEffect.Emit(emitParams, 1);*/
         }
 
-        _remainBullets = RemainBullets - 1;
+        _remainBullets--;
         _shotTimer = 0f;
     }
     public void Reload()
@@ -103,9 +108,10 @@ public class Gun : MonoBehaviour
     {
         _cam = Camera.main;
         
-        _remainBullets = _gunStat.BulletCntForAmmo;
         _bulletCntForAmmo = _gunStat.BulletCntForAmmo;
-        _totalBulletCnt = _gunStat.BulletCntForAmmo *_bulletCntForAmmo;
+        _remainBullets = _bulletCntForAmmo;
+        
+        _totalBulletCnt = _gunStat.AmmoCnt *_bulletCntForAmmo;
         
     }
 }

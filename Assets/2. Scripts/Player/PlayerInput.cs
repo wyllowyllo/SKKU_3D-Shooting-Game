@@ -13,6 +13,7 @@ public class PlayerInput : MonoBehaviour
     
     public bool BombThrow => Input.GetKeyDown(KeyCode.G);
     public bool Fire => Input.GetMouseButton(0);
+    public bool Reload => Input.GetKeyDown(KeyCode.R);
     public bool ViewToggle => Input.GetKeyDown(KeyCode.T);
     public Vector3 Direction
     {

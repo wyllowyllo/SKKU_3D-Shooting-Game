@@ -13,7 +13,6 @@ MonoBehaviour:
   m_Name: BasicGun
   m_EditorClassIdentifier: 
   _shotInterval: 0.1
-  _remainBulletCnt: 0
-  _maxBulletCnt: 30
-  _magazineCnt: 5
+  _bulletCntForAmmo: 30
+  _ammoCnt: 5
   _reloadTime: 1.6
