@@ -1,28 +1,66 @@
+using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 
 public class UI_PlayerStats : MonoBehaviour
 {
-    [Header("참조")]
-    [SerializeField] private PlayerStats _player ;
+    [Header("플레이어 참조")]
+    [SerializeField] private Transform _player;
 
     [Header("HP bar")]
     [SerializeField] private Slider _healthSlider;
     
     [Header("Stamina bar")]
     [SerializeField] private Slider _staminaSlider;
+
+    [Header("Bomb Text")]
+    [SerializeField] private TextMeshProUGUI _bombText;
     
-   
     
+    private PlayerStats _playerStats ;
+    private PlayerFire _playerFire ;
+
+    private void Awake()
+    { 
+         Init();
+    }
+
     private void LateUpdate()
     {
-        if (_player == null) return;
+        UpdateStatBars();
+        UpdateBombText();
+    }
 
-        if(_staminaSlider != null)
-            _staminaSlider.value = (_player.CurStamina / _player.MaxStamina);
+    private void Init()
+    {
+        if (_player == null) return;
         
-        if(_healthSlider != null)
-            _healthSlider.value = (_player.CurHealth / _player.MaxHealth);
+        _playerStats = _player.GetComponent<PlayerStats>();
+        _playerFire = _player.GetComponent<PlayerFire>();
+    }
+
+    private void UpdateStatBars()
+    {
+        if (_playerStats == null) return;
+
+        
+        if (_staminaSlider != null)
+        {
+            _staminaSlider.value = (_playerStats.CurStamina / _playerStats.MaxStamina);
+        }
+        if (_healthSlider != null)
+        {
+            _healthSlider.value = (_playerStats.CurHealth / _playerStats.MaxHealth);
+        }
+    }
+
+    private void UpdateBombText()
+    {
+        if (_playerFire == null || _bombText == null) return;
+
+
+        _bombText.text = $"{_playerFire.CurBombCnt} / {_playerFire.MaxBombCnt}";
     }
 }
