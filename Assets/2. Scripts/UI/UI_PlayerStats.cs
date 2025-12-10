@@ -4,6 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+using DG.Tweening;
 
 public class UI_PlayerStats : MonoBehaviour
 {
@@ -86,11 +87,28 @@ public class UI_PlayerStats : MonoBehaviour
 
     private void UpdateReloadBar()
     {
-        //StartCoroutine(UpdateReloadBarRoutine());
+        
+        StartCoroutine(UpdateReloadBarRoutine());
     }
 
-    /*private IEnumerator UpdateReloadBarRoutine()
+    private IEnumerator UpdateReloadBarRoutine()
     {
+        CanvasGroup canvasGroup = _reloadGuage.GetComponent<CanvasGroup>();
+        _reloadGuage.value = 0f;
         
-    }*/
+        DOTween.To(()=> canvasGroup.alpha, x=> canvasGroup.alpha = x, 1f, 0.1f);
+       
+        
+        float t = 0f;
+
+        while (t < _gunInfo.ReloadDuration)
+        {
+            t += Time.deltaTime;
+            _reloadGuage.value = (t/_gunInfo.ReloadDuration);
+            yield return null;
+        }
+        
+       
+        DOTween.To(()=> canvasGroup.alpha, x=> canvasGroup.alpha = x, 0f, 0.1f);
+    }
 }

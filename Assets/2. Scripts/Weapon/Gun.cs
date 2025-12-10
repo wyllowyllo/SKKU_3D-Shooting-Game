@@ -32,6 +32,8 @@ public class Gun : MonoBehaviour
 
     public UnityEvent OnReload => _onReload;
 
+    public float ReloadDuration => _reloadDuration;
+
     private void Awake()
     {
         Init();
@@ -89,8 +91,9 @@ public class Gun : MonoBehaviour
     public void Reload()
     {
         if (_isReloading) return;
+        if (_remainBullets == _bulletCntForAmmo) return;
         
-        int loadBulletCnt = _bulletCntForAmmo - RemainBullets;
+        int loadBulletCnt = _bulletCntForAmmo - _remainBullets;
         if (loadBulletCnt <= _totalBulletCnt)
         {
             StartCoroutine(ReloadCoroutine(loadBulletCnt));
@@ -102,7 +105,7 @@ public class Gun : MonoBehaviour
         _isReloading = true;
         _onReload?.Invoke();
         
-        yield return new WaitForSeconds(_gunStat.ReloadTime);
+        yield return new WaitForSeconds(ReloadDuration);
         
         _totalBulletCnt -= loadBulletCnt;
         _remainBullets = _bulletCntForAmmo; // 재장전
@@ -116,8 +119,8 @@ public class Gun : MonoBehaviour
         
         _bulletCntForAmmo = _gunStat.BulletCntForAmmo;
         _remainBullets = _bulletCntForAmmo;
-        
         _totalBulletCnt = _gunStat.AmmoCnt *_bulletCntForAmmo;
+        _reloadDuration = _gunStat.ReloadTime;
         
         _onReload = new UnityEvent();
         
