@@ -5,22 +5,19 @@ using UnityEngine.UI;
 
 public class CameraFollow : MonoBehaviour
 {
-    [Header("입력 참조")]
-    [SerializeField] private PlayerInput _input;
-    
-    [Header("Target in FPS")]
-    [SerializeField] private Transform _fpsTarget;
-    
-    [Header("Target in TPS")]
-    [SerializeField] private Transform _tpsTarget;
+    [Header("Following Target")]
+    [SerializeField] private Transform _target;
+    [SerializeField] private Vector3 _fpsTargetOffset;
+    [SerializeField] private Vector3 _tpsTargetOffset;
+    private Vector3 _camOffset;
 
     [Header("스위칭 시간")]
     [SerializeField] private float _switchDuration = 0.5f;
     
-    private bool _isTpsMode = false;
-    private bool _isSwitching = false;
     
-    private Transform _target;
+    private bool _isTpsMode = false;
+    
+    private PlayerInput _input;
 
     private void Awake()
     {
@@ -28,23 +25,22 @@ public class CameraFollow : MonoBehaviour
     }
     private void LateUpdate()
     {
-        if (_fpsTarget == null || _tpsTarget == null) return;
+        if(_target == null) return;
         
-        //UpdateViewMode();
+        UpdateViewMode();
         FollowTarget();
     }
 
     private void Init()
     {
-        _target = _fpsTarget;
+        _input = _target?.GetComponentInParent<PlayerInput>();
+        
+        _camOffset = _tpsTargetOffset;
     }
     
     private void FollowTarget()
     {
-        if (_isSwitching) return;
-        
-        //transform.DOMove(_target.position, _switchDuration);
-        transform.position = _target.position;
+        transform.position = _target.position + _camOffset;
     }
 
     
@@ -55,7 +51,15 @@ public class CameraFollow : MonoBehaviour
       
         _isTpsMode = !_isTpsMode;
         
-       _target = _isTpsMode ? _tpsTarget : _fpsTarget;
+        Vector3 targetOffset = _isTpsMode ? _tpsTargetOffset : _fpsTargetOffset;
+
+        DOTween.To(
+                () => _camOffset,
+                x => _camOffset = x,
+                targetOffset,
+                _switchDuration
+            )
+            .SetEase(Ease.InOutSine);
     }
 
    
