@@ -39,7 +39,7 @@ public class CameraRotate : MonoBehaviour
        // 새로운 위치 = 이전 위치 + (속력 * 방향 * 시간)
        // 새로운 회전 = 이전 회전 + (속력 * 방향 * 시간)
        transform.eulerAngles = new Vector3(_accumulationY, _accumulationX, 0);
-       
+       //transform.localRotation = Quaternion.Euler(_accumulationY, _accumulationX, 0f);
        
        /*// 2. 입력에 따른 회전 방향 만들기
        Vector3 direction = new Vector3(-mouseY, mouseX, 0f);

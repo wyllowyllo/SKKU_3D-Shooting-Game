@@ -543,7 +543,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _target: {fileID: 470969227}
   _fpsTargetOffset: {x: 0, y: 0, z: 0}
-  _tpsTargetOffset: {x: 0, y: 3.23, z: -5.63}
+  _tpsTargetOffset: {x: 0, y: 2, z: -8}
   _switchDuration: 0.5
 --- !u!1 &410087039
 GameObject:

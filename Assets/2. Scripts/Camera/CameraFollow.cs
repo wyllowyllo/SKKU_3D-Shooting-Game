@@ -15,7 +15,7 @@ public class CameraFollow : MonoBehaviour
     [SerializeField] private float _switchDuration = 0.5f;
     
     
-    private bool _isTpsMode = false;
+    private bool _isTpsMode = true;
     
     private PlayerInput _input;
 
@@ -59,7 +59,8 @@ public class CameraFollow : MonoBehaviour
                 targetOffset,
                 _switchDuration
             )
-            .SetEase(Ease.InOutSine);
+            .SetEase(Ease.OutCubic)
+            .SetUpdate(UpdateType.Late);
     }
 
    
