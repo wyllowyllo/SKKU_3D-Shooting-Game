@@ -5,31 +5,24 @@ using UnityEngine;
 /// 키보드 누르면 캐릭터 그 방향으로 이동
 /// </summary>
 [RequireComponent(typeof(CharacterController), typeof(PlayerInput))]
+[RequireComponent(typeof(PlayerStats))]
 public class PlayerMove : MonoBehaviour
 {
-    [Header("기본 이동")]
-    [SerializeField] private float _moveSpeed;
-   
     
-    [Header("빠른 이동")]
-    [SerializeField] private float _staminaMax = 100f;
-    [SerializeField] private float _speedFactor = 1.5f;
-    [SerializeField] private float _staminaUnitForTime = 20f;
-    
-    [Header("점프")]
-    [SerializeField] private float _jumpPower;
-    [SerializeField] private float _staminaForSecondJump = 50f;
+    [Header("스테미나 소모량")]
+    [SerializeField] private float _runStaminaPerSec = 20f;
+    [SerializeField] private float _secondJumpStamina = 50f;
     
     // 참조
     private CharacterController _characterController;
     private PlayerInput _input;
+    private PlayerStats _playerStats;
     private Camera _cam;
 
     // 이동 관련 
     private Vector3 direction;
     private float _yVelocity = 0f;
-    private float _curStamina = 0f;
-   
+    
     
     // 플래그 변수
     private bool _isFirstJump;
@@ -37,8 +30,7 @@ public class PlayerMove : MonoBehaviour
     
     
     // 프로퍼티;
-    public float CurStamina => _curStamina;
-    public float StaminaMax => _staminaMax;
+    //public float CurStamina => _curStamina;
     public bool IsGrounded => _characterController.isGrounded;
     private bool IsMove => (_input.X!=0 || _input.Z!=0);
     
@@ -59,9 +51,9 @@ public class PlayerMove : MonoBehaviour
     {
         _characterController = GetComponent<CharacterController>();
         _input = GetComponent<PlayerInput>();
+        _playerStats = GetComponent<PlayerStats>();
         _cam = Camera.main;
         
-        _curStamina = StaminaMax;
     }
     private void SetMoveDirection()
     {
@@ -78,31 +70,28 @@ public class PlayerMove : MonoBehaviour
 
     private void ApplyMovement()
     {
-        float boost = 1f;
+        float applySpeed = 1f;
+        
         if (_input.Dash && IsMove && IsGrounded)
         {
-            if (CurStamina > 0)
+            if (_playerStats.StaminaStat.Value > 0)
             {
-                boost = _speedFactor;
-                _curStamina = CurStamina - _staminaUnitForTime * Time.deltaTime;
-                _curStamina = Mathf.Max(CurStamina, 0);
+                applySpeed = _playerStats.RunSpeed;
+                _playerStats.StaminaStat.Decrease(_runStaminaPerSec * Time.deltaTime);
             }
         }
         else
         {
-            boost = 1f;
+            applySpeed = _playerStats.MoveSpeed;
 
             if (IsGrounded)
             {
-                _curStamina = CurStamina + _staminaUnitForTime * Time.deltaTime;
-                _curStamina = Mathf.Min(CurStamina, StaminaMax);
+                _playerStats.StaminaStat.Regenerate(Time.deltaTime);
             }
             
         }
         
-        // 3. 방향으로 이동시키기
-        //transform.position += direction * _moveSpeed * Time.deltaTime;
-        _characterController.Move(direction * _moveSpeed * boost * Time.deltaTime);
+        _characterController.Move(direction * applySpeed * Time.deltaTime);
     }
 
     private void Jump()
@@ -110,19 +99,18 @@ public class PlayerMove : MonoBehaviour
         
         if (!_isFirstJump)
         {
-            _yVelocity = _jumpPower;
+            _yVelocity = _playerStats.JumpPower;
             _isFirstJump = true;
         }
         else if (!_isSecondJump)
         {
-            if (_curStamina < _staminaForSecondJump)
+            if (!_playerStats.StaminaStat.TryConsume(_secondJumpStamina))
             {
                 Debug.Log("스테미나가 부족합니다");
                 return;
             }
             
-            _yVelocity = _jumpPower;
-            _curStamina =  Mathf.Max(0,  _curStamina - _staminaForSecondJump);
+            _yVelocity = _playerStats.JumpPower;
             _isSecondJump = true;
         }
     }
