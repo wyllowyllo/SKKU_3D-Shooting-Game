@@ -20,7 +20,7 @@ public class UI_PlayerStats : MonoBehaviour
     
     
     private PlayerStats _playerStats ;
-    private PlayerFire _playerFire ;
+    private PlayerBombFire _playerBombFire ;
 
     private void Awake()
     { 
@@ -38,7 +38,7 @@ public class UI_PlayerStats : MonoBehaviour
         if (_player == null) return;
         
         _playerStats = _player.GetComponent<PlayerStats>();
-        _playerFire = _player.GetComponent<PlayerFire>();
+        _playerBombFire = _player.GetComponent<PlayerBombFire>();
     }
 
     private void UpdateStatBars()
@@ -58,9 +58,9 @@ public class UI_PlayerStats : MonoBehaviour
 
     private void UpdateBombText()
     {
-        if (_playerFire == null || _bombText == null) return;
+        if (_playerBombFire == null || _bombText == null) return;
 
 
-        _bombText.text = $"{_playerFire.CurBombCnt} / {_playerFire.MaxBombCnt}";
+        _bombText.text = $"{_playerBombFire.CurBombCnt} / {_playerBombFire.MaxBombCnt}";
     }
 }

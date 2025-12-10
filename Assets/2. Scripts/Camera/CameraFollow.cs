@@ -30,7 +30,7 @@ public class CameraFollow : MonoBehaviour
     {
         if (_fpsTarget == null || _tpsTarget == null) return;
         
-        UpdateViewMode();
+        //UpdateViewMode();
         FollowTarget();
     }
 
@@ -43,8 +43,8 @@ public class CameraFollow : MonoBehaviour
     {
         if (_isSwitching) return;
         
-        transform.DOMove(_target.position, _switchDuration);
-        
+        //transform.DOMove(_target.position, _switchDuration);
+        transform.position = _target.position;
     }
 
     
