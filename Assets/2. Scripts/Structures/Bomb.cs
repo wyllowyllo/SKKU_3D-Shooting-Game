@@ -24,6 +24,6 @@ public class Bomb : MonoBehaviour
         GameObject effectObject = Instantiate(_explosionVFX, transform.position, Quaternion.identity);
         
         //Destroy(gameObject);
-        BulletFactory.Instance.ReturnBullet(this);
+        BombFactory.Instance.ReturnBomb(this);
     }
 }

@@ -46,7 +46,7 @@ public class PlayerBombFire : MonoBehaviour
       if (!_input.BombThrow || CurBombCnt <= 0) return;
       
       //Bomb bomb = Instantiate(_bombPrefab, _fireTransform.position, Quaternion.identity);
-      Bomb bomb = BulletFactory.Instance.GetBullet();
+      Bomb bomb = BombFactory.Instance.GetBomb();
       bomb.transform.position = _fireTransform.position;
       bomb.transform.rotation = _fireTransform.rotation;
       
