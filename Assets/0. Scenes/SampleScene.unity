@@ -618,7 +618,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _target: {fileID: 470969227}
   _fpsTargetOffset: {x: 0, y: 0, z: 0}
-  _tpsTargetOffset: {x: 0, y: 2, z: -8}
+  _tpsTargetOffset: {x: 0, y: 2, z: -5}
   _switchDuration: 0.5
 --- !u!1 &410087039
 GameObject:
@@ -1990,8 +1990,8 @@ MonoBehaviour:
   _healthSlider: {fileID: 1270638308}
   _staminaSlider: {fileID: 713379182}
   _bombText: {fileID: 184615439}
-  _bulletText: {fileID: 974121851}
-  _reloadGuage: {fileID: 1400442175}
+  _bulletText: {fileID: 0}
+  _reloadGuage: {fileID: 0}
 --- !u!1 &1140037489
 GameObject:
   m_ObjectHideFlags: 0
