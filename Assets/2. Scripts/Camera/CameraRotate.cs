@@ -19,11 +19,20 @@ public class CameraRotate : MonoBehaviour
     // 유니티는 0 ~ 360 각도 체계이므로, 아래와 같이 우리가 따로 저장할 -360 ~ 360 체계로 누적할 변수를 둔다.
     private float _accumulationX = 0;
     private float _accumulationY = 0;
-    
+
+    private void Awake()
+    {
+        Vector3 startAngle = transform.eulerAngles;
+        _accumulationX = startAngle.y;
+        _accumulationY = startAngle.x;
+
+        // 커서 설정
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+    }
     private void Update()
     {
         if (_input == null) return;
-        if (!_input.Rotate) return;
         
         // 1. 마우스 입력 받기
         float mouseX = _input.MouseX;
@@ -34,7 +43,7 @@ public class CameraRotate : MonoBehaviour
        _accumulationY -= mouseY * _rotateSpeed * Time.deltaTime;
        
        // 3. 사람처럼 -90 ~ 90 도 사이로 제한한다.
-       _accumulationY = Mathf.Clamp(_accumulationY, -90f, 90f);
+       _accumulationY = Mathf.Clamp(_accumulationY, -80f, 80f);
        
        // 4. 회전 방향으로 카메라 회전하기
        // 새로운 위치 = 이전 위치 + (속력 * 방향 * 시간)

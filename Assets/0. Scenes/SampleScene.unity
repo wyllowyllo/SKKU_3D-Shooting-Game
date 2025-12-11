@@ -603,7 +603,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _input: {fileID: 1728481976}
-  _rotateSpeed: 200
+  _rotateSpeed: 250
 --- !u!114 &330585549
 MonoBehaviour:
   m_ObjectHideFlags: 0
