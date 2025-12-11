@@ -22,29 +22,32 @@ public class Monster : MonoBehaviour
 {
     [Header("추적 설정")]
     [SerializeField] private Transform _target;
-    [SerializeField] private float _detectDistance = 3f;
+    [SerializeField] private float _detectDistance = 5f;
     
     [Header("몬스터 설정")]
     [SerializeField] private EMonsterState _state = EMonsterState.Idle;
     [SerializeField] private float _health = 100f;
     [SerializeField] private float _moveSpeed = 5f;
-    [SerializeField] private float _attackDistance = 200f;
+    [SerializeField] private float _attackDistance = 1f;
     [SerializeField] private float _attackSpeed = 1.2f;
+    [SerializeField] private float _attackDamage = 5f;
     
-    
+    // 참조
     private CharacterController _controller;
-
+    private PlayerStats _playerStats;
+    
     private float _attackTimer;
     
     private void Awake()
     {
-        _controller.GetComponent<CharacterController>();
+       Init();
     }
 
     private void Update()
     {
+        if (_target == null) return;
+        
         // 몬스터의 상태에 따라 다른 메서드를 호출한다.
-
         switch (_state)
         {
             case EMonsterState.Idle:
@@ -68,7 +71,7 @@ public class Monster : MonoBehaviour
     public bool TryTakeDamage(float damage)
     {
         if (_state == EMonsterState.Hit || _state == EMonsterState.Death) return false;
-
+        if (damage <= 0f) return false;
 
         _health -= damage;
         
@@ -124,8 +127,6 @@ public class Monster : MonoBehaviour
     
     private void Attack()
     {
-        Debug.Log("플레이어 공격!");
-
         float distance = Vector3.Distance(transform.position, _target.position);
         if (distance > _attackDistance)
         {
@@ -137,8 +138,7 @@ public class Monster : MonoBehaviour
         _attackTimer += Time.deltaTime;
         if (_attackTimer >= _attackSpeed)
         {
-            // TODO : 플레이어 공격하기
-            
+            _playerStats?.TryTakeDamage(_attackDamage);
             _attackTimer = 0f;
         }
     }
@@ -158,10 +158,14 @@ public class Monster : MonoBehaviour
         yield return new WaitForSeconds(2f);
         Destroy(gameObject);
     }
-    
-    
 
-   
+
+
+    private void Init()
+    {
+        _controller = GetComponent<CharacterController>();
+        _playerStats = _target?.GetComponent<PlayerStats>();
+    }
     
   
 }

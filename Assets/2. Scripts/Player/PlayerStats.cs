@@ -17,36 +17,64 @@ public class PlayerStats : MonoBehaviour
 
    // 프로퍼티
    public ComsumableStat HealthStat => healthStat;
-
    public ComsumableStat StaminaStat => staminaStat;
-   
    public float CurHealth => healthStat.Value;
    public float MaxHealth => healthStat.MaxValue;
    public float CurStamina => staminaStat.Value;
    public float MaxStamina => staminaStat.MaxValue;
-   
    public float Damage => _damage.Value;
-
    public float MoveSpeed => _moveSpeed.Value;
-
    public float RunSpeed => _runSpeed.Value;
-
    public float JumpPower => _jumpPower.Value;
+   
+   // 플래그 변수
+   private bool _isDead;
 
    
-
-
-   private void Start()
+   private void Awake()
    {
       HealthStat.Initialize();
       StaminaStat.Initialize();
    }
-
    private void Update()
    {
+      if (_isDead) return;
+      
       float deltaTime = Time.deltaTime;
       
-      HealthStat.Regenerate(deltaTime);
-      StaminaStat.Regenerate(deltaTime);
+      RegenStamina(deltaTime);
+      //RegenHealth(deltaTime);
    }
+   
+   public void TryTakeDamage(float damage)
+   {
+      if(_isDead || damage <= 0) return;
+      
+      
+      HealthStat.Decrease(damage);
+      
+      if (healthStat.Value > 0)
+      {
+        // TODO : Hit 이펙트, 애니메이션
+         
+        Debug.Log("몬스터에게 피격됨!");
+      }
+      else
+      {
+         // TODO : Die 이펙트, 애니메이션
+         _isDead = true;
+      }
+   }
+   
+  
+
+   private void RegenStamina(float time)
+   {
+      StaminaStat.Regenerate(time);
+   }
+   private void RegenHealth(float time)
+   {
+      HealthStat.Regenerate(time);
+   }
+  
 }
