@@ -36,7 +36,14 @@ public class Monster : MonoBehaviour
     private CharacterController _controller;
     private PlayerStats _playerStats;
     
+    // 상수
+    private const float DistanceEpsilon = 0.1f;
+    
+    // 타이머
     private float _attackTimer;
+    
+    private Vector3 _originalPosition;
+
     
     private void Awake()
     {
@@ -91,9 +98,8 @@ public class Monster : MonoBehaviour
     
     private void Idle()
     {
-        
-
-        if (Vector3.Distance(transform.position, _target.position) <= _detectDistance)
+        float distance = Vector3.Distance(transform.position, _target.position);
+        if (distance <= _detectDistance)
         {
             _state = EMonsterState.Trace;
             Debug.Log($"상태 전환  to  {_state} ");
@@ -115,6 +121,12 @@ public class Monster : MonoBehaviour
             Debug.Log($"상태 전환  to  {_state} ");
             return;
         }
+        else if (distance > _detectDistance)
+        {
+            _state = EMonsterState.Comeback;
+            Debug.Log($"상태 전환  to  {_state} ");
+            return;
+        }
         
         
         Vector3 direction = (_target.position - transform.position).normalized;
@@ -122,7 +134,16 @@ public class Monster : MonoBehaviour
     }
     private void Comeback()
     {
+        float distance = Vector3.Distance(transform.position, _originalPosition);
+        if (distance <= DistanceEpsilon)
+        {
+            _state = EMonsterState.Idle;
+            Debug.Log($"상태 전환  to  {_state} ");
+            return;
+        }
         
+        Vector3 direction = (_originalPosition - transform.position).normalized;
+        _controller.Move(direction * _moveSpeed * Time.deltaTime);
     }
     
     private void Attack()
@@ -165,7 +186,15 @@ public class Monster : MonoBehaviour
     {
         _controller = GetComponent<CharacterController>();
         _playerStats = _target?.GetComponent<PlayerStats>();
+        
+        _originalPosition = transform.position;
     }
     
+    
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, _detectDistance);
+    }
   
 }

@@ -19,7 +19,7 @@ public class CameraFollow : MonoBehaviour
     [SerializeField] private float _switchDuration = 0.5f;
     
     
-    private bool _isTpsMode = true;
+    private bool _isTpsMode = false;
     
     
 
@@ -38,6 +38,7 @@ public class CameraFollow : MonoBehaviour
     private void Init()
     {
         _camOffset = _tpsTargetOffset;
+        _camOffset = _fpsTargetOffset;
     }
     
     private void FollowTarget()
