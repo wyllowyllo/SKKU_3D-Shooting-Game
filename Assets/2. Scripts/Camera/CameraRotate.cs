@@ -20,50 +20,16 @@ public class CameraRotate : MonoBehaviour
     private float _accumulationX = 0;
     private float _accumulationY = 0;
 
+    private const float MaxVerticalRotationAngle = 80f;
     private void Awake()
     {
-        Vector3 startAngle = transform.eulerAngles;
-        _accumulationX = startAngle.y;
-        _accumulationY = startAngle.x;
-
-        // 커서 설정
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+       Init();
     }
     private void Update()
     {
         if (_input == null) return;
-        
-        // 1. 마우스 입력 받기
-        float mouseX = _input.MouseX;
-        float mouseY = _input.MouseY;
-        
-       // 2. 마우스 입력을 누적한다 (누적된 회전 방향)
-       _accumulationX += mouseX * _rotateSpeed * Time.deltaTime;
-       _accumulationY -= mouseY * _rotateSpeed * Time.deltaTime;
-       
-       // 3. 사람처럼 -90 ~ 90 도 사이로 제한한다.
-       _accumulationY = Mathf.Clamp(_accumulationY, -80f, 80f);
-       
-       // 4. 회전 방향으로 카메라 회전하기
-       // 새로운 위치 = 이전 위치 + (속력 * 방향 * 시간)
-       // 새로운 회전 = 이전 회전 + (속력 * 방향 * 시간)
-       transform.eulerAngles = new Vector3(_accumulationY, _accumulationX, 0);
-       //transform.localRotation = Quaternion.Euler(_accumulationY, _accumulationX, 0f);
-       
-       /*// 2. 입력에 따른 회전 방향 만들기
-       Vector3 direction = new Vector3(-mouseY, mouseX, 0f);
-       
-       
-       // 3. 회전 방향으로 카메라 회전하기
-       // 새로운 위치 = 이전 위치 + (속력 * 방향 * 시간)
-       // 새로운 회전 = 이전 회전 + (속력 * 방향 * 시간)
-       Vector3 eulerAngle =  transform.eulerAngles + _rotateSpeed * direction * Time.deltaTime;
-       eulerAngle.y = Mathf.Clamp(eulerAngle.y, -90f, 90f);
-       transform.eulerAngles = eulerAngle;*/
-       
-       // 쿼너티언(사원수) : 쓰는 이유는 짐벌락 현상 방지
-       
+
+        RotateView();
     }
     
     public void AddRecoil(float upRecoil, float sideRecoil, float duration)
@@ -73,7 +39,7 @@ public class CameraRotate : MonoBehaviour
             () => _accumulationY,
             x => _accumulationY = x,
             _accumulationY - upRecoil,
-            duration * 0.2f
+            duration
         );
 
         // 좌우 반동
@@ -81,8 +47,52 @@ public class CameraRotate : MonoBehaviour
             () => _accumulationX,
             x => _accumulationX = x,
             _accumulationX + Random.Range(-sideRecoil, sideRecoil),
-            duration * 0.2f
+            duration
         );
+    }
+
+    private void Init()
+    {
+        Vector3 startAngle = transform.eulerAngles;
+        _accumulationX = startAngle.y;
+        _accumulationY = startAngle.x;
+
+        // 커서 설정
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+    }
+
+    private void RotateView()
+    {
+        // 1. 마우스 입력 받기
+        float mouseX = _input.MouseX;
+        float mouseY = _input.MouseY;
+        
+        // 2. 마우스 입력을 누적한다 (누적된 회전 방향)
+        _accumulationX += mouseX * _rotateSpeed * Time.deltaTime;
+        _accumulationY -= mouseY * _rotateSpeed * Time.deltaTime;
+       
+        // 3. 사람처럼 -80 ~ 80 도 사이로 제한한다.
+        _accumulationY = Mathf.Clamp(_accumulationY, -MaxVerticalRotationAngle, MaxVerticalRotationAngle);
+       
+        // 4. 회전 방향으로 카메라 회전하기
+        // 새로운 위치 = 이전 위치 + (속력 * 방향 * 시간)
+        // 새로운 회전 = 이전 회전 + (속력 * 방향 * 시간)
+        transform.eulerAngles = new Vector3(_accumulationY, _accumulationX, 0);
+        //transform.localRotation = Quaternion.Euler(_accumulationY, _accumulationX, 0f);
+       
+        /*// 2. 입력에 따른 회전 방향 만들기
+        Vector3 direction = new Vector3(-mouseY, mouseX, 0f);
+
+
+        // 3. 회전 방향으로 카메라 회전하기
+        // 새로운 위치 = 이전 위치 + (속력 * 방향 * 시간)
+        // 새로운 회전 = 이전 회전 + (속력 * 방향 * 시간)
+        Vector3 eulerAngle =  transform.eulerAngles + _rotateSpeed * direction * Time.deltaTime;
+        eulerAngle.y = Mathf.Clamp(eulerAngle.y, -90f, 90f);
+        transform.eulerAngles = eulerAngle;*/
+       
+        // 쿼너티언(사원수) : 쓰는 이유는 짐벌락 현상 방지
     }
 
     

@@ -14,7 +14,7 @@ public class GunStat : ScriptableObject
     [Header("반동")]
     [SerializeField] private float _upRecoilStrength = 3f;
     [SerializeField] private float _sideRecoilStrength = 1.2f;
-    [SerializeField] private float _recoilDuration = 0.1f;
+    [SerializeField] private float _recoilDuration = 0.02f;
     
     public float ShotInterval => _shotInterval;
 

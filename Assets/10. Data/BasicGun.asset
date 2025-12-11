@@ -16,3 +16,6 @@ MonoBehaviour:
   _bulletCntForAmmo: 30
   _ammoCnt: 5
   _reloadTime: 1.6
+  _upRecoilStrength: 3
+  _sideRecoilStrength: 1.2
+  _recoilDuration: 0.02
