@@ -1,0 +1,102 @@
+using System;
+using UnityEngine;
+
+
+// 목표 : 처음에는 가만히 있지만 플레이어가 다가가면 쫓아오는 좀비 몬스터
+// -> 쫓아 오다가 너무 멀어지면 제자리로 돌아간다.
+   
+  
+// 몬스터 인공지능 (AI) : 사람처럼 행동하는 똑똑한 시스템 / 알고리즘
+//  - 규칙 기반 인공지능 : 정해진 규칙에 따라 조건문/반복문 등을 이용해서 코딩하는 것
+//  -> FSM(유한 상태 머신), BT(행동 트리)
+   
+// - 학습 기반 인공지능 : 머신러닝(딥러닝, 강화학습..)
+
+// 다음 사항 항상 준수
+// 1. 함수는 한 가지 일만 잘해야 한다.
+// 2. 상태별 행동을 함수로 만든다.
+
+[RequireComponent(typeof(CharacterController))]
+public class Monster : MonoBehaviour
+{
+    [Header("추적 설정")]
+    [SerializeField] private Transform _target;
+    [SerializeField] private float _detectDistance = 3f;
+    
+    [Header("몬스터 상태")]
+    [SerializeField] private EMonsterState _state = EMonsterState.Idle;
+    [SerializeField] private float _moveSpeed = 5f;
+
+    private CharacterController _controller;
+
+    private void Awake()
+    {
+        _controller.GetComponent<CharacterController>();
+    }
+
+    private void Update()
+    {
+        // 몬스터의 상태에 따라 다른 메서드를 호출한다.
+
+        switch (_state)
+        {
+            case EMonsterState.Idle:
+                Idle();
+                break;
+            case EMonsterState.Trace:
+                Trace();
+                break;
+            case EMonsterState.Comeback:
+                Comeback();
+                break;
+            case EMonsterState.Attack:
+                Attack();
+                break;
+            case EMonsterState.Hit:
+                Hit();
+                break;
+            case EMonsterState.Death:
+                Death();
+                break;
+        }
+    }
+
+    
+    private void Idle()
+    {
+        // 가만히 있는다.
+        // TODO : Idle anim
+
+        if (Vector3.Distance(transform.position, _target.position) <= _detectDistance)
+        {
+            _state = EMonsterState.Trace;
+        }
+    }
+
+    private void Trace()
+    {
+        // TODO : Run anim
+        
+        Vector3 direction = (_target.position - transform.position).normalized;
+        _controller.Move(direction * _moveSpeed * Time.deltaTime);
+    }
+    private void Comeback()
+    {
+        
+    }
+    private void Hit()
+    {
+        
+    }
+    private void Attack()
+    {
+        
+    }
+
+    private void Death()
+    {
+        
+    }
+    
+  
+}
