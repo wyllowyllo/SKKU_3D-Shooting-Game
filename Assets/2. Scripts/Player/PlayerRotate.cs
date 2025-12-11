@@ -17,11 +17,7 @@ public class PlayerRotate : MonoBehaviour
 
     private void Update()
     {
-        if (!_input.Rotate) return;
-        
-      
         float mouseX = _input.MouseX;
-
         
         _accumulationX += mouseX * _rotatationSpeed * Time.deltaTime;
         transform.eulerAngles = new Vector3(0, _accumulationX, 0);
@@ -30,5 +26,6 @@ public class PlayerRotate : MonoBehaviour
     private void Init()
     {
         _input = GetComponent<PlayerInput>();
+        
     }
 }
