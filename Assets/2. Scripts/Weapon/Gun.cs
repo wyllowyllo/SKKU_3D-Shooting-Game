@@ -96,7 +96,7 @@ public class Gun : MonoBehaviour
             Monster monster = hitInfo.collider.GetComponent<Monster>();
             if (monster != null)
             {
-                monster.TryTakeDamage(10);
+                monster.TryTakeDamage(new AttackInfo(_gunStat.DamageForShot, hitInfo.normal));
             }
         }
     }

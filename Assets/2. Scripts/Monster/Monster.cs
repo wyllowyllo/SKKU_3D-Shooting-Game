@@ -32,6 +32,8 @@ public class Monster : MonoBehaviour
     [SerializeField] private float _attackSpeed = 1.2f;
     [SerializeField] private float _attackDamage = 5f;
     
+    [Header("넉백")]
+    [SerializeField] private float _knockBackForce = 0.5f;
     // 참조
     private CharacterController _controller;
     private PlayerStats _playerStats;
@@ -75,21 +77,22 @@ public class Monster : MonoBehaviour
     /// <summary>
     /// 외부에서 데미지 적용시 호출됨.
     /// </summary>
-    public bool TryTakeDamage(float damage)
+    public bool TryTakeDamage(AttackInfo info)
     {
         if (_state == EMonsterState.Hit || _state == EMonsterState.Death) return false;
-        if (damage <= 0f) return false;
+        if (info.Damage <= 0f) return false;
 
-        _health -= damage;
+        _health -= info.Damage;
         
         if (_health > 0)
         {
             _state = EMonsterState.Hit;
-            
+            StartCoroutine(Hit_Coroutine(-info.HitDirection));
         }
         else
         {
             _state = EMonsterState.Death;
+            StartCoroutine(Death_Coroutine());
         }
         
         Debug.Log($"상태 전환  to  {_state} ");
@@ -164,12 +167,13 @@ public class Monster : MonoBehaviour
         }
     }
     
-    private IEnumerator Hit_Coroutine()
+    private IEnumerator Hit_Coroutine(Vector3 hitDir)
     {
         // TODO : Hit 애니메이션 실행
-        
+        ApplyKnockback(hitDir);
         yield return new WaitForSeconds(0.5f);
-        _state = EMonsterState.Idle;
+        
+        _state = EMonsterState.Attack;
     }
     
     private IEnumerator Death_Coroutine()
@@ -189,8 +193,11 @@ public class Monster : MonoBehaviour
         
         _originalPosition = transform.position;
     }
-    
-    
+
+    private void ApplyKnockback(Vector3 direction)
+    {
+        _controller.Move(direction * _knockBackForce);
+    }
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;

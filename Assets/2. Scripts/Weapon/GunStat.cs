@@ -7,6 +7,7 @@ using UnityEngine;
 public class GunStat : ScriptableObject
 {
     [Header("기본 총 스텟")]
+    [SerializeField] private float _damageForShot = 10f;
     [SerializeField] private float _shotInterval = 0.1f;
     [SerializeField] private int _bulletCntForAmmo;
     [SerializeField] private int _ammoCnt = 5;
@@ -32,4 +33,6 @@ public class GunStat : ScriptableObject
     public float SideRecoilStrength => _sideRecoilStrength;
 
     public float RecoilDuration => _recoilDuration;
+
+    public float DamageForShot => _damageForShot;
 }
