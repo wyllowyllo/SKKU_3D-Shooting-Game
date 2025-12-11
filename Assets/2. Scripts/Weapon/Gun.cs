@@ -91,6 +91,12 @@ public class Gun : MonoBehaviour
         if (isHit)
         {
             PlayHitEffect(hitInfo);  
+            
+            Monster monster = hitInfo.collider.GetComponent<Monster>();
+            if (monster != null)
+            {
+                monster.TryTakeDamage(10);
+            }
         }
     }
 

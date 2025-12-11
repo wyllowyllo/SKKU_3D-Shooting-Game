@@ -616,6 +616,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e64fe1ac6d311bc4289e55ad38d3d5ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _input: {fileID: 0}
   _target: {fileID: 470969227}
   _fpsTargetOffset: {x: 0, y: 0, z: 0}
   _tpsTargetOffset: {x: 0, y: 2, z: -5}
@@ -1990,8 +1991,8 @@ MonoBehaviour:
   _healthSlider: {fileID: 1270638308}
   _staminaSlider: {fileID: 713379182}
   _bombText: {fileID: 184615439}
-  _bulletText: {fileID: 0}
-  _reloadGuage: {fileID: 0}
+  _bulletText: {fileID: 974121851}
+  _reloadGuage: {fileID: 1400442175}
 --- !u!1 &1140037489
 GameObject:
   m_ObjectHideFlags: 0

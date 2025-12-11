@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 
@@ -23,12 +24,18 @@ public class Monster : MonoBehaviour
     [SerializeField] private Transform _target;
     [SerializeField] private float _detectDistance = 3f;
     
-    [Header("몬스터 상태")]
+    [Header("몬스터 설정")]
     [SerializeField] private EMonsterState _state = EMonsterState.Idle;
+    [SerializeField] private float _health = 100f;
     [SerializeField] private float _moveSpeed = 5f;
-
+    [SerializeField] private float _attackDistance = 200f;
+    [SerializeField] private float _attackSpeed = 1.2f;
+    
+    
     private CharacterController _controller;
 
+    private float _attackTimer;
+    
     private void Awake()
     {
         _controller.GetComponent<CharacterController>();
@@ -52,30 +59,60 @@ public class Monster : MonoBehaviour
             case EMonsterState.Attack:
                 Attack();
                 break;
-            case EMonsterState.Hit:
-                Hit();
-                break;
-            case EMonsterState.Death:
-                Death();
-                break;
         }
     }
 
+    /// <summary>
+    /// 외부에서 데미지 적용시 호출됨.
+    /// </summary>
+    public bool TryTakeDamage(float damage)
+    {
+        if (_state == EMonsterState.Hit || _state == EMonsterState.Death) return false;
+
+
+        _health -= damage;
+        
+        if (_health > 0)
+        {
+            _state = EMonsterState.Hit;
+            
+        }
+        else
+        {
+            _state = EMonsterState.Death;
+        }
+        
+        Debug.Log($"상태 전환  to  {_state} ");
+        return true;
+    }
     
     private void Idle()
     {
-        // 가만히 있는다.
-        // TODO : Idle anim
+        
 
         if (Vector3.Distance(transform.position, _target.position) <= _detectDistance)
         {
             _state = EMonsterState.Trace;
+            Debug.Log($"상태 전환  to  {_state} ");
+            return;
         }
+        
+        // 가만히 있는다.
+        // TODO : Idle anim
     }
 
     private void Trace()
     {
         // TODO : Run anim
+        
+        float distance = Vector3.Distance(transform.position, _target.position);
+        if (distance <= _attackDistance)
+        {
+            _state = EMonsterState.Attack;
+            Debug.Log($"상태 전환  to  {_state} ");
+            return;
+        }
+        
         
         Vector3 direction = (_target.position - transform.position).normalized;
         _controller.Move(direction * _moveSpeed * Time.deltaTime);
@@ -84,19 +121,47 @@ public class Monster : MonoBehaviour
     {
         
     }
-    private void Hit()
-    {
-        
-    }
+    
     private void Attack()
     {
-        
-    }
+        Debug.Log("플레이어 공격!");
 
-    private void Death()
-    {
+        float distance = Vector3.Distance(transform.position, _target.position);
+        if (distance > _attackDistance)
+        {
+            _state = EMonsterState.Trace;
+            Debug.Log($"상태 전환  to  {_state} ");
+            return;
+        }
         
+        _attackTimer += Time.deltaTime;
+        if (_attackTimer >= _attackSpeed)
+        {
+            // TODO : 플레이어 공격하기
+            
+            _attackTimer = 0f;
+        }
     }
+    
+    private IEnumerator Hit_Coroutine()
+    {
+        // TODO : Hit 애니메이션 실행
+        
+        yield return new WaitForSeconds(0.5f);
+        _state = EMonsterState.Idle;
+    }
+    
+    private IEnumerator Death_Coroutine()
+    {
+        // TODO : Death 애니메이션 실행
+        
+        yield return new WaitForSeconds(2f);
+        Destroy(gameObject);
+    }
+    
+    
+
+   
     
   
 }
