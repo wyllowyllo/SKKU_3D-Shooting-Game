@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>
+/// 총 스텟 데이터
+/// </summary>
 [CreateAssetMenu(fileName = "WeaponStat", menuName = "WeaponSO/CreateWeaponData")]
 public class GunStat : ScriptableObject
 {

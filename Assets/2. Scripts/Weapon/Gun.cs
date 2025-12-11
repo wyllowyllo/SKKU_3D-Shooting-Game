@@ -10,7 +10,10 @@ public class Gun : MonoBehaviour
     [Header("Hit VFX")]
     [SerializeField] private ParticleSystem _hitEffect;
     
+    // 이벤트
     private UnityEvent _onReload;
+    private UnityEvent _onFire;
+    
     // 참조
     private Camera _cam;
     private CameraRotate _camRotate;
@@ -28,12 +31,13 @@ public class Gun : MonoBehaviour
     private float _shotTimer = 0f;
 
     // 프로퍼티
+    public UnityEvent OnReload => _onReload;
+    public UnityEvent OnFire => _onFire;
     public int RemainBullets => _remainBullets;
     public int TotalBulletCnt => _totalBulletCnt;
-
-    public UnityEvent OnReload => _onReload;
-
     public float ReloadDuration => _reloadDuration;
+
+   
 
     private void Awake()
     {
@@ -60,7 +64,8 @@ public class Gun : MonoBehaviour
        ShootRay();
        
        _camRotate?.AddRecoil(_gunStat.UpRecoilStrength, _gunStat.SideRecoilStrength, _gunStat.RecoilDuration);
-
+       _onFire?.Invoke();
+       
         _remainBullets--;
         _shotTimer = 0f;
     }
@@ -136,6 +141,7 @@ public class Gun : MonoBehaviour
         _reloadDuration = _gunStat.ReloadTime;
         
         _onReload = new UnityEvent();
+        _onFire = new UnityEvent();
         
     }
 }
