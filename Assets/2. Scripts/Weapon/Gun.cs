@@ -15,7 +15,7 @@ public class Gun : MonoBehaviour
     private UnityEvent _onFire;
     
     // 참조
-    private Camera _cam;
+    private Transform _cam;
     private CameraRotate _camRotate;
     
     // 현재 총 상태
@@ -83,8 +83,9 @@ public class Gun : MonoBehaviour
 
     private void ShootRay()
     {
-        Ray ray = new Ray(_cam.transform.position, Camera.main.transform.forward);
+        if (_cam == null) return;
         
+        Ray ray = new Ray(_cam.position, _cam.forward);
         RaycastHit hitInfo = new RaycastHit();
         
         bool isHit =  Physics.Raycast(ray, out hitInfo);
@@ -138,9 +139,6 @@ public class Gun : MonoBehaviour
 
     private void Init()
     {
-        _cam = Camera.main;
-        _camRotate = _cam?.GetComponent<CameraRotate>();
-        
         _bulletCntForAmmo = _gunStat.BulletCntForAmmo;
         _remainBullets = _bulletCntForAmmo;
         _totalBulletCnt = _gunStat.AmmoCnt *_bulletCntForAmmo;
@@ -149,5 +147,11 @@ public class Gun : MonoBehaviour
         _onReload = new UnityEvent();
         _onFire = new UnityEvent();
         
+    }
+
+    public void CamInit(CameraRotate camInfo)
+    {
+        _cam = camInfo.transform;
+        _camRotate = camInfo;
     }
 }

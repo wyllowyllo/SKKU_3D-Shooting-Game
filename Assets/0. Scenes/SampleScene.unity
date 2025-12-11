@@ -616,7 +616,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e64fe1ac6d311bc4289e55ad38d3d5ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _input: {fileID: 0}
+  _input: {fileID: 1728481976}
   _target: {fileID: 470969227}
   _fpsTargetOffset: {x: 0, y: 0, z: 0}
   _tpsTargetOffset: {x: 0, y: 2, z: -5}
@@ -3205,6 +3205,10 @@ PrefabInstance:
       propertyPath: _curGun
       value: 
       objectReference: {fileID: 2102171288}
+    - target: {fileID: 6415129299700596392, guid: 3a7ddd71f2ade844187e4a6addc1b145, type: 3}
+      propertyPath: _camRotate
+      value: 
+      objectReference: {fileID: 330585548}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

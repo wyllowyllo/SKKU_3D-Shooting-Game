@@ -1,12 +1,15 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
 
 [RequireComponent(typeof(PlayerInput))]
 public class PlayerGunFire : MonoBehaviour
 {
     [Header("장착된 총")]
-    [SerializeField] private Gun _curGun;
+    [SerializeField, DisallowNull] private Gun _curGun;
     
+    [Header("카메라 참조")]
+    [SerializeField] private CameraRotate _camRotate;
     // 참조
     private PlayerInput _input;
   
@@ -18,16 +21,33 @@ public class PlayerGunFire : MonoBehaviour
 
     private void Update()
     {
-       TryFire();
-       TryReload();
+        if (_curGun == null) return;
+            
+        TryFire();
+        TryReload();
     }
 
     private void Init()
     {
-        _input = GetComponent<PlayerInput>();
+        if (_curGun == null)
+        {
+            Debug.LogError($"{nameof(_curGun)} is not assigned on {name}", this);
+            enabled = false;             
+            return;
+        }
         
-        if(_curGun == null)
-            _curGun = GetComponentInChildren<Gun>();
+        _input = GetComponent<PlayerInput>();
+
+        if (_camRotate == null)
+        {
+            _camRotate = Camera.main.GetComponent<CameraRotate>();
+        }
+
+        if (_camRotate != null)
+        {
+            _curGun?.CamInit(_camRotate);
+        }
+        
     }
 
   
