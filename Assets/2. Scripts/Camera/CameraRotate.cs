@@ -1,4 +1,5 @@
 using UnityEngine;
+using DG.Tweening;
 
 /// <summary>
 /// 카메라를 마우스 방향으로 회전
@@ -55,6 +56,26 @@ public class CameraRotate : MonoBehaviour
        // 쿼너티언(사원수) : 쓰는 이유는 짐벌락 현상 방지
        
     }
+    
+    public void AddRecoil(float upRecoil, float sideRecoil, float duration)
+    {
+        // 상하 반동
+        DOTween.To(
+            () => _accumulationY,
+            x => _accumulationY = x,
+            _accumulationY - upRecoil,
+            duration * 0.2f
+        );
+
+        // 좌우 반동
+        DOTween.To(
+            () => _accumulationX,
+            x => _accumulationX = x,
+            _accumulationX + Random.Range(-sideRecoil, sideRecoil),
+            duration * 0.2f
+        );
+    }
+
     
 }
 
