@@ -133,7 +133,9 @@ public class Monster : MonoBehaviour
         
         
         Vector3 direction = (_target.position - transform.position).normalized;
+        direction.y = 0;
         _controller.Move(direction * _moveSpeed * Time.deltaTime);
+        transform.Rotate(direction);
     }
     private void Comeback()
     {
@@ -146,7 +148,9 @@ public class Monster : MonoBehaviour
         }
         
         Vector3 direction = (_originalPosition - transform.position).normalized;
+        direction.y = 0;
         _controller.Move(direction * _moveSpeed * Time.deltaTime);
+        transform.Rotate(direction);
     }
     
     private void Attack()
@@ -165,6 +169,7 @@ public class Monster : MonoBehaviour
             _playerStats?.TryTakeDamage(_attackDamage);
             _attackTimer = 0f;
         }
+        
     }
     
     private IEnumerator Hit_Coroutine(Vector3 hitDir)
