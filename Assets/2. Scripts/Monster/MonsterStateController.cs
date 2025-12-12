@@ -23,9 +23,6 @@ public class MonsterStateController : MonoBehaviour
     [Header("몬스터 State")]
     [SerializeField] private EMonsterState _state = EMonsterState.Idle;
     
-    
-   
-    
     // 참조
     private TraceController _traceController;
     private MonsterMove _moveController;
