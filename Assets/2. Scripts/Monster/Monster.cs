@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine;
 
 
+
 // 목표 : 처음에는 가만히 있지만 플레이어가 다가가면 쫓아오는 좀비 몬스터
 // -> 쫓아 오다가 너무 멀어지면 제자리로 돌아간다.
    
@@ -34,7 +35,11 @@ public class Monster : MonoBehaviour
     [SerializeField] private float _attackDamage = 5f;
     
     [Header("넉백")]
-    [SerializeField] private float _knockBackForce = 0.5f;
+    [SerializeField] private float _knockBackForce = 4f;
+    [SerializeField] private float _knockbackDuration = 0.15f;
+    private Vector3 _knockBackDir;
+    private float _knockBackTimer;
+    
     // 참조
     private CharacterController _controller;
     private PlayerStats _playerStats;
@@ -72,15 +77,25 @@ public class Monster : MonoBehaviour
             case EMonsterState.Attack:
                 Attack();
                 break;
+            
+            case EMonsterState.Hit:
+                Hit();
+                break;
+            
+            case EMonsterState.Death:
+                Die();
+                break;
         }
     }
+
+    
 
     /// <summary>
     /// 외부에서 데미지 적용시 호출됨.
     /// </summary>
     public bool TryTakeDamage(AttackInfo info)
     {
-        if (_state == EMonsterState.Hit || _state == EMonsterState.Death) return false;
+        if (_state == EMonsterState.Death) return false;
         if (info.Damage <= 0f) return false;
 
         _health -= info.Damage;
@@ -88,17 +103,19 @@ public class Monster : MonoBehaviour
         if (_health > 0)
         {
             _state = EMonsterState.Hit;
-            StartCoroutine(Hit_Coroutine(-info.HitDirection));
+
+            _knockBackDir = (-info.HitDirection).normalized;
+            _knockBackTimer = 0f;
         }
         else
         {
             _state = EMonsterState.Death;
-            StartCoroutine(Death_Coroutine());
         }
         
         Debug.Log($"상태 전환  to  {_state} ");
         return true;
     }
+    
     
     private void Idle()
     {
@@ -174,26 +191,23 @@ public class Monster : MonoBehaviour
         }
         
     }
-    
-    private IEnumerator Hit_Coroutine(Vector3 hitDir)
+    private void Hit()
     {
-        // TODO : Hit 애니메이션 실행
-        ApplyKnockback(hitDir);
-        yield return new WaitForSeconds(0.5f);
+        _knockBackTimer += Time.deltaTime;
         
-        _state = EMonsterState.Attack;
+        Vector3 movement = _knockBackDir * _knockBackForce * Time.deltaTime;
+        _controller.Move(movement);
+        
+        if (_knockBackTimer > _knockbackDuration)
+        {
+            _state = EMonsterState.Trace;
+        }
     }
-    
-    private IEnumerator Death_Coroutine()
+
+    private void Die()
     {
-        // TODO : Death 애니메이션 실행
-        
-        yield return new WaitForSeconds(2f);
         Destroy(gameObject);
     }
-
-
-
     private void Init()
     {
         _controller = GetComponent<CharacterController>();

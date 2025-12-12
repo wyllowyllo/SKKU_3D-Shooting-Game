@@ -96,7 +96,9 @@ public class Gun : MonoBehaviour
             Monster monster = hitInfo.collider.GetComponent<Monster>();
             if (monster != null)
             {
-                monster.TryTakeDamage(new AttackInfo(_gunStat.DamageForShot, hitInfo.normal));
+                Vector3 hitDirection = hitInfo.normal;
+                hitDirection.y = 0;
+                monster.TryTakeDamage(new AttackInfo(_gunStat.DamageForShot, hitDirection));
             }
         }
     }
