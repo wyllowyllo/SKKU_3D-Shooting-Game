@@ -18,18 +18,20 @@ using UnityEngine;
 // 1. 함수는 한 가지 일만 잘해야 한다.
 // 2. 상태별 행동을 함수로 만든다.
 
-[RequireComponent(typeof(CharacterController))]
-public class Monster : MonoBehaviour
+[RequireComponent(typeof(CharacterController), typeof(MonsterMove))]
+public class MonsterStateController : MonoBehaviour
 {
-    [Header("추적 설정")]
+    [Header("타겟")]
     [SerializeField] private Transform _target;
     [SerializeField] private float _detectDistance = 5f;
     
-    [Header("몬스터 설정")]
+    [Header("몬스터 State")]
     [SerializeField] private EMonsterState _state = EMonsterState.Idle;
+    
+    
     [SerializeField] private float _health = 100f;
-    [SerializeField] private float _moveSpeed = 5f;
-    [SerializeField] private float _rotateSpeed = 5f;
+  
+    [Header("공격 설정")]
     [SerializeField] private float _attackDistance = 1f;
     [SerializeField] private float _attackSpeed = 1.2f;
     [SerializeField] private float _attackDamage = 5f;
@@ -37,11 +39,9 @@ public class Monster : MonoBehaviour
     [Header("넉백")]
     [SerializeField] private float _knockBackForce = 4f;
     [SerializeField] private float _knockbackDuration = 0.15f;
-    private Vector3 _knockBackDir;
-    private float _knockBackTimer;
     
     // 참조
-    private CharacterController _controller;
+    private MonsterMove _move;
     private PlayerStats _playerStats;
     
     // 상수
@@ -51,8 +51,11 @@ public class Monster : MonoBehaviour
     private float _attackTimer;
     
     private Vector3 _originalPosition;
-
+    private Vector3 _knockBackDir;
+    private float _knockBackTimer;
     
+    public EMonsterState State { get => _state; set => _state = value; }
+
     private void Awake()
     {
        Init();
@@ -63,7 +66,7 @@ public class Monster : MonoBehaviour
         if (_target == null) return;
         
         // 몬스터의 상태에 따라 다른 메서드를 호출한다.
-        switch (_state)
+        switch (State)
         {
             case EMonsterState.Idle:
                 Idle();
@@ -95,24 +98,23 @@ public class Monster : MonoBehaviour
     /// </summary>
     public bool TryTakeDamage(AttackInfo info)
     {
-        if (_state == EMonsterState.Death) return false;
+        if (State == EMonsterState.Death) return false;
         if (info.Damage <= 0f) return false;
 
         _health -= info.Damage;
         
         if (_health > 0)
         {
-            _state = EMonsterState.Hit;
-
+            ChangeState(EMonsterState.Hit);
+            
             _knockBackDir = (-info.HitDirection).normalized;
             _knockBackTimer = 0f;
         }
         else
         {
-            _state = EMonsterState.Death;
+            ChangeState(EMonsterState.Death);
         }
         
-        Debug.Log($"상태 전환  to  {_state} ");
         return true;
     }
     
@@ -122,8 +124,7 @@ public class Monster : MonoBehaviour
         float distance = Vector3.Distance(transform.position, _target.position);
         if (distance <= _detectDistance)
         {
-            _state = EMonsterState.Trace;
-            Debug.Log($"상태 전환  to  {_state} ");
+            ChangeState(EMonsterState.Trace);
             return;
         }
         
@@ -138,39 +139,28 @@ public class Monster : MonoBehaviour
         float distance = Vector3.Distance(transform.position, _target.position);
         if (distance <= _attackDistance)
         {
-            _state = EMonsterState.Attack;
-            Debug.Log($"상태 전환  to  {_state} ");
+            ChangeState(EMonsterState.Attack);
             return;
         }
         else if (distance > _detectDistance)
         {
-            _state = EMonsterState.Comeback;
-            Debug.Log($"상태 전환  to  {_state} ");
+            ChangeState(EMonsterState.Comeback);
             return;
         }
         
-        
-        Vector3 direction = (_target.position - transform.position).normalized;
-        direction.y = 0;
-        _controller.Move(direction * _moveSpeed * Time.deltaTime);
-       
-        RotateToDirection(direction);
+        _move.MoveToTarget(_target.position);
     }
     private void Comeback()
     {
         float distance = Vector3.Distance(transform.position, _originalPosition);
         if (distance <= DistanceEpsilon)
         {
-            _state = EMonsterState.Idle;
-            Debug.Log($"상태 전환  to  {_state} ");
+            ChangeState(EMonsterState.Idle);
             return;
         }
         
-        Vector3 direction = (_originalPosition - transform.position).normalized;
-        direction.y = 0;
-        _controller.Move(direction * _moveSpeed * Time.deltaTime);
-        
-        RotateToDirection(direction);
+      
+        _move.MoveToTarget(_originalPosition);
     }
     
     private void Attack()
@@ -178,8 +168,7 @@ public class Monster : MonoBehaviour
         float distance = Vector3.Distance(transform.position, _target.position);
         if (distance > _attackDistance)
         {
-            _state = EMonsterState.Trace;
-            Debug.Log($"상태 전환  to  {_state} ");
+            ChangeState(EMonsterState.Trace);
             return;
         }
         
@@ -193,15 +182,13 @@ public class Monster : MonoBehaviour
     }
     private void Hit()
     {
-        _knockBackTimer += Time.deltaTime;
-        
-        Vector3 movement = _knockBackDir * _knockBackForce * Time.deltaTime;
-        _controller.Move(movement);
-        
-        if (_knockBackTimer > _knockbackDuration)
-        {
-            _state = EMonsterState.Trace;
-        }
+       _move.Knockback(_knockBackDir, _knockBackForce);
+       
+       _knockBackTimer += Time.deltaTime;
+       if (_knockBackTimer > _knockbackDuration)
+       {
+           State = EMonsterState.Trace;
+       }
     }
 
     private void Die()
@@ -210,22 +197,23 @@ public class Monster : MonoBehaviour
     }
     private void Init()
     {
-        _controller = GetComponent<CharacterController>();
-        _playerStats = _target?.GetComponent<PlayerStats>();
-        
+        _move = GetComponent<MonsterMove>();
         _originalPosition = transform.position;
     }
 
-    private void ApplyKnockback(Vector3 direction)
+    private void ChangeState(EMonsterState nextState)
     {
-        _controller.Move(direction * _knockBackForce);
+        if (State == nextState) return;
+        
+        State = nextState;
+        Debug.Log($"상태 전환  to  {State} ");
+        
+        if (State == EMonsterState.Attack)
+        {
+            _attackTimer = 0f;
+        }
     }
-
-    private void RotateToDirection(Vector3 direction)
-    {
-        Quaternion targetRotation = Quaternion.LookRotation(direction);
-        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * _rotateSpeed);
-    }
+    
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
@@ -235,3 +223,15 @@ public class Monster : MonoBehaviour
     
   
 }
+
+public class MonsterHealth
+{
+    
+}
+
+public class MonsterCombat
+{
+    
+}
+
+

@@ -93,12 +93,12 @@ public class Gun : MonoBehaviour
         {
             PlayHitEffect(hitInfo);  
             
-            Monster monster = hitInfo.collider.GetComponent<Monster>();
-            if (monster != null)
+            MonsterStateController monsterStateController = hitInfo.collider.GetComponent<MonsterStateController>();
+            if (monsterStateController != null)
             {
                 Vector3 hitDirection = hitInfo.normal;
                 hitDirection.y = 0;
-                monster.TryTakeDamage(new AttackInfo(_gunStat.DamageForShot, hitDirection));
+                monsterStateController.TryTakeDamage(new AttackInfo(_gunStat.DamageForShot, hitDirection));
             }
         }
     }
