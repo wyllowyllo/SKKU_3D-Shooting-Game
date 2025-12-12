@@ -28,6 +28,7 @@ public class Monster : MonoBehaviour
     [SerializeField] private EMonsterState _state = EMonsterState.Idle;
     [SerializeField] private float _health = 100f;
     [SerializeField] private float _moveSpeed = 5f;
+    [SerializeField] private float _rotateSpeed = 5f;
     [SerializeField] private float _attackDistance = 1f;
     [SerializeField] private float _attackSpeed = 1.2f;
     [SerializeField] private float _attackDamage = 5f;
@@ -135,7 +136,8 @@ public class Monster : MonoBehaviour
         Vector3 direction = (_target.position - transform.position).normalized;
         direction.y = 0;
         _controller.Move(direction * _moveSpeed * Time.deltaTime);
-        transform.Rotate(direction);
+       
+        RotateToDirection(direction);
     }
     private void Comeback()
     {
@@ -150,7 +152,8 @@ public class Monster : MonoBehaviour
         Vector3 direction = (_originalPosition - transform.position).normalized;
         direction.y = 0;
         _controller.Move(direction * _moveSpeed * Time.deltaTime);
-        transform.Rotate(direction);
+        
+        RotateToDirection(direction);
     }
     
     private void Attack()
@@ -203,10 +206,18 @@ public class Monster : MonoBehaviour
     {
         _controller.Move(direction * _knockBackForce);
     }
+
+    private void RotateToDirection(Vector3 direction)
+    {
+        Quaternion targetRotation = Quaternion.LookRotation(direction);
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * _rotateSpeed);
+    }
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, _detectDistance);
     }
+    
+    
   
 }
