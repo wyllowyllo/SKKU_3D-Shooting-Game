@@ -28,6 +28,6 @@ public class MonsterCombat : MonoBehaviour
     
     public void Attack()
     {
-        _playerStats?.TryTakeDamage(_attackDamage);
+        _playerStats?.TryTakeDamage(new AttackInfo(_attackDamage));
     }
 }

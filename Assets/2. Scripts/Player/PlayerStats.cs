@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class PlayerStats : MonoBehaviour
+public class PlayerStats : MonoBehaviour, IStat
 {
    [Header("체력")] 
    [SerializeField] private ComsumableStat healthStat;
@@ -46,12 +46,12 @@ public class PlayerStats : MonoBehaviour
       //RegenHealth(deltaTime);
    }
    
-   public void TryTakeDamage(float damage)
+   public void TryTakeDamage(AttackInfo attackInfo)
    {
-      if(_isDead || damage <= 0) return;
+      if(_isDead || attackInfo.Damage <= 0) return;
       
       
-      HealthStat.Decrease(damage);
+      HealthStat.Decrease(attackInfo.Damage);
       
       if (healthStat.Value > 0)
       {

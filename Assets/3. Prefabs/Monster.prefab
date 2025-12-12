@@ -13,7 +13,11 @@ GameObject:
   - component: {fileID: 5422600630747641462}
   - component: {fileID: 8596243648339274168}
   - component: {fileID: 7629101232234774122}
-  m_Layer: 0
+  - component: {fileID: 5894014127711858835}
+  - component: {fileID: 7274397728453990029}
+  - component: {fileID: 4087311082293998753}
+  - component: {fileID: 3393817525912284334}
+  m_Layer: 7
   m_Name: Monster
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -126,15 +130,65 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0457c531512ebb40967a14be7f866a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _state: 0
+--- !u!114 &5894014127711858835
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 126338373337549117}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50c6a979e198494895b393c769ae516a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _moveSpeed: 5
+  _rotateSpeed: 5
+  _knockBackForce: 4
+  _knockbackDuration: 0.15
+--- !u!114 &7274397728453990029
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 126338373337549117}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 61ca1b8dacc241e09f21f39faa789895, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   _target: {fileID: 0}
   _detectDistance: 5
-  _state: 0
-  _health: 100
-  _moveSpeed: 5
-  _attackDistance: 1.5
+--- !u!114 &4087311082293998753
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 126338373337549117}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89f82d69bd94410e8c74bb3405c3c181, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _attackDistance: 1
   _attackSpeed: 1.2
   _attackDamage: 5
-  _knockBackForce: 5
+--- !u!114 &3393817525912284334
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 126338373337549117}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5922c7de554649dca09372d72000cdb2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _health: 100
 --- !u!1 &5641355749165173490
 GameObject:
   m_ObjectHideFlags: 0
@@ -147,7 +201,7 @@ GameObject:
   - component: {fileID: 8079853989749793289}
   - component: {fileID: 2244590975578973101}
   - component: {fileID: 7996021450668632984}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Eye
   m_TagString: Untagged
   m_Icon: {fileID: 0}
