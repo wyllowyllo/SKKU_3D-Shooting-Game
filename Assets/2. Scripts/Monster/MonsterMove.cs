@@ -7,16 +7,26 @@ public class MonsterMove : MonoBehaviour
     [SerializeField] private float _moveSpeed = 5f;
     [SerializeField] private float _rotateSpeed = 5f;
     
+    [Header("넉백")]
+    [SerializeField] private float _knockBackForce = 4f;
+    [SerializeField] private float _knockbackDuration = 0.15f;
     
     // 참조
     private CharacterController _characterController;
 
 
+    //상수
+    private const float HitRotateFactor = 0.05f;
+
+    // 프로퍼티
+    public float KnockbackDuration => _knockbackDuration;
+
     private void Awake()
     {
-        _characterController = GetComponent<CharacterController>();
+        Init();
     }
 
+    
     public void MoveToTarget(Vector3 targetPosition)
     {
         // TODO : Run anim
@@ -28,12 +38,17 @@ public class MonsterMove : MonoBehaviour
         RotateToDirection(direction);
     }
 
-    public void Knockback(Vector3 knockbackDir, float knockbackForce)
+    public void Knockback(Vector3 knockbackDir)
     {
-        Vector3 movement = knockbackDir * (knockbackForce * Time.deltaTime);
+        Vector3 movement = knockbackDir * (_knockBackForce * Time.deltaTime);
         _characterController.Move(movement);
         
-        RotateToDirection(knockbackDir);
+        RotateToDirection(knockbackDir * HitRotateFactor);
+    }
+
+    private void Init()
+    {
+        _characterController = GetComponent<CharacterController>();
     }
     private void RotateToDirection(Vector3 direction)
     {

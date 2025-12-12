@@ -2,8 +2,6 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-
-
 // 목표 : 처음에는 가만히 있지만 플레이어가 다가가면 쫓아오는 좀비 몬스터
 // -> 쫓아 오다가 너무 멀어지면 제자리로 돌아간다.
    
@@ -19,30 +17,21 @@ using UnityEngine;
 // 2. 상태별 행동을 함수로 만든다.
 
 [RequireComponent(typeof(CharacterController), typeof(MonsterMove))]
+[RequireComponent(typeof(TraceController), typeof(MonsterCombat), typeof(MonsterStats))]
 public class MonsterStateController : MonoBehaviour
 {
-    [Header("타겟")]
-    [SerializeField] private Transform _target;
-    [SerializeField] private float _detectDistance = 5f;
-    
     [Header("몬스터 State")]
     [SerializeField] private EMonsterState _state = EMonsterState.Idle;
     
     
-    [SerializeField] private float _health = 100f;
-  
-    [Header("공격 설정")]
-    [SerializeField] private float _attackDistance = 1f;
-    [SerializeField] private float _attackSpeed = 1.2f;
-    [SerializeField] private float _attackDamage = 5f;
-    
-    [Header("넉백")]
-    [SerializeField] private float _knockBackForce = 4f;
-    [SerializeField] private float _knockbackDuration = 0.15f;
+   
     
     // 참조
-    private MonsterMove _move;
-    private PlayerStats _playerStats;
+    private TraceController _traceController;
+    private MonsterMove _moveController;
+    private MonsterCombat _combatController;
+    private MonsterStats _stats;
+    
     
     // 상수
     private const float DistanceEpsilon = 0.1f;
@@ -63,7 +52,7 @@ public class MonsterStateController : MonoBehaviour
 
     private void Update()
     {
-        if (_target == null) return;
+        if (_traceController.Target == null) return;
         
         // 몬스터의 상태에 따라 다른 메서드를 호출한다.
         switch (State)
@@ -100,10 +89,10 @@ public class MonsterStateController : MonoBehaviour
     {
         if (State == EMonsterState.Death) return false;
         if (info.Damage <= 0f) return false;
-
-        _health -= info.Damage;
         
-        if (_health > 0)
+        _stats.TryTakeDamage(info.Damage);
+        
+        if (_stats.IsLive)
         {
             ChangeState(EMonsterState.Hit);
             
@@ -121,8 +110,7 @@ public class MonsterStateController : MonoBehaviour
     
     private void Idle()
     {
-        float distance = Vector3.Distance(transform.position, _target.position);
-        if (distance <= _detectDistance)
+        if (_traceController.Detected)
         {
             ChangeState(EMonsterState.Trace);
             return;
@@ -136,19 +124,19 @@ public class MonsterStateController : MonoBehaviour
     {
         // TODO : Run anim
         
-        float distance = Vector3.Distance(transform.position, _target.position);
-        if (distance <= _attackDistance)
+        float distance = _traceController.DistanceFromTarget;
+        if (distance <= _combatController.AttackDistance)
         {
             ChangeState(EMonsterState.Attack);
             return;
         }
-        else if (distance > _detectDistance)
+        else if (!_traceController.Detected)
         {
             ChangeState(EMonsterState.Comeback);
             return;
         }
         
-        _move.MoveToTarget(_target.position);
+        _moveController.MoveToTarget(_traceController.TargetPosition);
     }
     private void Comeback()
     {
@@ -160,32 +148,32 @@ public class MonsterStateController : MonoBehaviour
         }
         
       
-        _move.MoveToTarget(_originalPosition);
+        _moveController.MoveToTarget(_originalPosition);
     }
     
     private void Attack()
     {
-        float distance = Vector3.Distance(transform.position, _target.position);
-        if (distance > _attackDistance)
+        float distance = _traceController.DistanceFromTarget;
+        if (distance > _combatController.AttackDistance)
         {
             ChangeState(EMonsterState.Trace);
             return;
         }
         
         _attackTimer += Time.deltaTime;
-        if (_attackTimer >= _attackSpeed)
+        if (_attackTimer >= _combatController.AttackSpeed)
         {
-            _playerStats?.TryTakeDamage(_attackDamage);
+            _combatController.Attack();
             _attackTimer = 0f;
         }
         
     }
     private void Hit()
     {
-       _move.Knockback(_knockBackDir, _knockBackForce);
+       _moveController.Knockback(_knockBackDir);
        
        _knockBackTimer += Time.deltaTime;
-       if (_knockBackTimer > _knockbackDuration)
+       if (_knockBackTimer > _moveController.KnockbackDuration)
        {
            State = EMonsterState.Trace;
        }
@@ -197,7 +185,11 @@ public class MonsterStateController : MonoBehaviour
     }
     private void Init()
     {
-        _move = GetComponent<MonsterMove>();
+        _traceController = GetComponent<TraceController>();
+        _moveController = GetComponent<MonsterMove>();
+        _combatController = GetComponent<MonsterCombat>();
+        _stats = GetComponent<MonsterStats>();
+        
         _originalPosition = transform.position;
     }
 
@@ -217,21 +209,9 @@ public class MonsterStateController : MonoBehaviour
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, _detectDistance);
+        //Gizmos.DrawWireSphere(transform.position, _traceController.DetectDistance);
     }
     
     
   
 }
-
-public class MonsterHealth
-{
-    
-}
-
-public class MonsterCombat
-{
-    
-}
-
-
