@@ -62,6 +62,8 @@ public class PlayerStats : MonoBehaviour, IStat
       {
          // TODO : Die 이펙트, 애니메이션
          _isDead = true;
+         
+         GameManager.Instance.GameOver();
       }
    }
    

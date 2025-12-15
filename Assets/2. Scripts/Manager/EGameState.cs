@@ -2,4 +2,5 @@
 {
     Ready,
     Playing,
+    GameOver,
 }

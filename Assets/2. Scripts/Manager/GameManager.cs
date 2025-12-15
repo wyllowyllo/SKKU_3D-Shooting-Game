@@ -31,6 +31,15 @@ public class GameManager : MonoBehaviour
         StartCoroutine(StartToPlay_Coroutine());
     }
 
+    
+    public void GameOver()
+    {
+        _stateText.gameObject.SetActive(true);
+        _stateText.text = "Game Over!";
+        _state = EGameState.GameOver;
+        
+    }
+    
     private IEnumerator StartToPlay_Coroutine()
     {
         _stateText.text = "Ready";
@@ -41,6 +50,8 @@ public class GameManager : MonoBehaviour
         _state = EGameState.Playing;
         _stateText.gameObject.SetActive(false);
     }
+
+   
     
     
 }
