@@ -51,8 +51,8 @@ public class MinimapCamera : MonoBehaviour
     public void ZoomIn()
     {
         if (_camera == null) return;
-
-        // 이전 Tween이 실행 중이면 중단
+        
+        
         _zoomTween?.Kill();
         
         float targetSize = Mathf.Max(_zoomInSizeMax, _camera.orthographicSize - _zoomUnit);
