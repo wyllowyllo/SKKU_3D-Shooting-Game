@@ -29,6 +29,7 @@ public class CameraRotate : MonoBehaviour
     }
     private void Update()
     {
+        if (GameManager.Instance.State != EGameState.Playing) return;
         if (_input == null) return;
 
         RotateView();

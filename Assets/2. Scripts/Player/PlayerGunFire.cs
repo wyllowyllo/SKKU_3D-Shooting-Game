@@ -21,6 +21,7 @@ public class PlayerGunFire : MonoBehaviour
 
     private void Update()
     {
+        if (GameManager.Instance.State != EGameState.Playing) return;
         if (_curGun == null) return;
             
         TryFire();

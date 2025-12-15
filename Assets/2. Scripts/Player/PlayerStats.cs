@@ -38,6 +38,7 @@ public class PlayerStats : MonoBehaviour, IStat
    }
    private void Update()
    {
+      if (GameManager.Instance.State != EGameState.Playing) return;
       if (_isDead) return;
       
       float deltaTime = Time.deltaTime;
