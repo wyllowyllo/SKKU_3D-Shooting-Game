@@ -5,8 +5,12 @@ using UnityEngine.UI;
 
 public class CameraFollow : MonoBehaviour
 {
-    [Header("Following Target")]
+    [Header("참조")]
+    [SerializeField] private PlayerInput _input;
     [SerializeField] private Transform _target;
+    
+    [Header("Following Target")]
+    
     [SerializeField] private Vector3 _fpsTargetOffset;
     [SerializeField] private Vector3 _tpsTargetOffset;
     private Vector3 _camOffset;
@@ -15,9 +19,9 @@ public class CameraFollow : MonoBehaviour
     [SerializeField] private float _switchDuration = 0.5f;
     
     
-    private bool _isTpsMode = true;
+    private bool _isTpsMode = false;
     
-    private PlayerInput _input;
+    
 
     private void Awake()
     {
@@ -33,9 +37,8 @@ public class CameraFollow : MonoBehaviour
 
     private void Init()
     {
-        _input = _target?.GetComponentInParent<PlayerInput>();
-        
         _camOffset = _tpsTargetOffset;
+        _camOffset = _fpsTargetOffset;
     }
     
     private void FollowTarget()
