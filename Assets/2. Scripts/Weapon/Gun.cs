@@ -79,9 +79,9 @@ public class Gun : MonoBehaviour
         if (_remainBullets == _bulletCntForAmmo) return;
         
         int loadBulletCnt = _bulletCntForAmmo - _remainBullets;
-        if (loadBulletCnt <= _totalBulletCnt)
+        if (_totalBulletCnt > 0)
         {
-            StartCoroutine(ReloadCoroutine(loadBulletCnt));
+            StartCoroutine(ReloadCoroutine(Mathf.Min(loadBulletCnt, _totalBulletCnt)));
         }
     }
 
@@ -139,7 +139,7 @@ public class Gun : MonoBehaviour
         yield return new WaitForSeconds(ReloadDuration);
         
         _totalBulletCnt -= loadBulletCnt;
-        _remainBullets = _bulletCntForAmmo; // 재장전
+        _remainBullets += loadBulletCnt; // 재장전
         
         _isReloading = false;
     }
