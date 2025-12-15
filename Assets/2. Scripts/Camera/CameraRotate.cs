@@ -42,8 +42,8 @@ public class CameraRotate : MonoBehaviour
         _accumulationY = startAngle.x;
 
         // 커서 설정
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        /*Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;*/
     }
 
     private void RotateView()
