@@ -29,8 +29,8 @@ public class Bomb : MonoBehaviour
         Collider[] colliders = Physics.OverlapSphere(transform.position, _explosionRadius, LayerMask.NameToLayer("Monster"));
         for (int i = 0; i < colliders.Length; i++)
         {
-            MonsterStateController monster = colliders[i].GetComponent<MonsterStateController>();
-            monster.TryTakeDamage(new AttackInfo(_damage));
+            IStat monster = colliders[i].GetComponent<IStat>();
+            monster?.TryTakeDamage(new AttackInfo(_damage));
         }
         
         BombFactory.Instance.ReturnBomb(this);
