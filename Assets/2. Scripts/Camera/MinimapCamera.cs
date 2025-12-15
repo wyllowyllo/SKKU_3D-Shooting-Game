@@ -4,7 +4,10 @@ using DG.Tweening;
 
 public class MinimapCamera : MonoBehaviour
 {
+    [Header("참조")]
     [SerializeField] private Transform _target;
+    [SerializeField] private PlayerInput _playerInput;
+    
     [SerializeField] private float _offsetY = 10f;
 
     [SerializeField] private float _zoomInSizeMax = 3f;
@@ -30,6 +33,7 @@ public class MinimapCamera : MonoBehaviour
         
         UpdatePosition();
         UpdateRotation();
+        UpdateZoom();
     }
 
     private void UpdatePosition()
@@ -48,6 +52,19 @@ public class MinimapCamera : MonoBehaviour
         transform.eulerAngles = targetAngle;
     }
 
+    private void UpdateZoom()
+    {
+        if (_playerInput == null) return;
+
+        if (_playerInput.ZoomIn)
+        {
+            ZoomIn();
+        }
+        if (_playerInput.ZoomOut)
+        {
+            ZoomOut();
+        }
+    }
     public void ZoomIn()
     {
         if (_camera == null) return;

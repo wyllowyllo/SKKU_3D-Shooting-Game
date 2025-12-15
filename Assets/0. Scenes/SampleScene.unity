@@ -696,8 +696,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 30}
-  m_SizeDelta: {x: 250, y: 250}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 300, y: 300}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &232487952
 MonoBehaviour:
@@ -951,7 +951,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &395669218
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2395,7 +2395,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &820068214
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2522,7 +2522,7 @@ GameObject:
   - component: {fileID: 831940277}
   - component: {fileID: 831940276}
   - component: {fileID: 831940278}
-  m_Layer: 2
+  m_Layer: 5
   m_Name: UI_HitEffect
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4236,6 +4236,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _target: {fileID: 1728481972}
+  _playerInput: {fileID: 1728481976}
   _offsetY: 10
   _zoomInSizeMax: 3
   _zoomOutSizeMax: 12

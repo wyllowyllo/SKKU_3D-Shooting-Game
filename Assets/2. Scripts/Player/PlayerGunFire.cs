@@ -58,7 +58,7 @@ public class PlayerGunFire : MonoBehaviour
     private void TryFire()
     {
         if (!_input.Fire) return;
-        if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject()) return;  // UI 클릭 무시
+        //if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject()) return;  // UI 클릭 무시
 
         _curGun?.Fire();
     }
