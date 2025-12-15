@@ -78,29 +78,25 @@ public class MonsterStateController : MonoBehaviour
     }
 
     
-
-    /// <summary>
-    /// 외부에서 데미지 적용시 호출됨.
-    /// </summary>
+    
     public bool TryTakeDamage(AttackInfo info)
     {
         if (State == EMonsterState.Death) return false;
         if (info.Damage <= 0f) return false;
         
-        _stats.TryTakeDamage(info);
-        
+
         if (_stats.IsLive)
         {
             ChangeState(EMonsterState.Hit);
-            
-            _knockBackDir = (-info.HitDirection).normalized;
+
+            _knockBackDir = info.HitDirection;
             _knockBackTimer = 0f;
         }
         else
         {
             ChangeState(EMonsterState.Death);
         }
-        
+
         return true;
     }
     

@@ -96,8 +96,9 @@ public class Gun : MonoBehaviour
             IStat hitTarget = hitInfo.collider.GetComponent<IStat>();
             if (hitTarget != null)
             {
-                Vector3 hitDirection = hitInfo.normal;
+                Vector3 hitDirection = ray.direction;
                 hitDirection.y = 0;
+                hitDirection.Normalize();
                 hitTarget.TryTakeDamage(new AttackInfo(_gunStat.DamageForShot, hitDirection));
             }
         }

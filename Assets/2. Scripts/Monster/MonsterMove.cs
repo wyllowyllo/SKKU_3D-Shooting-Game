@@ -43,7 +43,7 @@ public class MonsterMove : MonoBehaviour
         Vector3 movement = knockbackDir * (_knockBackForce * Time.deltaTime);
         _characterController.Move(movement);
         
-        RotateToDirection(knockbackDir * HitRotateFactor);
+        //RotateToDirection(knockbackDir * HitRotateFactor);
     }
 
     private void Init()
