@@ -15,6 +15,9 @@ public class PlayerStats : MonoBehaviour, IStat
    [SerializeField] private ValueStat _runSpeed;
    [SerializeField] private ValueStat _jumpPower;
 
+   [Header("UI 이펙트")]
+   [SerializeField] private BloodScreenEffect _bloodScreenEffect;
+
    // 프로퍼티
    public ComsumableStat HealthStat => healthStat;
    public ComsumableStat StaminaStat => staminaStat;
@@ -54,8 +57,9 @@ public class PlayerStats : MonoBehaviour, IStat
       
       if (healthStat.Value > 0)
       {
-        // TODO : Hit 이펙트, 애니메이션
-         
+        // Hit 이펙트
+        _bloodScreenEffect?.ShowHitEffect();
+
         Debug.Log("몬스터에게 피격됨!");
       }
       else

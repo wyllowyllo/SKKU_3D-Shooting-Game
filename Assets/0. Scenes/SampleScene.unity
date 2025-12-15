@@ -2521,13 +2521,14 @@ GameObject:
   - component: {fileID: 831940275}
   - component: {fileID: 831940277}
   - component: {fileID: 831940276}
-  m_Layer: 5
+  - component: {fileID: 831940278}
+  m_Layer: 2
   m_Name: UI_HitEffect
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &831940275
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2560,14 +2561,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0.028301895, b: 0.028301895, a: 0.44705883}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: 94fc1b8b684b2604db4c8ad6f81765cf, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2585,6 +2586,25 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 831940274}
   m_CullTransparentMesh: 1
+--- !u!114 &831940278
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 831940274}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 648e3477f080d8248bb48c095d6ee20f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _playerStats: {fileID: 2104008743}
+  _hitFlashIntensity: 0.8
+  _hitFlashDuration: 0.3
+  _hitFadeOutDuration: 0.5
+  _lowHealthThreshold: 0.3
+  _lowHealthMaxIntensity: 0.4
+  _lowHealthPulseSpeed: 2
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
@@ -4925,6 +4945,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a59563a611d63448f24023382a4da8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &2104008743 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3814615052058282938, guid: 3a7ddd71f2ade844187e4a6addc1b145, type: 3}
+  m_PrefabInstance: {fileID: 7645635841843408335}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f819a475c394352af4a85684e193e3a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &6131698072213244610
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5119,6 +5150,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3814615052058282938, guid: 3a7ddd71f2ade844187e4a6addc1b145, type: 3}
+      propertyPath: _bloodScreenEffect
+      value: 
+      objectReference: {fileID: 831940278}
     - target: {fileID: 6415129299700596392, guid: 3a7ddd71f2ade844187e4a6addc1b145, type: 3}
       propertyPath: _camRotate
       value: 
