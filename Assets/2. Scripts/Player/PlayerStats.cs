@@ -50,7 +50,6 @@ public class PlayerStats : MonoBehaviour, IStat
    {
       if(_isDead || attackInfo.Damage <= 0) return;
       
-      
       HealthStat.Decrease(attackInfo.Damage);
       
       if (healthStat.Value > 0)
