@@ -45,7 +45,7 @@ public class PlayerGunFire : MonoBehaviour
 
         if (_camRotate != null)
         {
-            _curGun?.CamInit(_camRotate);
+            _curGun?.CamInit(_camRotate.transform);
         }
         
     }

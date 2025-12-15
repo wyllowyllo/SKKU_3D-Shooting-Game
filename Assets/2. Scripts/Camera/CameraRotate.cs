@@ -1,5 +1,4 @@
 using UnityEngine;
-using DG.Tweening;
 
 /// <summary>
 /// 카메라를 마우스 방향으로 회전
@@ -19,6 +18,9 @@ public class CameraRotate : MonoBehaviour
     // 유니티는 0 ~ 360 각도 체계이므로, 아래와 같이 우리가 따로 저장할 -360 ~ 360 체계로 누적할 변수를 둔다.
     private float _accumulationX = 0;
     private float _accumulationY = 0;
+    
+    public float AccumulationX { get => _accumulationX; set => _accumulationX = value; }
+    public float AccumulationY { get => _accumulationY; set => _accumulationY = value; }
 
     private const float MaxVerticalRotationAngle = 80f;
     private void Awake()
@@ -30,25 +32,6 @@ public class CameraRotate : MonoBehaviour
         if (_input == null) return;
 
         RotateView();
-    }
-    
-    public void AddRecoil(float upRecoil, float sideRecoil, float duration)
-    {
-        // 상하 반동
-        DOTween.To(
-            () => _accumulationY,
-            x => _accumulationY = x,
-            _accumulationY - upRecoil,
-            duration
-        );
-
-        // 좌우 반동
-        DOTween.To(
-            () => _accumulationX,
-            x => _accumulationX = x,
-            _accumulationX + Random.Range(-sideRecoil, sideRecoil),
-            duration
-        );
     }
 
     private void Init()

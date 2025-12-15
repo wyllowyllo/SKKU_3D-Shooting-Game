@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 
+[RequireComponent(typeof(CameraRecoil))]
 public class Gun : MonoBehaviour
 {
     [Header("Stat")]
@@ -10,13 +11,15 @@ public class Gun : MonoBehaviour
     [Header("Hit VFX")]
     [SerializeField] private ParticleSystem _hitEffect;
     
+   
+
     // 이벤트
     private UnityEvent _onReload;
     private UnityEvent _onFire;
-    
+
     // 참조
     private Transform _cam;
-    private CameraRotate _camRotate;
+    private CameraRecoil _cameraRecoil;
     
     // 현재 총 상태
     private int _remainBullets;
@@ -60,10 +63,10 @@ public class Gun : MonoBehaviour
             return;
         }
         
-        
+
        ShootRay();
-       
-       _camRotate?.AddRecoil(_gunStat.UpRecoilStrength, _gunStat.SideRecoilStrength, _gunStat.RecoilDuration);
+
+       _cameraRecoil?.AddRecoil(_gunStat.UpRecoilStrength, _gunStat.SideRecoilStrength, _gunStat.RecoilDuration);
        _onFire?.Invoke();
        
         _remainBullets--;
@@ -142,19 +145,20 @@ public class Gun : MonoBehaviour
 
     private void Init()
     {
+        _cameraRecoil = GetComponent<CameraRecoil>();
+        
         _bulletCntForAmmo = _gunStat.BulletCntForAmmo;
         _remainBullets = _bulletCntForAmmo;
         _totalBulletCnt = _gunStat.AmmoCnt *_bulletCntForAmmo;
         _reloadDuration = _gunStat.ReloadTime;
-        
+       
         _onReload = new UnityEvent();
         _onFire = new UnityEvent();
         
     }
 
-    public void CamInit(CameraRotate camInfo)
+    public void CamInit(Transform cam)
     {
-        _cam = camInfo.transform;
-        _camRotate = camInfo;
+        _cam = cam;
     }
 }
