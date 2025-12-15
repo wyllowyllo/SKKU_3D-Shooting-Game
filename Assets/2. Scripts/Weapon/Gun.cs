@@ -2,7 +2,6 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 
-[RequireComponent(typeof(CameraRecoil))]
 public class Gun : MonoBehaviour
 {
     [Header("Stat")]
@@ -11,6 +10,8 @@ public class Gun : MonoBehaviour
     [Header("Hit VFX")]
     [SerializeField] private ParticleSystem _hitEffect;
     
+    [Header("카메라 참조")]
+    [SerializeField] private CameraRecoil _cameraRecoil;
    
 
     // 이벤트
@@ -19,7 +20,7 @@ public class Gun : MonoBehaviour
 
     // 참조
     private Transform _cam;
-    private CameraRecoil _cameraRecoil;
+   
     
     // 현재 총 상태
     private int _remainBullets;
@@ -145,8 +146,6 @@ public class Gun : MonoBehaviour
 
     private void Init()
     {
-        _cameraRecoil = GetComponent<CameraRecoil>();
-        
         _bulletCntForAmmo = _gunStat.BulletCntForAmmo;
         _remainBullets = _bulletCntForAmmo;
         _totalBulletCnt = _gunStat.AmmoCnt *_bulletCntForAmmo;
