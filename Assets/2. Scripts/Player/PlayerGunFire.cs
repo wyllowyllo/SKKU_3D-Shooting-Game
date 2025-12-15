@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 [RequireComponent(typeof(PlayerInput))]
 public class PlayerGunFire : MonoBehaviour
@@ -9,6 +10,7 @@ public class PlayerGunFire : MonoBehaviour
     [SerializeField, DisallowNull] private Gun _curGun;
     
     [Header("카메라 참조")]
+
     [SerializeField] private CameraRotate _camRotate;
     // 참조
     private PlayerInput _input;
@@ -56,7 +58,8 @@ public class PlayerGunFire : MonoBehaviour
     private void TryFire()
     {
         if (!_input.Fire) return;
-        
+        if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject()) return;  // UI 클릭 무시
+
         _curGun?.Fire();
     }
 
