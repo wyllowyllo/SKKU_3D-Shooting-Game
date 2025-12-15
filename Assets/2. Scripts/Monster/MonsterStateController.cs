@@ -233,13 +233,13 @@ public class MonsterStateController : MonoBehaviour
     private void ChangeState(EMonsterState nextState)
     {
         if (State == nextState) return;
-        
+
         State = nextState;
         Debug.Log($"상태 전환  to  {State} ");
-        
+
         if (State == EMonsterState.Attack)
         {
-            _attackTimer = 0f;
+            _attackTimer = _combatController.AttackSpeed;
         }
     }
     
