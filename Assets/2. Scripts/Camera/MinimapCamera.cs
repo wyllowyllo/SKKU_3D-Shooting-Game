@@ -1,15 +1,19 @@
 using TMPro;
 using UnityEngine;
+using DG.Tweening;
 
 public class MinimapCamera : MonoBehaviour
 {
     [SerializeField] private Transform _target;
     [SerializeField] private float _offsetY = 10f;
-    
-    [SerializeField] private float _zoomInSizeMax = 5f;
+
+    [SerializeField] private float _zoomInSizeMax = 3f;
     [SerializeField] private float _zoomOutSizeMax = 10f;
+    [SerializeField] private float _zoomDuration = 0.3f;
+    [SerializeField] private float _zoomUnit = 2f;
     
     private Camera _camera;
+    private Tween _zoomTween;
 
     private void Awake()
     {
@@ -47,18 +51,27 @@ public class MinimapCamera : MonoBehaviour
     public void ZoomIn()
     {
         if (_camera == null) return;
+
+        // 이전 Tween이 실행 중이면 중단
+        _zoomTween?.Kill();
         
-        Debug.Log("줌인");
-        float targetSize = _camera.orthographicSize - 1f;
-        _camera.orthographicSize = Mathf.Max(_zoomInSizeMax,  targetSize);
+        float targetSize = Mathf.Max(_zoomInSizeMax, _camera.orthographicSize - _zoomUnit);
+
+       
+        _zoomTween = _camera.DOOrthoSize(targetSize, _zoomDuration)
+            .SetEase(Ease.OutQuad);
     }
 
     public void ZoomOut()
     {
         if (_camera == null) return;
         
-        Debug.Log("줌아웃");
-        float targetSize = _camera.orthographicSize + 1f;
-        _camera.orthographicSize = Mathf.Min(_zoomOutSizeMax,  targetSize);
+        _zoomTween?.Kill();
+        
+        float targetSize = Mathf.Min(_zoomOutSizeMax, _camera.orthographicSize + _zoomUnit);
+
+       
+        _zoomTween = _camera.DOOrthoSize(targetSize, _zoomDuration)
+            .SetEase(Ease.OutQuad);
     }
 }

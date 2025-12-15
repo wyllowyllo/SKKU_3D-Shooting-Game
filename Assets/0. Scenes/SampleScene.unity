@@ -4217,8 +4217,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _target: {fileID: 1728481972}
   _offsetY: 10
-  _zoomInSize: 2.5
-  _zoomOutSize: 5
+  _zoomInSizeMax: 3
+  _zoomOutSizeMax: 12
+  _zoomDuration: 0.3
+  _zoomUnit: 2
 --- !u!1001 &1537176110
 PrefabInstance:
   m_ObjectHideFlags: 0
