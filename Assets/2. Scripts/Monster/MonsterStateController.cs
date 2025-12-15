@@ -88,7 +88,7 @@ public class MonsterStateController : MonoBehaviour
 
     
     
-    public bool TryTakeDamage(AttackInfo info)
+    public bool OnDamaged(AttackInfo info)
     {
         if (State == EMonsterState.Death) return false;
         if (info.Damage <= 0f) return false;

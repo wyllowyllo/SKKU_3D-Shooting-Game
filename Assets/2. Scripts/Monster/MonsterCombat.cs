@@ -23,7 +23,7 @@ public class MonsterCombat : MonoBehaviour
     private void Start()
     {
         _traceController = GetComponent<TraceController>();
-        _playerStats =  _traceController?.Target.GetComponent<IStat>();
+        _playerStats =  _traceController?.Target?.GetComponent<IStat>();
     }
     
     public void Attack()

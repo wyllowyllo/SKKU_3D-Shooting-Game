@@ -48,6 +48,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 601686dfff0e9d64d86e29fedb2b0ae9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _explosionRadius: 2
+  _damage: 1000
+  _monsterLayer:
+    serializedVersion: 2
+    m_Bits: 128
   _explosionVFX: {fileID: 417761080263594737, guid: 7800b8f6b712bfe49bd663eeb3ebe1e4, type: 3}
 --- !u!33 &2927659196114348520
 MeshFilter:

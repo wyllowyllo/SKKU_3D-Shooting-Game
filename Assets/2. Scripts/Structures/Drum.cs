@@ -10,6 +10,7 @@ public class Drum : MonoBehaviour, IStat
    
    [SerializeField] private float _explosionRadius = 2f;
    [SerializeField] private float _explosionDamage = 1000f;
+   [SerializeField] private float _explosionDelay = 0.5f;
    [SerializeField] private float _rocketStrength = 10f;
    private Rigidbody _rigid;
    
@@ -35,7 +36,7 @@ public class Drum : MonoBehaviour, IStat
       }
       else
       {
-        Invoke("Explode", 0.5f);
+        Invoke(nameof(Explode), _explosionDelay);
          
       }
       
@@ -50,8 +51,10 @@ public class Drum : MonoBehaviour, IStat
       Collider[] colliders = Physics.OverlapSphere(transform.position, _explosionRadius);
       for (int i = 0; i < colliders.Length; i++)
       {  
-         IStat obj = colliders[i].GetComponent<IStat>();
-         obj?.TryTakeDamage(new AttackInfo(_explosionDamage));
+         if (colliders[i].TryGetComponent<IStat>(out var stat))
+         {
+            stat.TryTakeDamage(new AttackInfo(_explosionDamage));
+         }
       }
 
       _rigid.AddForce(Vector3.up * _rocketStrength, ForceMode.Impulse);

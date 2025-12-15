@@ -43,7 +43,6 @@ public class PlayerStats : MonoBehaviour, IStat
       float deltaTime = Time.deltaTime;
       
       RegenStamina(deltaTime);
-      //RegenHealth(deltaTime);
    }
    
    public void TryTakeDamage(AttackInfo attackInfo)

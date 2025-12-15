@@ -23,7 +23,7 @@ public class MonsterStats : MonoBehaviour, IStat
     {
         _health.Decrease(attackInfo.Damage);
         
-        _stateController?.TryTakeDamage(attackInfo);
+        _stateController?.OnDamaged(attackInfo);
         
     }
 }

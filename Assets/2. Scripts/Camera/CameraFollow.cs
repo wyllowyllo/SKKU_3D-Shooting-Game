@@ -37,7 +37,6 @@ public class CameraFollow : MonoBehaviour
 
     private void Init()
     {
-        _camOffset = _tpsTargetOffset;
         _camOffset = _fpsTargetOffset;
     }
     
