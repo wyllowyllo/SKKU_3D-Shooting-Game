@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 using UnityEngine;
-
+using Random = UnityEngine.Random;
 // 목표 : 처음에는 가만히 있지만 플레이어가 다가가면 쫓아오는 좀비 몬스터
 // -> 쫓아 오다가 너무 멀어지면 제자리로 돌아간다.
    
@@ -21,24 +21,30 @@ using UnityEngine;
 public class MonsterStateController : MonoBehaviour
 {
     [Header("몬스터 State")]
-    [SerializeField] private EMonsterState _state = EMonsterState.Idle;
-    
+    [SerializeField] private EMonsterState _state = EMonsterState.Patrol;
+
+    [Header("순찰 설정")]
+    [SerializeField] private float _patrolRadius = 10f;
+    [SerializeField] private float _patrolWaitTime = 2f;
+
     // 참조
     private TraceController _traceController;
     private MonsterMove _moveController;
     private MonsterCombat _combatController;
     private MonsterStats _stats;
-    
-    
+
+
     // 상수
     private const float DistanceEpsilon = 0.1f;
-    
+
     // 타이머
     private float _attackTimer;
-    
+    private float _patrolWaitTimer;
+
     private Vector3 _originalPosition;
     private Vector3 _knockBackDir;
     private float _knockBackTimer;
+    private Vector3 _patrolTarget;
     
     public EMonsterState State { get => _state; set => _state = value; }
 
@@ -57,6 +63,9 @@ public class MonsterStateController : MonoBehaviour
             case EMonsterState.Idle:
                 Idle();
                 break;
+            case EMonsterState.Patrol:
+                Patrol();
+                break;
             case EMonsterState.Trace:
                 Trace();
                 break;
@@ -66,11 +75,11 @@ public class MonsterStateController : MonoBehaviour
             case EMonsterState.Attack:
                 Attack();
                 break;
-            
+
             case EMonsterState.Hit:
                 Hit();
                 break;
-            
+
             case EMonsterState.Death:
                 Die();
                 break;
@@ -109,8 +118,32 @@ public class MonsterStateController : MonoBehaviour
             return;
         }
         
-        // 가만히 있는다.
         // TODO : Idle anim
+    }
+
+    private void Patrol()
+    {
+        if (_traceController.Detected)
+        {
+            ChangeState(EMonsterState.Trace);
+            return;
+        }
+        
+        float distanceToTarget = Vector3.Distance(transform.position, _patrolTarget);
+        if (distanceToTarget <= DistanceEpsilon)
+        {
+            _patrolWaitTimer += Time.deltaTime;
+
+            if (_patrolWaitTimer >= _patrolWaitTime)
+            {
+                _patrolTarget = GetRandomPatrolPosition();
+                _patrolWaitTimer = 0f;
+            }
+        }
+        else
+        {
+            _moveController.MoveToTarget(_patrolTarget);
+        }
     }
 
     private void Trace()
@@ -136,11 +169,11 @@ public class MonsterStateController : MonoBehaviour
         float distance = Vector3.Distance(transform.position, _originalPosition);
         if (distance <= DistanceEpsilon)
         {
-            ChangeState(EMonsterState.Idle);
+            ChangeState(EMonsterState.Patrol);
             return;
         }
-        
-      
+
+
         _moveController.MoveToTarget(_originalPosition);
     }
     
@@ -182,8 +215,18 @@ public class MonsterStateController : MonoBehaviour
         _moveController = GetComponent<MonsterMove>();
         _combatController = GetComponent<MonsterCombat>();
         _stats = GetComponent<MonsterStats>();
-        
+
         _originalPosition = transform.position;
+        _patrolTarget = GetRandomPatrolPosition();
+    }
+
+    private Vector3 GetRandomPatrolPosition()
+    {
+        // 원점 기준으로 반경 내 랜덤 위치 생성
+        Vector2 randomCircle = Random.insideUnitCircle * _patrolRadius;
+        Vector3 randomPosition = _originalPosition + new Vector3(randomCircle.x, 0f, randomCircle.y);
+
+        return randomPosition;
     }
 
     private void ChangeState(EMonsterState nextState)
