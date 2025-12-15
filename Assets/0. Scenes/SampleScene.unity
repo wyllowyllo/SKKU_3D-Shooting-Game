@@ -593,7 +593,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 255
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -3400,7 +3400,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_RenderShadows: 1
+  m_RenderShadows: 0
   m_RequiresDepthTextureOption: 2
   m_RequiresOpaqueTextureOption: 2
   m_CameraType: 0
@@ -3471,7 +3471,7 @@ Camera:
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 375
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 8400000, guid: cc6d253376e497f40ad94649d046ba9c, type: 2}
   m_TargetDisplay: 1
@@ -4409,14 +4409,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5449690249272321137, guid: 3a7ddd71f2ade844187e4a6addc1b145, type: 3}
-      propertyPath: _rotatationSpeed
-      value: 250
-      objectReference: {fileID: 0}
-    - target: {fileID: 6415129299700596392, guid: 3a7ddd71f2ade844187e4a6addc1b145, type: 3}
-      propertyPath: _curGun
-      value: 
-      objectReference: {fileID: 2102171288}
     - target: {fileID: 6415129299700596392, guid: 3a7ddd71f2ade844187e4a6addc1b145, type: 3}
       propertyPath: _camRotate
       value: 
