@@ -18,8 +18,9 @@ GameObject:
   - component: {fileID: 4087311082293998753}
   - component: {fileID: 3393817525912284334}
   - component: {fileID: 2009443832170220464}
+  - component: {fileID: 4671736907014079137}
   m_Layer: 7
-  m_Name: Monster
+  m_Name: Zombie
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -165,7 +166,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _target: {fileID: 0}
-  _detectDistance: 5
+  _detectDistance: 10
 --- !u!114 &4087311082293998753
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -211,6 +212,28 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _healthBarTransform: {fileID: 4619421597808995411}
   _guageImg: {fileID: 6493243481893217304}
+--- !u!195 &4671736907014079137
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 126338373337549117}
+  m_Enabled: 1
+  m_AgentTypeID: -1372625422
+  m_Radius: 0.5
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 0
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 1
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
 --- !u!1 &3540259394053891064
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.AI;
 using Random = UnityEngine.Random;
 // 목표 : 처음에는 가만히 있지만 플레이어가 다가가면 쫓아오는 좀비 몬스터
 // -> 쫓아 오다가 너무 멀어지면 제자리로 돌아간다.
@@ -16,7 +17,7 @@ using Random = UnityEngine.Random;
 // 1. 함수는 한 가지 일만 잘해야 한다.
 // 2. 상태별 행동을 함수로 만든다.
 
-[RequireComponent(typeof(CharacterController), typeof(MonsterMove))]
+[RequireComponent(typeof(CharacterController), typeof(MonsterMove), typeof(NavMeshAgent))]
 [RequireComponent(typeof(TraceController), typeof(MonsterCombat), typeof(MonsterStats))]
 public class MonsterStateController : MonoBehaviour
 {
@@ -26,6 +27,8 @@ public class MonsterStateController : MonoBehaviour
     [Header("순찰 설정")]
     [SerializeField] private float _patrolRadius = 10f;
     [SerializeField] private float _patrolWaitTime = 2f;
+    
+    private NavMeshAgent _agent;
 
     // 참조
     private TraceController _traceController;
@@ -93,7 +96,10 @@ public class MonsterStateController : MonoBehaviour
     {
         if (State == EMonsterState.Death) return false;
         if (info.Damage <= 0f) return false;
-        
+
+        // 둘이 웬만하면 같이 쓰자
+        _agent.isStopped = true; //이동 일시정지
+        _agent.ResetPath(); // 경로(목적지) 삭제
 
         if (_stats.IsLive)
         {
@@ -143,7 +149,8 @@ public class MonsterStateController : MonoBehaviour
         }
         else
         {
-            _moveController.MoveToTarget(_patrolTarget);
+            //_moveController.MoveToTarget(_patrolTarget);
+            _agent.SetDestination(_patrolTarget);
         }
     }
 
@@ -163,7 +170,8 @@ public class MonsterStateController : MonoBehaviour
             return;
         }
         
-        _moveController.MoveToTarget(_traceController.TargetPosition);
+        //_moveController.MoveToTarget(_traceController.TargetPosition);
+        _agent.SetDestination(_traceController.TargetPosition); // 방향 설정 필요 없이 도착지말 설정해 주면 네비게이션 시스템에 의해 자동으로 이동한다.
     }
     private void Comeback()
     {
@@ -175,7 +183,8 @@ public class MonsterStateController : MonoBehaviour
         }
 
 
-        _moveController.MoveToTarget(_originalPosition);
+       // _moveController.MoveToTarget(_originalPosition);
+        _agent.SetDestination(_originalPosition);
     }
     
     private void Attack()
@@ -216,7 +225,8 @@ public class MonsterStateController : MonoBehaviour
         _moveController = GetComponent<MonsterMove>();
         _combatController = GetComponent<MonsterCombat>();
         _stats = GetComponent<MonsterStats>();
-
+        _agent = GetComponent<NavMeshAgent>();
+        
         _originalPosition = transform.position;
         _patrolTarget = GetRandomPatrolPosition();
     }
