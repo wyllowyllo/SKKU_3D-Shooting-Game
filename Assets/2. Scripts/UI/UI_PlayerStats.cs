@@ -16,10 +16,10 @@ public class UI_PlayerStats : MonoBehaviour
     [SerializeField] private Image _healthFillImage;
     [SerializeField] private Slider _delayHealthSlider;
     [SerializeField] private Image _delayFillImage;
-    [SerializeField] private float _delayTime = 0.5f;
-    [SerializeField] private float _discountDuration = 0.1f;
+    
 
     [Header("피격 효과")]
+    [SerializeField] private float _delayTime = 0.5f;
     [SerializeField] private float _healthTweenDuration = 0.2f;
     [SerializeField] private float _delayHealthTweenDuration = 0.5f;
     [SerializeField] private Color _flashColor = Color.white;
@@ -134,7 +134,7 @@ public class UI_PlayerStats : MonoBehaviour
                             _healthFillImage.DOColor(_originalHealthColor, _flashDuration * 0.5f);
                         });
         
-        _healthSlider.transform.parent.DOShakePosition(_shakeDuration, _shakeStrength, 20, 90, false, true);
+        _healthSlider.transform.parent.DOShakePosition(_shakeDuration, _shakeStrength, 20);
         
         yield return new WaitForSeconds(_delayTime);
 
