@@ -13,6 +13,21 @@ public class UI_PlayerStats : MonoBehaviour
 
     [Header("HP bar")]
     [SerializeField] private Slider _healthSlider;
+    [SerializeField] private Image _healthFillImage;
+    [SerializeField] private Slider _delayHealthSlider;
+    [SerializeField] private Image _delayFillImage;
+    [SerializeField] private float _delayTime = 0.5f;
+    [SerializeField] private float _discountDuration = 0.1f;
+
+    [Header("피격 효과")]
+    [SerializeField] private float _healthTweenDuration = 0.2f;
+    [SerializeField] private float _delayHealthTweenDuration = 0.5f;
+    [SerializeField] private Color _flashColor = Color.white;
+    [SerializeField] private float _flashDuration = 0.15f;
+    [SerializeField] private float _shakeDuration = 0.3f;
+    [SerializeField] private float _shakeStrength = 10f;
+
+    private Color _originalHealthColor;
     
     [Header("Stamina bar")]
     [SerializeField] private Slider _staminaSlider;
@@ -28,6 +43,7 @@ public class UI_PlayerStats : MonoBehaviour
     private PlayerBombFire _playerBombFire ;
     private Gun _gunInfo;
 
+    private Coroutine _prevHPRoutine;
     private void Awake()
     { 
          Init();
@@ -37,6 +53,8 @@ public class UI_PlayerStats : MonoBehaviour
     {
         // 재장전 이벤트 리스너 등록
         _gunInfo?.OnReload.AddListener(UpdateReloadBar);
+        
+        _playerStats?.HitEvent.AddListener(UpdateHealthBar);
     }
     
     private void LateUpdate()
@@ -49,10 +67,15 @@ public class UI_PlayerStats : MonoBehaviour
     private void Init()
     {
         if (_player == null) return;
-        
+
         _playerStats = _player.GetComponent<PlayerStats>();
         _playerBombFire = _player.GetComponent<PlayerBombFire>();
         _gunInfo = _player.GetComponentInChildren<Gun>();
+
+        if (_healthFillImage != null)
+        {
+            _originalHealthColor = _healthFillImage.color;
+        }
     }
 
     private void UpdateStatBars()
@@ -66,10 +89,17 @@ public class UI_PlayerStats : MonoBehaviour
         }
         if (_healthSlider != null)
         {
-            _healthSlider.value = (_playerStats.CurHealth / _playerStats.MaxHealth);
+            //_healthSlider.value = (_playerStats.CurHealth / _playerStats.MaxHealth);
+            
+         
         }
     }
 
+    private void UpdateHealthBar()
+    {
+        if(_prevHPRoutine != null) StopCoroutine(_prevHPRoutine);
+        _prevHPRoutine = StartCoroutine(UpdateHealthBarRoutine());
+    }
     private void UpdateBombText()
     {
         if (_playerBombFire == null || _bombText == null) return;
@@ -91,6 +121,25 @@ public class UI_PlayerStats : MonoBehaviour
         StartCoroutine(UpdateReloadBarRoutine());
     }
 
+    private IEnumerator UpdateHealthBarRoutine()
+    {
+        float targetValue = _playerStats.CurHealth / _playerStats.MaxHealth;
+        
+        _healthSlider.DOValue(targetValue, _healthTweenDuration).SetEase(Ease.OutQuad);
+
+       
+        _healthFillImage.DOColor(_flashColor, _flashDuration * 0.5f)
+                        .OnComplete(() =>
+                        {
+                            _healthFillImage.DOColor(_originalHealthColor, _flashDuration * 0.5f);
+                        });
+        
+        _healthSlider.transform.parent.DOShakePosition(_shakeDuration, _shakeStrength, 20, 90, false, true);
+        
+        yield return new WaitForSeconds(_delayTime);
+
+        _delayHealthSlider.DOValue(targetValue, _delayHealthTweenDuration).SetEase(Ease.OutQuad);
+    }
     private IEnumerator UpdateReloadBarRoutine()
     {
         CanvasGroup canvasGroup = _reloadGuage.GetComponent<CanvasGroup>();

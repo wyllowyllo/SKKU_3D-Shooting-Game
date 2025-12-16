@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Events;
 
 public class PlayerStats : MonoBehaviour, IStat
 {
@@ -18,6 +19,9 @@ public class PlayerStats : MonoBehaviour, IStat
    [Header("UI 이펙트")]
    [SerializeField] private BloodScreenEffect _bloodScreenEffect;
 
+   //이벤트
+   private UnityEvent _hitEvent = new UnityEvent();
+   
    // 프로퍼티
    public ComsumableStat HealthStat => healthStat;
    public ComsumableStat StaminaStat => staminaStat;
@@ -29,7 +33,9 @@ public class PlayerStats : MonoBehaviour, IStat
    public float MoveSpeed => _moveSpeed.Value;
    public float RunSpeed => _runSpeed.Value;
    public float JumpPower => _jumpPower.Value;
-   
+
+   public UnityEvent HitEvent => _hitEvent;
+
    // 플래그 변수
    private bool _isDead;
 
@@ -59,6 +65,7 @@ public class PlayerStats : MonoBehaviour, IStat
       {
         // Hit 이펙트
         _bloodScreenEffect?.ShowHitEffect();
+        HitEvent?.Invoke();
 
         Debug.Log("몬스터에게 피격됨!");
       }
