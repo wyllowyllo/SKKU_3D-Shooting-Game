@@ -55,6 +55,7 @@ public class MonsterStateController : MonoBehaviour
 
     private void Update()
     {
+        if (GameManager.Instance.State != EGameState.Playing) return;
         if (_traceController.Target == null) return;
         
         // 몬스터의 상태에 따라 다른 메서드를 호출한다.
@@ -88,7 +89,7 @@ public class MonsterStateController : MonoBehaviour
 
     
     
-    public bool TryTakeDamage(AttackInfo info)
+    public bool OnDamaged(AttackInfo info)
     {
         if (State == EMonsterState.Death) return false;
         if (info.Damage <= 0f) return false;
@@ -232,13 +233,13 @@ public class MonsterStateController : MonoBehaviour
     private void ChangeState(EMonsterState nextState)
     {
         if (State == nextState) return;
-        
+
         State = nextState;
         Debug.Log($"상태 전환  to  {State} ");
-        
+
         if (State == EMonsterState.Attack)
         {
-            _attackTimer = 0f;
+            _attackTimer = _combatController.AttackSpeed;
         }
     }
     

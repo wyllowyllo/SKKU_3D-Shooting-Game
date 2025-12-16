@@ -14,6 +14,9 @@ public class PlayerInput : MonoBehaviour
     public bool Fire => Input.GetMouseButton(0);
     public bool Reload => Input.GetKeyDown(KeyCode.R);
     public bool ViewToggle => Input.GetKeyDown(KeyCode.T);
+    
+    public bool ZoomIn => Input.GetKey(KeyCode.O);
+    public bool ZoomOut => Input.GetKey(KeyCode.P);
     public Vector3 Direction
     {
         get

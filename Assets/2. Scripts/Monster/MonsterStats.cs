@@ -2,23 +2,28 @@
 
 public class MonsterStats : MonoBehaviour, IStat
 {
-    [SerializeField] private float _health = 100f;
+    [SerializeField] private ComsumableStat _health;
 
     // 참조
     private MonsterStateController _stateController;
 
-    public bool IsLive =>  _health > 0f;
+    public bool IsLive => CurHealth > 0f;
+
+    public float CurHealth => _health.Value;
+    public float MaxHealth => _health.MaxValue;
 
     private void Awake()
     {
         _stateController = GetComponent<MonsterStateController>();
+        
+        _health.Initialize();
     }
 
     public void TryTakeDamage(AttackInfo attackInfo)
     {
-        _health -= attackInfo.Damage;
+        _health.Decrease(attackInfo.Damage);
         
-        _stateController?.TryTakeDamage(attackInfo);
+        _stateController?.OnDamaged(attackInfo);
         
     }
 }

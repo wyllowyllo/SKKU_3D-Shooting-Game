@@ -10,13 +10,17 @@ public class Gun : MonoBehaviour
     [Header("Hit VFX")]
     [SerializeField] private ParticleSystem _hitEffect;
     
+    [Header("카메라 참조")]
+    [SerializeField] private CameraRecoil _cameraRecoil;
+   
+
     // 이벤트
     private UnityEvent _onReload;
     private UnityEvent _onFire;
-    
+
     // 참조
     private Transform _cam;
-    private CameraRotate _camRotate;
+   
     
     // 현재 총 상태
     private int _remainBullets;
@@ -60,10 +64,10 @@ public class Gun : MonoBehaviour
             return;
         }
         
-        
+
        ShootRay();
-       
-       _camRotate?.AddRecoil(_gunStat.UpRecoilStrength, _gunStat.SideRecoilStrength, _gunStat.RecoilDuration);
+
+       _cameraRecoil?.AddRecoil(_gunStat.UpRecoilStrength, _gunStat.SideRecoilStrength, _gunStat.RecoilDuration);
        _onFire?.Invoke();
        
         _remainBullets--;
@@ -75,9 +79,9 @@ public class Gun : MonoBehaviour
         if (_remainBullets == _bulletCntForAmmo) return;
         
         int loadBulletCnt = _bulletCntForAmmo - _remainBullets;
-        if (loadBulletCnt <= _totalBulletCnt)
+        if (_totalBulletCnt > 0)
         {
-            StartCoroutine(ReloadCoroutine(loadBulletCnt));
+            StartCoroutine(ReloadCoroutine(Mathf.Min(loadBulletCnt, _totalBulletCnt)));
         }
     }
 
@@ -135,7 +139,7 @@ public class Gun : MonoBehaviour
         yield return new WaitForSeconds(ReloadDuration);
         
         _totalBulletCnt -= loadBulletCnt;
-        _remainBullets = _bulletCntForAmmo; // 재장전
+        _remainBullets += loadBulletCnt; // 재장전
         
         _isReloading = false;
     }
@@ -146,15 +150,14 @@ public class Gun : MonoBehaviour
         _remainBullets = _bulletCntForAmmo;
         _totalBulletCnt = _gunStat.AmmoCnt *_bulletCntForAmmo;
         _reloadDuration = _gunStat.ReloadTime;
-        
+       
         _onReload = new UnityEvent();
         _onFire = new UnityEvent();
         
     }
 
-    public void CamInit(CameraRotate camInfo)
+    public void CamInit(Transform cam)
     {
-        _cam = camInfo.transform;
-        _camRotate = camInfo;
+        _cam = cam;
     }
 }

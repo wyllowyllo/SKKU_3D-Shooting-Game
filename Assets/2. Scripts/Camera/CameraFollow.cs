@@ -29,6 +29,7 @@ public class CameraFollow : MonoBehaviour
     }
     private void LateUpdate()
     {
+        if (GameManager.Instance.State != EGameState.Playing) return;
         if(_target == null) return;
         
         UpdateViewMode();
@@ -37,7 +38,6 @@ public class CameraFollow : MonoBehaviour
 
     private void Init()
     {
-        _camOffset = _tpsTargetOffset;
         _camOffset = _fpsTargetOffset;
     }
     

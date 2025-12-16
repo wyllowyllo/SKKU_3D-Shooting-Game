@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Events;
 
 public class PlayerStats : MonoBehaviour, IStat
 {
@@ -15,6 +16,12 @@ public class PlayerStats : MonoBehaviour, IStat
    [SerializeField] private ValueStat _runSpeed;
    [SerializeField] private ValueStat _jumpPower;
 
+   [Header("UI 이펙트")]
+   [SerializeField] private BloodScreenEffect _bloodScreenEffect;
+
+   //이벤트
+   private UnityEvent _hitEvent = new UnityEvent();
+   
    // 프로퍼티
    public ComsumableStat HealthStat => healthStat;
    public ComsumableStat StaminaStat => staminaStat;
@@ -26,7 +33,9 @@ public class PlayerStats : MonoBehaviour, IStat
    public float MoveSpeed => _moveSpeed.Value;
    public float RunSpeed => _runSpeed.Value;
    public float JumpPower => _jumpPower.Value;
-   
+
+   public UnityEvent HitEvent => _hitEvent;
+
    // 플래그 변수
    private bool _isDead;
 
@@ -38,31 +47,34 @@ public class PlayerStats : MonoBehaviour, IStat
    }
    private void Update()
    {
+      if (GameManager.Instance.State != EGameState.Playing) return;
       if (_isDead) return;
       
       float deltaTime = Time.deltaTime;
       
       RegenStamina(deltaTime);
-      //RegenHealth(deltaTime);
    }
    
    public void TryTakeDamage(AttackInfo attackInfo)
    {
       if(_isDead || attackInfo.Damage <= 0) return;
       
-      
       HealthStat.Decrease(attackInfo.Damage);
       
       if (healthStat.Value > 0)
       {
-        // TODO : Hit 이펙트, 애니메이션
-         
+        // Hit 이펙트
+        _bloodScreenEffect?.ShowHitEffect();
+        HitEvent?.Invoke();
+
         Debug.Log("몬스터에게 피격됨!");
       }
       else
       {
          // TODO : Die 이펙트, 애니메이션
          _isDead = true;
+         
+         GameManager.Instance.GameOver();
       }
    }
    

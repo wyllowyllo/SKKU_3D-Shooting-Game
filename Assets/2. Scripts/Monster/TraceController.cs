@@ -17,7 +17,7 @@ public class TraceController : MonoBehaviour
     {
         if (_target == null)
         {
-            _target = GameObject.FindGameObjectWithTag("Player").transform;
+            _target = GameObject.FindGameObjectWithTag("Player")?.transform;
         }
     }
 
