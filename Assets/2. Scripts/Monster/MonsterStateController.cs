@@ -43,11 +43,17 @@ public class MonsterStateController : MonoBehaviour
     // 타이머
     private float _attackTimer;
     private float _patrolWaitTimer;
-
+    private float _jumpSession;
+    
     private Vector3 _originalPosition;
     private Vector3 _knockBackDir;
     private float _knockBackTimer;
     private Vector3 _patrolTarget;
+    
+    private Vector3 _jumpStartPos;
+    private Vector3 _jumpEndPos;
+    private float _jumpDuration;
+    
     
     public EMonsterState State { get => _state; set => _state = value; }
 
@@ -76,6 +82,11 @@ public class MonsterStateController : MonoBehaviour
             case EMonsterState.Comeback:
                 Comeback();
                 break;
+            
+            case EMonsterState.Jump:
+                Jump();
+                break;
+            
             case EMonsterState.Attack:
                 Attack();
                 break;
@@ -171,6 +182,28 @@ public class MonsterStateController : MonoBehaviour
         }
         
         //_moveController.MoveToTarget(_traceController.TargetPosition);
+       
+
+        if (_agent.isOnOffMeshLink)
+        {
+            OffMeshLinkData linkData = _agent.currentOffMeshLinkData;
+            _jumpStartPos = linkData.startPos;
+            _jumpEndPos = linkData.endPos;
+
+            if (_jumpEndPos.y > _jumpStartPos.y)
+            {
+                _agent.isStopped = true;
+                _agent.ResetPath();
+                
+                
+                // 1. 점프 거리와 내 이동속도를 계산해서 점프 시간을 구한다
+                _jumpDuration = Vector3.Distance(_jumpStartPos, _jumpEndPos) / _moveController.MoveSpeed;
+                _jumpSession = 0f;
+                ChangeState(EMonsterState.Jump);
+                return;
+            }
+        }
+        
         _agent.SetDestination(_traceController.TargetPosition); // 방향 설정 필요 없이 도착지말 설정해 주면 네비게이션 시스템에 의해 자동으로 이동한다.
     }
     private void Comeback()
@@ -185,6 +218,30 @@ public class MonsterStateController : MonoBehaviour
 
        // _moveController.MoveToTarget(_originalPosition);
         _agent.SetDestination(_originalPosition);
+    }
+
+    private void Jump()
+    {
+        _jumpSession += Time.deltaTime / _jumpDuration;
+        
+        if (_jumpSession >= 1f)
+        {
+            // 3. 이동 후 다시 Trace
+            transform.position = _jumpEndPos;
+            _agent.CompleteOffMeshLink();
+            _agent.isStopped = false;
+           
+            ChangeState(EMonsterState.Trace);
+            return;
+        }
+        
+        // 2. 점프 시간동안 포물선으로 이동한다
+       Vector3 curPos = Vector3.Lerp(_jumpStartPos, _jumpEndPos, _jumpSession);
+       
+       float arc = Mathf.Sin(_jumpSession * Mathf.PI); 
+       curPos.y += arc * 5f;
+
+       transform.position = curPos;
     }
     
     private void Attack()

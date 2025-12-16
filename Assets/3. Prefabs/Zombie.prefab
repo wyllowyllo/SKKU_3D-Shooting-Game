@@ -166,7 +166,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _target: {fileID: 0}
-  _detectDistance: 10
+  _detectDistance: 20
 --- !u!114 &4087311082293998753
 MonoBehaviour:
   m_ObjectHideFlags: 0

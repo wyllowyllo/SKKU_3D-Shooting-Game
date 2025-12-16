@@ -62,8 +62,8 @@ public class Drum : MonoBehaviour, IStat
    
    private void OnDrawGizmos()
    {
-      Gizmos.color = Color.red;
-      Gizmos.DrawWireSphere(transform.position, _explosionRadius);
+      /*Gizmos.color = Color.red;
+      Gizmos.DrawWireSphere(transform.position, _explosionRadius);*/
    }
    
 }

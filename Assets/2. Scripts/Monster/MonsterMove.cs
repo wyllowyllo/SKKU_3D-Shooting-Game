@@ -21,6 +21,8 @@ public class MonsterMove : MonoBehaviour
     // 프로퍼티
     public float KnockbackDuration => _knockbackDuration;
 
+    public float MoveSpeed => _moveSpeed;
+
     private void Awake()
     {
         Init();
@@ -33,7 +35,7 @@ public class MonsterMove : MonoBehaviour
         
         Vector3 direction = (targetPosition - transform.position).normalized;
         direction.y = 0;
-        _characterController.Move(direction * _moveSpeed * Time.deltaTime);
+        _characterController.Move(direction * MoveSpeed * Time.deltaTime);
         
         RotateToDirection(direction);
     }
