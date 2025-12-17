@@ -2,5 +2,6 @@
 {
     Ready,
     Playing,
+    Auto,
     GameOver,
 }

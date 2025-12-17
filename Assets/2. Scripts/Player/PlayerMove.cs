@@ -60,13 +60,30 @@ public class PlayerMove : MonoBehaviour
     private void SetMoveDirection()
     {
         _yVelocity += Gravity * Time.deltaTime;
-        direction = _input.Direction;
-
+        
         TryJump();
         
-        // 1. 글로벌 좌표 방향을 구한다
-        // 2. 카메라가 쳐다보는 방향으로 변환한다 (즉 월드 -> 로컬)
-        direction = _cam.transform.TransformDirection(direction);
+        if (GameManager.Instance.IsTopMode)
+        {
+            if (!_input.Pointed) return;
+            
+            Ray ray = _cam.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+
+            if (Physics.Raycast(ray, out hit))
+            {
+                Debug.Log(hit.point);
+                direction = (hit.point - transform.position).normalized;
+            }
+            else direction = Vector3.zero;
+        }
+        else
+        {
+            direction = _input.Direction;
+            direction = _cam.transform.TransformDirection(direction);
+        }
+        
+        
         direction.y = _yVelocity;
     }
 

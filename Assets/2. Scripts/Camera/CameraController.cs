@@ -38,7 +38,7 @@ public class CameraController : MonoBehaviour
 
       _topViewController.enabled = _topMode;
 
-      GameManager.Instance.IsTopMode = _topMode;
+      GameManager.Instance.SwitchGameMode(EGameState.Auto);
    }
 
    private void Init()

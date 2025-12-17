@@ -40,10 +40,7 @@ public class CameraRotate : MonoBehaviour
         Vector3 startAngle = transform.eulerAngles;
         _accumulationX = startAngle.y;
         _accumulationY = startAngle.x;
-
         
-        Cursor.lockState = CursorLockMode.Locked; 
-        Cursor.visible = false;
     }
 
     private void RotateView()

@@ -12,7 +12,7 @@ public class GameManager : MonoBehaviour
 
     private bool _isTopMode = false;
     public EGameState State => _state;
-    public bool IsTopMode{ get => _isTopMode; set => _isTopMode = value; }
+    public bool IsTopMode{ get => _isTopMode; }
     public static GameManager Instance => _instance;
 
 
@@ -24,6 +24,10 @@ public class GameManager : MonoBehaviour
         }
 
         _instance = this;
+        
+        Cursor.lockState = CursorLockMode.Locked; 
+        Cursor.visible = false;
+        
     }
     private void Start()
     {
@@ -41,7 +45,29 @@ public class GameManager : MonoBehaviour
         _state = EGameState.GameOver;
         
     }
-    
+
+    public void SwitchGameMode(EGameState gameState)
+    {
+        if (gameState == EGameState.Auto)
+        {
+            Cursor.lockState = CursorLockMode.Confined; 
+            Cursor.visible = true;
+            _state = EGameState.Auto;
+
+            _isTopMode = true;
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.Locked; 
+            Cursor.visible = false;
+            _state = EGameState.Playing;
+            
+            _isTopMode = false;
+        }
+       
+        
+        
+    }
     
     
     private IEnumerator StartToPlay_Coroutine()
