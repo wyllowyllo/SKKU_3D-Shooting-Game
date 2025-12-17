@@ -1,11 +1,12 @@
 using System;
 using UnityEngine;
+using UnityEngine.AI;
 
 /// <summary>
 /// 키보드 누르면 캐릭터 그 방향으로 이동
 /// </summary>
 [RequireComponent(typeof(CharacterController), typeof(PlayerInput))]
-[RequireComponent(typeof(PlayerStats))]
+[RequireComponent(typeof(PlayerStats), typeof(NavMeshAgent))]
 public class PlayerMove : MonoBehaviour
 {
     
@@ -18,7 +19,8 @@ public class PlayerMove : MonoBehaviour
     private PlayerInput _input;
     private PlayerStats _playerStats;
     private Camera _cam;
-
+    private NavMeshAgent _agent;
+    
     // 이동 관련 
     private Vector3 direction;
     private float _yVelocity = 0f;
@@ -55,45 +57,56 @@ public class PlayerMove : MonoBehaviour
         _characterController = GetComponent<CharacterController>();
         _input = GetComponent<PlayerInput>();
         _playerStats = GetComponent<PlayerStats>();
-        _cam = Camera.main;
+        _agent = GetComponent<NavMeshAgent>();
         
+         _cam = Camera.main;
     }
     private void SetMoveDirection()
     {
         _yVelocity += Gravity * Time.deltaTime;
-        
+
         TryJump();
-        
+
         if (GameManager.Instance.IsTopMode)
         {
             if (!_input.Pointed)
             {
-                direction = Vector3.zero;
+                _agent.isStopped = true;
                 return;
             }
-            
+
             Ray ray = _cam.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
 
             if (Physics.Raycast(ray, out hit))
             {
-                Debug.Log(hit.point);
-                direction = (hit.point - transform.position).normalized;
+                _agent.isStopped = false;
+                _agent.SetDestination(hit.point);
             }
-            else direction = Vector3.zero;
+            else
+            {
+                _agent.isStopped = true;
+            }
+
+            return;
         }
         else
         {
             direction = _input.Direction;
             direction = _cam.transform.TransformDirection(direction);
         }
-        
-        
+
+
         direction.y = _yVelocity;
     }
 
     private void ApplyMovement()
     {
+        if (GameManager.Instance.IsTopMode)
+        {
+            return;
+        }
+
         float applySpeed = 1f;
         
         if (_input.Dash && IsMove && IsGrounded)
