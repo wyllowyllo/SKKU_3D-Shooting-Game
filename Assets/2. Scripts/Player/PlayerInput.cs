@@ -12,7 +12,7 @@ public class PlayerInput : MonoBehaviour
     
     public bool BombThrow => Input.GetKeyDown(KeyCode.G);
     public bool Fire => Input.GetMouseButton(0) && GameManager.Instance.State == EGameState.Playing;
-    public bool Pointed => Input.GetMouseButton(0) &&  GameManager.Instance.State == EGameState.Auto;
+    public bool Pointed => Input.GetMouseButton(1) &&  GameManager.Instance.State == EGameState.Auto;
     public bool Reload => Input.GetKeyDown(KeyCode.R);
     public bool ViewToggle => Input.GetKeyDown(KeyCode.T);
     public bool TopMode => Input.GetKeyDown(KeyCode.K);

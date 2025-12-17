@@ -1,5 +1,7 @@
 using System;
 using System.Collections;
+using Unity.VisualScripting;
+using UnityEditor.Animations;
 using UnityEngine;
 using UnityEngine.AI;
 using Random = UnityEngine.Random;
@@ -35,6 +37,7 @@ public class MonsterStateController : MonoBehaviour
     private MonsterMove _moveController;
     private MonsterCombat _combatController;
     private MonsterStats _stats;
+    private Animator _animator;
 
 
     // 상수
@@ -62,7 +65,8 @@ public class MonsterStateController : MonoBehaviour
 
     private void Update()
     {
-        if (GameManager.Instance.State != EGameState.Playing) return;
+        if (GameManager.Instance.State != EGameState.Playing
+            && GameManager.Instance.State != EGameState.Auto) return;
         if (_traceController.Target == null) return;
         
         // 몬스터의 상태에 따라 다른 메서드를 호출한다.
@@ -128,10 +132,11 @@ public class MonsterStateController : MonoBehaviour
         if (_traceController.Detected)
         {
             ChangeState(EMonsterState.Trace);
+            _animator?.SetTrigger("IdleToTrace");
             return;
         }
         
-        // TODO : Idle anim
+        
     }
 
     private void Patrol()
@@ -139,6 +144,7 @@ public class MonsterStateController : MonoBehaviour
         if (_traceController.Detected)
         {
             ChangeState(EMonsterState.Trace);
+            _animator?.SetTrigger("IdleToTrace");
             return;
         }
         
@@ -168,6 +174,7 @@ public class MonsterStateController : MonoBehaviour
         if (distance <= _combatController.AttackDistance)
         {
             ChangeState(EMonsterState.Attack);
+            _animator?.SetTrigger("TraceToAttackIdle");
             return;
         }
         else if (!_traceController.Detected)
@@ -222,6 +229,7 @@ public class MonsterStateController : MonoBehaviour
         if (distance > _combatController.AttackDistance)
         {
             ChangeState(EMonsterState.Trace);
+            _animator?.SetTrigger("Attack");
             return;
         }
         
@@ -254,6 +262,7 @@ public class MonsterStateController : MonoBehaviour
         _moveController = GetComponent<MonsterMove>();
         _combatController = GetComponent<MonsterCombat>();
         _stats = GetComponent<MonsterStats>();
+        _animator = GetComponentInChildren<Animator>();
         
         _originalPosition = transform.position;
         _patrolTarget = GetRandomPatrolPosition();
