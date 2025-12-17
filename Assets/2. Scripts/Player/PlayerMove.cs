@@ -58,8 +58,10 @@ public class PlayerMove : MonoBehaviour
         _input = GetComponent<PlayerInput>();
         _playerStats = GetComponent<PlayerStats>();
         _agent = GetComponent<NavMeshAgent>();
-        
-         _cam = Camera.main;
+
+        _cam = Camera.main;
+
+        _agent.speed = _playerStats.MoveSpeed;
     }
     private void SetMoveDirection()
     {

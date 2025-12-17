@@ -250,6 +250,8 @@ public class MonsterStateController : MonoBehaviour
        {
            State = EMonsterState.Trace;
        }
+       
+       _animator?.SetTrigger("Hit");
     }
 
     private void Die()
