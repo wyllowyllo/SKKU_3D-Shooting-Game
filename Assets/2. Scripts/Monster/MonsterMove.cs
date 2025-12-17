@@ -71,6 +71,10 @@ public class MonsterMove : MonoBehaviour
         curPos.y += arc * 5f;
 
         transform.position = curPos;
+        
+        Vector3 direction = (_jumpEndPos - curPos).normalized;
+        direction.y = 0;
+        RotateToDirection(direction);
     }
 
     public void JumpEnd()
@@ -93,6 +97,7 @@ public class MonsterMove : MonoBehaviour
         Pause();
         
         _jumpDuration = Vector3.Distance(_jumpStartPos, _jumpEndPos) / MoveSpeed;
+        
         
         return true;
     }
