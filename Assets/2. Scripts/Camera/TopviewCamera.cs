@@ -2,7 +2,7 @@ using TMPro;
 using UnityEngine;
 using DG.Tweening;
 
-public class MinimapCamera : MonoBehaviour
+public class TopviewCamera : MonoBehaviour
 {
     [Header("참조")]
     [SerializeField] private Transform _target;

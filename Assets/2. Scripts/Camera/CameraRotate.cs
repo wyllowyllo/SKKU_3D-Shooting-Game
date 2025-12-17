@@ -44,42 +44,25 @@ public class CameraRotate : MonoBehaviour
         
         Cursor.lockState = CursorLockMode.Locked; 
         Cursor.visible = false;
-        /*Cursor.lockState = CursorLockMode.Confined;
-        Cursor.visible = true;*/
     }
 
     private void RotateView()
     {
-        // 1. 마우스 입력 받기
+        
+        transform.eulerAngles = GetEulerAngles();
+    }
+
+    private Vector3 GetEulerAngles()
+    {
         float mouseX = _input.MouseX;
         float mouseY = _input.MouseY;
         
-        // 2. 마우스 입력을 누적한다 (누적된 회전 방향)
         _accumulationX += mouseX * _rotateSpeed * Time.deltaTime;
         _accumulationY -= mouseY * _rotateSpeed * Time.deltaTime;
-       
-        // 3. 사람처럼 -80 ~ 80 도 사이로 제한한다.
+        
         _accumulationY = Mathf.Clamp(_accumulationY, -MaxVerticalRotationAngle, MaxVerticalRotationAngle);
-       
-        // 4. 회전 방향으로 카메라 회전하기
-        // 새로운 위치 = 이전 위치 + (속력 * 방향 * 시간)
-        // 새로운 회전 = 이전 회전 + (속력 * 방향 * 시간)
-        transform.eulerAngles = new Vector3(_accumulationY, _accumulationX, 0);
-        //transform.localRotation = Quaternion.Euler(_accumulationY, _accumulationX, 0f);
-       
-        /*// 2. 입력에 따른 회전 방향 만들기
-        Vector3 direction = new Vector3(-mouseY, mouseX, 0f);
-
-
-        // 3. 회전 방향으로 카메라 회전하기
-        // 새로운 위치 = 이전 위치 + (속력 * 방향 * 시간)
-        // 새로운 회전 = 이전 회전 + (속력 * 방향 * 시간)
-        Vector3 eulerAngle =  transform.eulerAngles + _rotateSpeed * direction * Time.deltaTime;
-        eulerAngle.y = Mathf.Clamp(eulerAngle.y, -90f, 90f);
-        transform.eulerAngles = eulerAngle;*/
-       
-        // 쿼너티언(사원수) : 쓰는 이유는 짐벌락 현상 방지
+        
+        return new Vector3(_accumulationY, _accumulationX, 0);
     }
-
     
 }

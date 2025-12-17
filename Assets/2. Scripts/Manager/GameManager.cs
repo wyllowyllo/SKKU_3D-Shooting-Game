@@ -9,8 +9,10 @@ public class GameManager : MonoBehaviour
     
     [SerializeField] private EGameState _state;
     [SerializeField] private TextMeshProUGUI _stateText;
-    public EGameState State => _state;
 
+    private bool _isTopMode = false;
+    public EGameState State => _state;
+    public bool IsTopMode{ get => _isTopMode; set => _isTopMode = value; }
     public static GameManager Instance => _instance;
 
 
@@ -39,6 +41,8 @@ public class GameManager : MonoBehaviour
         _state = EGameState.GameOver;
         
     }
+    
+    
     
     private IEnumerator StartToPlay_Coroutine()
     {
