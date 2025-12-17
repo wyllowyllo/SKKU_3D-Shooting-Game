@@ -17,7 +17,7 @@ using Random = UnityEngine.Random;
 // 1. 함수는 한 가지 일만 잘해야 한다.
 // 2. 상태별 행동을 함수로 만든다.
 
-[RequireComponent(typeof(CharacterController), typeof(MonsterMove), typeof(NavMeshAgent))]
+[RequireComponent(typeof(CharacterController), typeof(MonsterMove))]
 [RequireComponent(typeof(TraceController), typeof(MonsterCombat), typeof(MonsterStats))]
 public class MonsterStateController : MonoBehaviour
 {
@@ -28,7 +28,7 @@ public class MonsterStateController : MonoBehaviour
     [SerializeField] private float _patrolRadius = 10f;
     [SerializeField] private float _patrolWaitTime = 2f;
     
-    private NavMeshAgent _agent;
+    
 
     // 참조
     private TraceController _traceController;
@@ -43,16 +43,14 @@ public class MonsterStateController : MonoBehaviour
     // 타이머
     private float _attackTimer;
     private float _patrolWaitTimer;
-    private float _jumpSession;
+    private float _jumpTimer;
     
     private Vector3 _originalPosition;
     private Vector3 _knockBackDir;
     private float _knockBackTimer;
     private Vector3 _patrolTarget;
     
-    private Vector3 _jumpStartPos;
-    private Vector3 _jumpEndPos;
-    private float _jumpDuration;
+
     
     
     public EMonsterState State { get => _state; set => _state = value; }
@@ -108,10 +106,7 @@ public class MonsterStateController : MonoBehaviour
         if (State == EMonsterState.Death) return false;
         if (info.Damage <= 0f) return false;
 
-        // 둘이 웬만하면 같이 쓰자
-        _agent.isStopped = true; //이동 일시정지
-        _agent.ResetPath(); // 경로(목적지) 삭제
-
+        
         if (_stats.IsLive)
         {
             ChangeState(EMonsterState.Hit);
@@ -160,8 +155,8 @@ public class MonsterStateController : MonoBehaviour
         }
         else
         {
-            //_moveController.MoveToTarget(_patrolTarget);
-            _agent.SetDestination(_patrolTarget);
+            _moveController.MoveToTarget(_patrolTarget);
+           
         }
     }
 
@@ -181,30 +176,17 @@ public class MonsterStateController : MonoBehaviour
             return;
         }
         
-        //_moveController.MoveToTarget(_traceController.TargetPosition);
-       
+        
 
-        if (_agent.isOnOffMeshLink)
+        if (_moveController.IsOnJumpTrigger())
         {
-            OffMeshLinkData linkData = _agent.currentOffMeshLinkData;
-            _jumpStartPos = linkData.startPos;
-            _jumpEndPos = linkData.endPos;
-
-            if (_jumpEndPos.y > _jumpStartPos.y)
-            {
-                _agent.isStopped = true;
-                _agent.ResetPath();
+            _jumpTimer = 0f;
+            ChangeState(EMonsterState.Jump);
                 
-                
-                // 1. 점프 거리와 내 이동속도를 계산해서 점프 시간을 구한다
-                _jumpDuration = Vector3.Distance(_jumpStartPos, _jumpEndPos) / _moveController.MoveSpeed;
-                _jumpSession = 0f;
-                ChangeState(EMonsterState.Jump);
-                return;
-            }
+            return;
         }
         
-        _agent.SetDestination(_traceController.TargetPosition); // 방향 설정 필요 없이 도착지말 설정해 주면 네비게이션 시스템에 의해 자동으로 이동한다.
+        _moveController.MoveToTarget(_traceController.TargetPosition);
     }
     private void Comeback()
     {
@@ -216,32 +198,22 @@ public class MonsterStateController : MonoBehaviour
         }
 
 
-       // _moveController.MoveToTarget(_originalPosition);
-        _agent.SetDestination(_originalPosition);
+        _moveController.MoveToTarget(_originalPosition);
     }
 
     private void Jump()
     {
-        _jumpSession += Time.deltaTime / _jumpDuration;
+        _jumpTimer += Time.deltaTime / _moveController.JumpDuration;
         
-        if (_jumpSession >= 1f)
+        if (_jumpTimer >= 1f)
         {
-            // 3. 이동 후 다시 Trace
-            transform.position = _jumpEndPos;
-            _agent.CompleteOffMeshLink();
-            _agent.isStopped = false;
+            _moveController.JumpEnd();
            
             ChangeState(EMonsterState.Trace);
             return;
         }
         
-        // 2. 점프 시간동안 포물선으로 이동한다
-       Vector3 curPos = Vector3.Lerp(_jumpStartPos, _jumpEndPos, _jumpSession);
-       
-       float arc = Mathf.Sin(_jumpSession * Mathf.PI); 
-       curPos.y += arc * 5f;
-
-       transform.position = curPos;
+       _moveController.Jump(_jumpTimer);
     }
     
     private void Attack()
@@ -282,7 +254,6 @@ public class MonsterStateController : MonoBehaviour
         _moveController = GetComponent<MonsterMove>();
         _combatController = GetComponent<MonsterCombat>();
         _stats = GetComponent<MonsterStats>();
-        _agent = GetComponent<NavMeshAgent>();
         
         _originalPosition = transform.position;
         _patrolTarget = GetRandomPatrolPosition();
