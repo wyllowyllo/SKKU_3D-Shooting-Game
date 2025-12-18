@@ -53,6 +53,8 @@ public class MonsterStateController : MonoBehaviour
     private float _knockBackTimer;
     private Vector3 _patrolTarget;
     
+    // 플래그 변수
+    private bool _isDie;
 
     
     
@@ -67,6 +69,7 @@ public class MonsterStateController : MonoBehaviour
     {
         if (GameManager.Instance.State != EGameState.Playing) return;
         if (_traceController.Target == null) return;
+        if (_isDie) return;
         
         // 몬스터의 상태에 따라 다른 메서드를 호출한다.
         switch (State)
@@ -143,7 +146,7 @@ public class MonsterStateController : MonoBehaviour
         if (_traceController.Detected)
         {
             ChangeState(EMonsterState.Trace);
-            _animator?.SetTrigger("IdleToTrace");
+            _animator?.SetTrigger("WalkToTrace");
             return;
         }
         
@@ -151,7 +154,7 @@ public class MonsterStateController : MonoBehaviour
         if (distanceToTarget <= DistanceEpsilon)
         {
             _patrolWaitTimer += Time.deltaTime;
-
+            _animator?.SetTrigger("WalkToIdle");
             if (_patrolWaitTimer >= _patrolWaitTime)
             {
                 _patrolTarget = GetRandomPatrolPosition();
@@ -161,14 +164,12 @@ public class MonsterStateController : MonoBehaviour
         else
         {
             _moveController.MoveToTarget(_patrolTarget);
-           
+            _animator?.SetTrigger("IdleToWalk");
         }
     }
 
     private void Trace()
     {
-        // TODO : Run anim
-        
         float distance = _traceController.DistanceFromTarget;
         if (distance <= _combatController.AttackDistance)
         {
@@ -179,6 +180,7 @@ public class MonsterStateController : MonoBehaviour
         else if (!_traceController.Detected)
         {
             ChangeState(EMonsterState.Comeback);
+            _animator?.SetTrigger("TraceToWalk");
             return;
         }
         
@@ -186,9 +188,10 @@ public class MonsterStateController : MonoBehaviour
 
         if (_moveController.IsOnJumpTrigger())
         {
-            Debug.Log("Jump!");
+            
             _jumpTimer = 0f;
             ChangeState(EMonsterState.Jump);
+            _animator?.SetTrigger("TraceToJump");
                 
             return;
         }
@@ -201,6 +204,7 @@ public class MonsterStateController : MonoBehaviour
         if (distance <= DistanceEpsilon)
         {
             ChangeState(EMonsterState.Patrol);
+            _animator?.SetTrigger("WalkToIdle");
             return;
         }
 
@@ -217,6 +221,7 @@ public class MonsterStateController : MonoBehaviour
             _moveController.JumpEnd();
            
             ChangeState(EMonsterState.Trace);
+            _animator?.SetTrigger("JumpToTrace");
             return;
         }
         
@@ -229,14 +234,15 @@ public class MonsterStateController : MonoBehaviour
         if (distance > _combatController.AttackDistance)
         {
             ChangeState(EMonsterState.Trace);
+            _animator?.SetTrigger("AttackToIdle");
             return;
         }
 
         _attackTimer += Time.deltaTime;
         if (_attackTimer >= _combatController.AttackSpeed)
         {
-            _animator?.SetTrigger("Attack");
             _combatController.Attack();
+            _animator?.SetTrigger("Attack");
             _attackTimer = 0f;
         }
 
@@ -256,6 +262,23 @@ public class MonsterStateController : MonoBehaviour
 
     private void Die()
     {
+        _isDie = true;
+        StartCoroutine(Die_Coroutnie());
+    }
+
+    private IEnumerator Die_Coroutnie()
+    {
+        if (_animator == null) yield break;
+        
+        _animator?.SetTrigger("Death");
+        
+        yield return null; // Play 적용 대기 1프레임
+
+        AnimatorStateInfo stateInfo = _animator.GetCurrentAnimatorStateInfo(0);
+        float length = stateInfo.length;
+
+        yield return new WaitForSeconds(length);
+        
         Destroy(gameObject);
     }
     private void Init()
