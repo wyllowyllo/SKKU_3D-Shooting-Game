@@ -124,6 +124,7 @@ public class MonsterStateController : MonoBehaviour
         }
         else
         {
+            _animator?.SetBool("Hit", false);
             ChangeState(EMonsterState.Death);
         }
 
@@ -269,6 +270,11 @@ public class MonsterStateController : MonoBehaviour
     {
         _isDie = true;
         _moveController.Pause();
+
+       
+       AnimReset();  // 다른 애니메이션 파라미터 리셋
+
+        _animator?.SetTrigger("Death");
         StartCoroutine(Die_Coroutnie());
     }
 
@@ -276,7 +282,7 @@ public class MonsterStateController : MonoBehaviour
     {
         if (_animator == null) yield break;
         
-        _animator?.SetTrigger("Death");
+       
         
         yield return null; // Play 적용 대기 1프레임
 
@@ -320,7 +326,15 @@ public class MonsterStateController : MonoBehaviour
             _attackTimer = _combatController.AttackSpeed;
         }
     }
-    
+
+    private void AnimReset()
+    {
+        _animator?.SetBool("Hit", false);
+        _animator?.SetBool("AttackIdle", false);
+        _animator?.SetBool("Trace", false);
+        _animator?.SetBool("Patrol", false);
+        _animator?.SetBool("Jump", false);
+    }
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
