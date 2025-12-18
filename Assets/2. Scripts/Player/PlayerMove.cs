@@ -97,7 +97,7 @@ public class PlayerMove : MonoBehaviour
         else
         {
             direction = _input.Direction;
-            _animator.SetFloat("Speed", direction.magnitude);
+           
             
             direction.Normalize();
             direction = _cam.transform.TransformDirection(direction);
@@ -111,11 +111,12 @@ public class PlayerMove : MonoBehaviour
     {
         if (GameManager.Instance.IsTopMode)
         {
+            UpdateAnimationForTopMode();
             return;
         }
 
         float applySpeed = 1f;
-        
+
         if (_input.Dash && IsMove && IsGrounded)
         {
             if (_playerStats.StaminaStat.Value > 0)
@@ -132,10 +133,27 @@ public class PlayerMove : MonoBehaviour
             {
                 _playerStats.StaminaStat.Regenerate(Time.deltaTime);
             }
-            
+
         }
-        
+
         _characterController.Move(direction * applySpeed * Time.deltaTime);
+        UpdateAnimation();
+    }
+
+    private void UpdateAnimation()
+    {
+        Vector3 horizontalVelocity = new Vector3(_characterController.velocity.x, 0, _characterController.velocity.z);
+        float normalizedSpeed = horizontalVelocity.magnitude / _playerStats.RunSpeed;
+
+        _animator.SetFloat("Speed", normalizedSpeed);
+    }
+
+    private void UpdateAnimationForTopMode()
+    {
+        Vector3 horizontalVelocity = new Vector3(_agent.velocity.x, 0, _agent.velocity.z);
+        float normalizedSpeed = horizontalVelocity.magnitude / _playerStats.RunSpeed;
+
+        _animator.SetFloat("Speed", normalizedSpeed);
     }
 
     private void Jump()
