@@ -154,7 +154,7 @@ public class MonsterStateController : MonoBehaviour
         if (distanceToTarget <= DistanceEpsilon)
         {
             _patrolWaitTimer += Time.deltaTime;
-            _animator?.SetTrigger("WalkToIdle");
+            _animator?.SetBool("Patrol", false);
             if (_patrolWaitTimer >= _patrolWaitTime)
             {
                 _patrolTarget = GetRandomPatrolPosition();
@@ -164,7 +164,7 @@ public class MonsterStateController : MonoBehaviour
         else
         {
             _moveController.MoveToTarget(_patrolTarget);
-            _animator?.SetTrigger("IdleToWalk");
+            _animator?.SetBool("Patrol", true);
         }
     }
 
