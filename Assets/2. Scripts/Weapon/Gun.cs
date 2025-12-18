@@ -21,10 +21,10 @@ public class Gun : MonoBehaviour
     // 이벤트
     private UnityEvent _onReload;
     private UnityEvent _onFire;
+    private UnityEvent<bool> _onBangEffect;
 
     // 참조
     private Transform _cam;
-   
     
     // 현재 총 상태
     private int _remainBullets;
@@ -41,11 +41,14 @@ public class Gun : MonoBehaviour
     // 프로퍼티
     public UnityEvent OnReload => _onReload;
     public UnityEvent OnFire => _onFire;
+    public UnityEvent<bool> OnBangEffect => _onBangEffect;
+   
     public int RemainBullets => _remainBullets;
     public int TotalBulletCnt => _totalBulletCnt;
     public float ReloadDuration => _reloadDuration;
 
-   
+  
+
 
     private void Awake()
     {
@@ -153,23 +156,28 @@ public class Gun : MonoBehaviour
     private IEnumerator MuzzleFlash_Coroutine()
     {
         GameObject muzzleFlash = _muzzleEffects[Random.Range(0, _muzzleEffects.Count)];
-        
+        OnBangEffect?.Invoke(true);
         muzzleFlash.SetActive(true);
+        
         
         yield return new WaitForSeconds(0.06f);
         
+        OnBangEffect?.Invoke(false);
         muzzleFlash.SetActive(false);
+        
     }
     private void Init()
     {
+        
         _bulletCntForAmmo = _gunStat.BulletCntForAmmo;
         _remainBullets = _bulletCntForAmmo;
         _totalBulletCnt = _gunStat.AmmoCnt *_bulletCntForAmmo;
         _reloadDuration = _gunStat.ReloadTime;
-       
+        
         _onReload = new UnityEvent();
         _onFire = new UnityEvent();
-        
+        _onBangEffect = new UnityEvent<bool>();
+
     }
 
     public void CamInit(Transform cam)

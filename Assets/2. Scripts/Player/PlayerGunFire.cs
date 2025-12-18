@@ -17,13 +17,17 @@ public class PlayerGunFire : MonoBehaviour
     
     // 참조
     private PlayerInput _input;
-  
+    private Animator _animator;
     
     private void Awake()
     {
         Init();
     }
 
+    private void Start()
+    {
+        _curGun.OnBangEffect.AddListener(ToggleFireAnim);
+    }
     private void Update()
     {
         if (GameManager.Instance.State != EGameState.Playing) return;
@@ -43,7 +47,8 @@ public class PlayerGunFire : MonoBehaviour
         }
         
         _input = GetComponent<PlayerInput>();
-
+        _animator = GetComponentInChildren<Animator>();
+        
         if (_camRotate == null)
         {
             _camRotate = Camera.main.GetComponent<CameraRotate>();
@@ -71,5 +76,10 @@ public class PlayerGunFire : MonoBehaviour
         if (!_input.Reload) return;
         
         _curGun?.Reload();
+    }
+
+    private void ToggleFireAnim(bool isOn)
+    {
+        _animator?.SetBool("Fire", isOn);
     }
 }
