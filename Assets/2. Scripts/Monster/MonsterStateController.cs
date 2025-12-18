@@ -65,8 +65,7 @@ public class MonsterStateController : MonoBehaviour
 
     private void Update()
     {
-        if (GameManager.Instance.State != EGameState.Playing
-            && GameManager.Instance.State != EGameState.Auto) return;
+        if (GameManager.Instance.State != EGameState.Playing) return;
         if (_traceController.Target == null) return;
         
         // 몬스터의 상태에 따라 다른 메서드를 호출한다.
@@ -187,6 +186,7 @@ public class MonsterStateController : MonoBehaviour
 
         if (_moveController.IsOnJumpTrigger())
         {
+            Debug.Log("Jump!");
             _jumpTimer = 0f;
             ChangeState(EMonsterState.Jump);
                 
@@ -229,17 +229,17 @@ public class MonsterStateController : MonoBehaviour
         if (distance > _combatController.AttackDistance)
         {
             ChangeState(EMonsterState.Trace);
-            _animator?.SetTrigger("Attack");
             return;
         }
-        
+
         _attackTimer += Time.deltaTime;
         if (_attackTimer >= _combatController.AttackSpeed)
         {
+            _animator?.SetTrigger("Attack");
             _combatController.Attack();
             _attackTimer = 0f;
         }
-        
+
     }
     private void Hit()
     {

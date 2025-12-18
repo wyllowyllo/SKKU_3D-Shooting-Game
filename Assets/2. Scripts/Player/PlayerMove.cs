@@ -20,6 +20,7 @@ public class PlayerMove : MonoBehaviour
     private PlayerStats _playerStats;
     private Camera _cam;
     private NavMeshAgent _agent;
+    private Animator _animator;
     
     // 이동 관련 
     private Vector3 direction;
@@ -58,7 +59,8 @@ public class PlayerMove : MonoBehaviour
         _input = GetComponent<PlayerInput>();
         _playerStats = GetComponent<PlayerStats>();
         _agent = GetComponent<NavMeshAgent>();
-
+        _animator = GetComponentInChildren<Animator>();
+        
         _cam = Camera.main;
 
         _agent.speed = _playerStats.MoveSpeed;
@@ -95,6 +97,9 @@ public class PlayerMove : MonoBehaviour
         else
         {
             direction = _input.Direction;
+            _animator.SetFloat("Speed", direction.magnitude);
+            
+            direction.Normalize();
             direction = _cam.transform.TransformDirection(direction);
         }
 

@@ -22,7 +22,7 @@ public class PlayerInput : MonoBehaviour
     {
         get
         {
-            return new Vector3(X, 0, Z).normalized;
+            return new Vector3(X, 0, Z);
         }
     }
     
