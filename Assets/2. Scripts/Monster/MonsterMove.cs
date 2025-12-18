@@ -107,7 +107,7 @@ public class MonsterMove : MonoBehaviour
         _agent = GetComponent<NavMeshAgent>();
     }
 
-    private void Pause()
+    public void Pause()
     {
         // 둘이 웬만하면 같이 쓰자
        _agent.isStopped = true; //이동 일시정지

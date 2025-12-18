@@ -268,6 +268,7 @@ public class MonsterStateController : MonoBehaviour
     private void Die()
     {
         _isDie = true;
+        _moveController.Pause();
         StartCoroutine(Die_Coroutnie());
     }
 
