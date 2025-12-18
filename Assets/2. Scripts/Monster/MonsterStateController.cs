@@ -146,7 +146,7 @@ public class MonsterStateController : MonoBehaviour
         if (_traceController.Detected)
         {
             ChangeState(EMonsterState.Trace);
-            _animator?.SetTrigger("WalkToTrace");
+            _animator?.SetBool("Trace", true);
             return;
         }
         
@@ -174,13 +174,14 @@ public class MonsterStateController : MonoBehaviour
         if (distance <= _combatController.AttackDistance)
         {
             ChangeState(EMonsterState.Attack);
-            _animator?.SetTrigger("TraceToAttackIdle");
+            _animator?.SetBool("AttackIdle", true);
             return;
         }
         else if (!_traceController.Detected)
         {
             ChangeState(EMonsterState.Comeback);
-            _animator?.SetTrigger("TraceToWalk");
+            _animator?.SetBool("Trace", false);
+            _animator?.SetBool("Patrol", true);
             return;
         }
         
@@ -191,7 +192,7 @@ public class MonsterStateController : MonoBehaviour
             
             _jumpTimer = 0f;
             ChangeState(EMonsterState.Jump);
-            _animator?.SetTrigger("TraceToJump");
+            _animator?.SetBool("Jump", true);
                 
             return;
         }
@@ -204,7 +205,7 @@ public class MonsterStateController : MonoBehaviour
         if (distance <= DistanceEpsilon)
         {
             ChangeState(EMonsterState.Patrol);
-            _animator?.SetTrigger("WalkToIdle");
+            _animator?.SetBool("Patrol", false);
             return;
         }
 
@@ -221,7 +222,7 @@ public class MonsterStateController : MonoBehaviour
             _moveController.JumpEnd();
            
             ChangeState(EMonsterState.Trace);
-            _animator?.SetTrigger("JumpToTrace");
+            _animator?.SetBool("Jump", false);
             return;
         }
         
@@ -234,7 +235,7 @@ public class MonsterStateController : MonoBehaviour
         if (distance > _combatController.AttackDistance)
         {
             ChangeState(EMonsterState.Trace);
-            _animator?.SetTrigger("AttackToIdle");
+            _animator?.SetBool("AttackIdle", false);
             return;
         }
 
