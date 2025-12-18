@@ -19,6 +19,8 @@ public class PlayerStats : MonoBehaviour, IStat
    [Header("UI 이펙트")]
    [SerializeField] private BloodScreenEffect _bloodScreenEffect;
 
+   private Animator _animator;
+   
    //이벤트
    private UnityEvent _hitEvent = new UnityEvent();
    
@@ -67,6 +69,8 @@ public class PlayerStats : MonoBehaviour, IStat
         _bloodScreenEffect?.ShowHitEffect();
         HitEvent?.Invoke();
 
+        // 레이어 가중치
+        _animator?.SetLayerWeight(2, healthStat.Value / HealthStat.MaxValue);
         Debug.Log("몬스터에게 피격됨!");
       }
       else

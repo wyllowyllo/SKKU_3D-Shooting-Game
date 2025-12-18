@@ -42,23 +42,23 @@ public class MonsterMove : MonoBehaviour
     public void MoveToTarget(Vector3 targetPosition)
     {
         // TODO : Run anim
-        
+
         Vector3 direction = (targetPosition - transform.position).normalized;
         direction.y = 0;
         //_characterController.Move(direction * MoveSpeed * Time.deltaTime);*/
-        
+
         _agent.SetDestination(targetPosition);
-        
+
         RotateToDirection(direction);
     }
 
     public void Knockback(Vector3 knockbackDir)
     {
         Pause();
-        
+
         Vector3 movement = knockbackDir * (_knockBackForce * Time.deltaTime);
         _characterController.Move(movement);
-        
+
         //RotateToDirection(knockbackDir * HitRotateFactor);
     }
 

@@ -47,10 +47,10 @@ public class MonsterStateController : MonoBehaviour
     private float _attackTimer;
     private float _patrolWaitTimer;
     private float _jumpTimer;
-    
+    private float _knockBackTimer;
+
     private Vector3 _originalPosition;
     private Vector3 _knockBackDir;
-    private float _knockBackTimer;
     private Vector3 _patrolTarget;
     
     // 플래그 변수
@@ -112,13 +112,15 @@ public class MonsterStateController : MonoBehaviour
         if (State == EMonsterState.Death) return false;
         if (info.Damage <= 0f) return false;
 
-        
+
         if (_stats.IsLive)
         {
             ChangeState(EMonsterState.Hit);
 
             _knockBackDir = info.HitDirection;
             _knockBackTimer = 0f;
+
+            _animator?.SetBool("Hit", true);
         }
         else
         {
@@ -251,15 +253,17 @@ public class MonsterStateController : MonoBehaviour
     private void Hit()
     {
        _moveController.Knockback(_knockBackDir);
-       
+
        _knockBackTimer += Time.deltaTime;
-       if (_knockBackTimer > _moveController.KnockbackDuration)
+       if (_knockBackTimer >= _moveController.KnockbackDuration)
        {
-           State = EMonsterState.Trace;
+
+           ChangeState(EMonsterState.Trace);
+           _animator?.SetBool("Hit", false);
        }
-       
-       _animator?.SetTrigger("Hit");
     }
+
+   
 
     private void Die()
     {
