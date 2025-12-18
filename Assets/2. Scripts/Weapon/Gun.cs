@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -14,6 +15,9 @@ public class Gun : MonoBehaviour
     [SerializeField] private CameraRecoil _cameraRecoil;
    
 
+    [Header("Muzzle Effects")]
+    [SerializeField] private List<GameObject> _muzzleEffects;
+    
     // 이벤트
     private UnityEvent _onReload;
     private UnityEvent _onFire;
@@ -69,6 +73,8 @@ public class Gun : MonoBehaviour
 
        _cameraRecoil?.AddRecoil(_gunStat.UpRecoilStrength, _gunStat.SideRecoilStrength, _gunStat.RecoilDuration);
        _onFire?.Invoke();
+       
+       StartCoroutine(MuzzleFlash_Coroutine());
        
         _remainBullets--;
         _shotTimer = 0f;
@@ -144,6 +150,16 @@ public class Gun : MonoBehaviour
         _isReloading = false;
     }
 
+    private IEnumerator MuzzleFlash_Coroutine()
+    {
+        GameObject muzzleFlash = _muzzleEffects[Random.Range(0, _muzzleEffects.Count)];
+        
+        muzzleFlash.SetActive(true);
+        
+        yield return new WaitForSeconds(0.06f);
+        
+        muzzleFlash.SetActive(false);
+    }
     private void Init()
     {
         _bulletCntForAmmo = _gunStat.BulletCntForAmmo;

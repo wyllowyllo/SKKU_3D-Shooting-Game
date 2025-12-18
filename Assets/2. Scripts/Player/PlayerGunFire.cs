@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -10,8 +11,10 @@ public class PlayerGunFire : MonoBehaviour
     [SerializeField, DisallowNull] private Gun _curGun;
     
     [Header("카메라 참조")]
-
     [SerializeField] private CameraRotate _camRotate;
+    
+    
+    
     // 참조
     private PlayerInput _input;
   
