@@ -47,12 +47,14 @@ public class PlayerGunFire : MonoBehaviour
             _zoomMode = EZoomMode.ZoomIn;
             _normalCrosshair.SetActive(false);
             _zoomInCrosshair.SetActive(true);
+            Camera.main.fieldOfView = 30f;
         }
         else
         {
             _zoomMode = EZoomMode.Normal;
             _normalCrosshair.SetActive(true);
             _zoomInCrosshair.SetActive(false);
+            Camera.main.fieldOfView = 60f;
         }
     }
 
