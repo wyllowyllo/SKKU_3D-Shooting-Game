@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -30,7 +31,7 @@ public class PlayerMove : MonoBehaviour
     // 플래그 변수
     private bool _isFirstJump;
     private bool _isSecondJump;
-    
+    private bool _isJumping;
     
     // 프로퍼티;
     //public float CurStamina => _curStamina;
@@ -39,6 +40,7 @@ public class PlayerMove : MonoBehaviour
     
     // 상수
     private const float Gravity = -9.81f;
+    private const float JumpDelay =  0.2f;
     
     private void Awake()
     {
@@ -161,8 +163,10 @@ public class PlayerMove : MonoBehaviour
         
         if (!_isFirstJump)
         {
-            _yVelocity = _playerStats.JumpPower;
-            _isFirstJump = true;
+            //_yVelocity = _playerStats.JumpPower;
+            StartCoroutine(ApplyJumpPower(JumpDelay));
+            
+            _animator?.SetTrigger("Jump"); 
         }
         else if (!_isSecondJump)
         {
@@ -172,24 +176,45 @@ public class PlayerMove : MonoBehaviour
                 return;
             }
             
-            _yVelocity = _playerStats.JumpPower;
+            //_yVelocity = _playerStats.JumpPower;
+            StartCoroutine(ApplyJumpPower(0f));
             _isSecondJump = true;
+           
         }
+        
+       
     }
     
     private void TryJump()
     {
-        // 점프 상태 업데이트
-        if (IsGrounded)
+     
+        if (!IsGrounded && (_isFirstJump || _isSecondJump))
         {
+            _isJumping = true;
+        }
+        
+        // 점프 상태 업데이트
+        if (_isJumping && IsGrounded)
+        {
+            _animator?.SetTrigger("Land");
+            _isJumping = false;
+            
             _isFirstJump = false;
             _isSecondJump = false;
+            
         }
 
         // 점프 적용
         if (!_input.Jump) return;
         
         Jump();
+    }
+
+    private IEnumerator ApplyJumpPower(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        _yVelocity = _playerStats.JumpPower;
+        _isFirstJump = true;
     }
 
    
