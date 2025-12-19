@@ -2160,7 +2160,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400060, guid: fcb334eb247ae3e488abb081c847cf09, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 1
+      value: 0.9659258
       objectReference: {fileID: 0}
     - target: {fileID: 400060, guid: fcb334eb247ae3e488abb081c847cf09, type: 3}
       propertyPath: m_LocalRotation.x
@@ -2168,7 +2168,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400060, guid: fcb334eb247ae3e488abb081c847cf09, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: 0.2588191
       objectReference: {fileID: 0}
     - target: {fileID: 400060, guid: fcb334eb247ae3e488abb081c847cf09, type: 3}
       propertyPath: m_LocalRotation.z
@@ -2180,7 +2180,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400060, guid: fcb334eb247ae3e488abb081c847cf09, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 400060, guid: fcb334eb247ae3e488abb081c847cf09, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
@@ -3639,7 +3639,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &716874857
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4221,7 +4221,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 648e3477f080d8248bb48c095d6ee20f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerStats: {fileID: 2104008743}
+  playerDamagables: {fileID: 0}
   _hitFlashIntensity: 0.8
   _hitFlashDuration: 0.3
   _hitFadeOutDuration: 0.5
@@ -4974,7 +4974,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &977139790
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7503,17 +7503,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d5a59563a611d63448f24023382a4da8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &2104008743 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3814615052058282938, guid: 3a7ddd71f2ade844187e4a6addc1b145, type: 3}
-  m_PrefabInstance: {fileID: 7645635841843408335}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2f819a475c394352af4a85684e193e3a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1001 &6131698072213244610
