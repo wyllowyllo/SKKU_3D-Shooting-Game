@@ -7,7 +7,7 @@ using UnityEngine.AI;
 /// 키보드 누르면 캐릭터 그 방향으로 이동
 /// </summary>
 [RequireComponent(typeof(CharacterController), typeof(PlayerInput))]
-[RequireComponent(typeof(PlayerStats), typeof(NavMeshAgent))]
+[RequireComponent(typeof(PlayerDamagables), typeof(NavMeshAgent))]
 public class PlayerMove : MonoBehaviour
 {
     
@@ -18,7 +18,7 @@ public class PlayerMove : MonoBehaviour
     // 참조
     private CharacterController _characterController;
     private PlayerInput _input;
-    private PlayerStats _playerStats;
+    private PlayerDamagables _playerDamagables;
     private Camera _cam;
     private NavMeshAgent _agent;
     private Animator _animator;
@@ -59,13 +59,13 @@ public class PlayerMove : MonoBehaviour
     {
         _characterController = GetComponent<CharacterController>();
         _input = GetComponent<PlayerInput>();
-        _playerStats = GetComponent<PlayerStats>();
+        _playerDamagables = GetComponent<PlayerDamagables>();
         _agent = GetComponent<NavMeshAgent>();
         _animator = GetComponentInChildren<Animator>();
         
         _cam = Camera.main;
 
-        _agent.speed = _playerStats.MoveSpeed;
+        _agent.speed = _playerDamagables.MoveSpeed;
     }
     private void SetMoveDirection()
     {
@@ -121,19 +121,19 @@ public class PlayerMove : MonoBehaviour
 
         if (_input.Dash && IsMove && IsGrounded)
         {
-            if (_playerStats.StaminaStat.Value > 0)
+            if (_playerDamagables.StaminaStat.Value > 0)
             {
-                applySpeed = _playerStats.RunSpeed;
-                _playerStats.StaminaStat.Decrease(_runStaminaPerSec * Time.deltaTime);
+                applySpeed = _playerDamagables.RunSpeed;
+                _playerDamagables.StaminaStat.Decrease(_runStaminaPerSec * Time.deltaTime);
             }
         }
         else
         {
-            applySpeed = _playerStats.MoveSpeed;
+            applySpeed = _playerDamagables.MoveSpeed;
 
             if (IsGrounded)
             {
-                _playerStats.StaminaStat.Regenerate(Time.deltaTime);
+                _playerDamagables.StaminaStat.Regenerate(Time.deltaTime);
             }
 
         }
@@ -145,7 +145,7 @@ public class PlayerMove : MonoBehaviour
     private void UpdateAnimation()
     {
         Vector3 horizontalVelocity = new Vector3(_characterController.velocity.x, 0, _characterController.velocity.z);
-        float normalizedSpeed = horizontalVelocity.magnitude / _playerStats.RunSpeed;
+        float normalizedSpeed = horizontalVelocity.magnitude / _playerDamagables.RunSpeed;
 
         _animator.SetFloat("Speed", normalizedSpeed);
     }
@@ -153,7 +153,7 @@ public class PlayerMove : MonoBehaviour
     private void UpdateAnimationForTopMode()
     {
         Vector3 horizontalVelocity = new Vector3(_agent.velocity.x, 0, _agent.velocity.z);
-        float normalizedSpeed = horizontalVelocity.magnitude / _playerStats.RunSpeed;
+        float normalizedSpeed = horizontalVelocity.magnitude / _playerDamagables.RunSpeed;
 
         _animator.SetFloat("Speed", normalizedSpeed);
     }
@@ -170,7 +170,7 @@ public class PlayerMove : MonoBehaviour
         }
         else if (!_isSecondJump)
         {
-            if (!_playerStats.StaminaStat.TryConsume(_secondJumpStamina))
+            if (!_playerDamagables.StaminaStat.TryConsume(_secondJumpStamina))
             {
                 Debug.Log("스테미나가 부족합니다");
                 return;
@@ -213,7 +213,7 @@ public class PlayerMove : MonoBehaviour
     private IEnumerator ApplyJumpPower(float delay)
     {
         yield return new WaitForSeconds(delay);
-        _yVelocity = _playerStats.JumpPower;
+        _yVelocity = _playerDamagables.JumpPower;
         _isFirstJump = true;
     }
 

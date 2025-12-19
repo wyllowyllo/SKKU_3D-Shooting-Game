@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class MonsterStats : MonoBehaviour, IStat
+public class MonsterDamagables : MonoBehaviour, IDamagable
 {
     [SerializeField] private ComsumableStat _health;
 

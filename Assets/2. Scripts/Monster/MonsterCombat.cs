@@ -18,17 +18,17 @@ public class MonsterCombat : MonoBehaviour
    
     //참조
     private TraceController _traceController;
-    private IStat _playerStats;
+    private IDamagable _playerDamagables;
 
     private void Start()
     {
         _traceController = GetComponent<TraceController>();
-        _playerStats =  _traceController?.Target?.GetComponent<IStat>();
+        _playerDamagables =  _traceController?.Target?.GetComponent<IDamagable>();
     }
     
     public void Attack()
     {
-        _playerStats?.TryTakeDamage(new AttackInfo(_attackDamage));
+        _playerDamagables?.TryTakeDamage(new AttackInfo(_attackDamage));
     }
     
 }

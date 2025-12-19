@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class Drum : MonoBehaviour, IStat
+public class Drum : MonoBehaviour, IDamagable
 {
    [SerializeField] private GameObject _explosionVFX;
 
@@ -51,9 +51,9 @@ public class Drum : MonoBehaviour, IStat
       Collider[] colliders = Physics.OverlapSphere(transform.position, _explosionRadius);
       for (int i = 0; i < colliders.Length; i++)
       {  
-         if (colliders[i].TryGetComponent<IStat>(out var stat))
+         if (colliders[i].TryGetComponent<IDamagable>(out var target))
          {
-            stat.TryTakeDamage(new AttackInfo(_explosionDamage));
+            target.TryTakeDamage(new AttackInfo(_explosionDamage));
          }
       }
 

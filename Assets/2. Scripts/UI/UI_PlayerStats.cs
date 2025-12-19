@@ -39,7 +39,7 @@ public class UI_PlayerStats : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _bulletText;
     [SerializeField] private Slider _reloadGuage;
     
-    private PlayerStats _playerStats ;
+    private PlayerDamagables _playerDamagables ;
     private PlayerBombFire _playerBombFire ;
     private Gun _gunInfo;
 
@@ -54,7 +54,7 @@ public class UI_PlayerStats : MonoBehaviour
         // 재장전 이벤트 리스너 등록
         _gunInfo?.OnReload.AddListener(UpdateReloadBar);
         
-        _playerStats?.HitEvent.AddListener(UpdateHealthBar);
+        _playerDamagables?.HitEvent.AddListener(UpdateHealthBar);
     }
     
     private void LateUpdate()
@@ -68,7 +68,7 @@ public class UI_PlayerStats : MonoBehaviour
     {
         if (_player == null) return;
 
-        _playerStats = _player.GetComponent<PlayerStats>();
+        _playerDamagables = _player.GetComponent<PlayerDamagables>();
         _playerBombFire = _player.GetComponent<PlayerBombFire>();
         _gunInfo = _player.GetComponentInChildren<Gun>();
 
@@ -80,12 +80,12 @@ public class UI_PlayerStats : MonoBehaviour
 
     private void UpdateStatBars()
     {
-        if (_playerStats == null) return;
+        if (_playerDamagables == null) return;
 
         
         if (_staminaSlider != null)
         {
-            _staminaSlider.value = (_playerStats.CurStamina / _playerStats.MaxStamina);
+            _staminaSlider.value = (_playerDamagables.CurStamina / _playerDamagables.MaxStamina);
         }
         if (_healthSlider != null)
         {
@@ -123,7 +123,7 @@ public class UI_PlayerStats : MonoBehaviour
 
     private IEnumerator UpdateHealthBarRoutine()
     {
-        float targetValue = _playerStats.CurHealth / _playerStats.MaxHealth;
+        float targetValue = _playerDamagables.CurHealth / _playerDamagables.MaxHealth;
         
         _healthSlider.DOValue(targetValue, _healthTweenDuration).SetEase(Ease.OutQuad);
 

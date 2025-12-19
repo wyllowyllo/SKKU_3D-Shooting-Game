@@ -20,7 +20,7 @@ using Random = UnityEngine.Random;
 // 2. 상태별 행동을 함수로 만든다.
 
 [RequireComponent(typeof(CharacterController), typeof(MonsterMove))]
-[RequireComponent(typeof(TraceController), typeof(MonsterCombat), typeof(MonsterStats))]
+[RequireComponent(typeof(TraceController), typeof(MonsterCombat), typeof(MonsterDamagables))]
 public class MonsterStateController : MonoBehaviour
 {
     [Header("몬스터 State")]
@@ -36,7 +36,7 @@ public class MonsterStateController : MonoBehaviour
     private TraceController _traceController;
     private MonsterMove _moveController;
     private MonsterCombat _combatController;
-    private MonsterStats _stats;
+    private MonsterDamagables _damagables;
     private Animator _animator;
 
 
@@ -113,11 +113,11 @@ public class MonsterStateController : MonoBehaviour
         if (info.Damage <= 0f) return false;
 
 
-        if (_stats.IsLive)
+        if (_damagables.IsLive)
         {
             ChangeState(EMonsterState.Hit);
 
-            _knockBackDir = info.HitDirection;
+            _knockBackDir = info.AttackDirection;
             _knockBackTimer = 0f;
 
             _animator?.SetBool("Hit", true);
@@ -298,7 +298,7 @@ public class MonsterStateController : MonoBehaviour
         _traceController = GetComponent<TraceController>();
         _moveController = GetComponent<MonsterMove>();
         _combatController = GetComponent<MonsterCombat>();
-        _stats = GetComponent<MonsterStats>();
+        _damagables = GetComponent<MonsterDamagables>();
         _animator = GetComponentInChildren<Animator>();
         
         _originalPosition = transform.position;

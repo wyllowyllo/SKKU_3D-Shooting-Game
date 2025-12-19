@@ -106,13 +106,13 @@ public class Gun : MonoBehaviour
         {
             PlayHitEffect(hitInfo);  
             
-            IStat hitTarget = hitInfo.collider.GetComponent<IStat>();
+            IDamagable hitTarget = hitInfo.collider.GetComponent<IDamagable>();
             if (hitTarget != null)
             {
-                Vector3 hitDirection = ray.direction;
-                hitDirection.y = 0;
-                hitDirection.Normalize();
-                hitTarget.TryTakeDamage(new AttackInfo(_gunStat.DamageForShot, hitDirection));
+                Vector3 attackDirection = ray.direction;
+                attackDirection.y = 0;
+                attackDirection.Normalize();
+                hitTarget.TryTakeDamage(new AttackInfo(_gunStat.DamageForShot, attackDirection, hitInfo.point));
             }
         }
     }

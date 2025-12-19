@@ -30,7 +30,7 @@ public class Bomb : MonoBehaviour
         Collider[] colliders = Physics.OverlapSphere(transform.position, _explosionRadius, _monsterLayer);
         for (int i = 0; i < colliders.Length; i++)
         {
-            IStat monster = colliders[i].GetComponent<IStat>();
+            IDamagable monster = colliders[i].GetComponent<IDamagable>();
             monster?.TryTakeDamage(new AttackInfo(_damage));
         }
         
