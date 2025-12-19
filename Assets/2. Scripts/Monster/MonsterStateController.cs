@@ -20,7 +20,7 @@ using Random = UnityEngine.Random;
 // 2. 상태별 행동을 함수로 만든다.
 
 [RequireComponent(typeof(CharacterController), typeof(MonsterMove))]
-[RequireComponent(typeof(TraceController), typeof(MonsterCombat), typeof(MonsterDamagables))]
+[RequireComponent(typeof(TraceController), typeof(MonsterCombat), typeof(MonsterHealth))]
 public class MonsterStateController : MonoBehaviour
 {
     [Header("몬스터 State")]
@@ -30,13 +30,13 @@ public class MonsterStateController : MonoBehaviour
     [SerializeField] private float _patrolRadius = 10f;
     [SerializeField] private float _patrolWaitTime = 2f;
     
-    
+   
 
     // 참조
     private TraceController _traceController;
     private MonsterMove _moveController;
     private MonsterCombat _combatController;
-    private MonsterDamagables _damagables;
+    private MonsterHealth _health;
     private Animator _animator;
 
 
@@ -113,7 +113,7 @@ public class MonsterStateController : MonoBehaviour
         if (info.Damage <= 0f) return false;
 
 
-        if (_damagables.IsLive)
+        if (_health.IsLive)
         {
             ChangeState(EMonsterState.Hit);
 
@@ -121,6 +121,9 @@ public class MonsterStateController : MonoBehaviour
             _knockBackTimer = 0f;
 
             _animator?.SetBool("Hit", true);
+            
+           
+            
         }
         else
         {
@@ -271,7 +274,9 @@ public class MonsterStateController : MonoBehaviour
         _isDie = true;
         _moveController.Pause();
 
-       
+        // 모든 피 이펙트 제거
+        _health?.ClearAllBloodEffects();
+
        AnimReset();  // 다른 애니메이션 파라미터 리셋
 
         _animator?.SetTrigger("Death");
@@ -298,7 +303,7 @@ public class MonsterStateController : MonoBehaviour
         _traceController = GetComponent<TraceController>();
         _moveController = GetComponent<MonsterMove>();
         _combatController = GetComponent<MonsterCombat>();
-        _damagables = GetComponent<MonsterDamagables>();
+        _health = GetComponent<MonsterHealth>();
         _animator = GetComponentInChildren<Animator>();
         
         _originalPosition = transform.position;

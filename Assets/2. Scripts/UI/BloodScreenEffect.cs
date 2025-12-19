@@ -5,7 +5,7 @@ using DG.Tweening;
 public class BloodScreenEffect : MonoBehaviour
 {
     [Header("참조")]
-    [SerializeField] private PlayerDamagables playerDamagables;
+    [SerializeField] private PlayerStat playerStat;
 
     [Header("피격 flash(번쩍임) 설정")]
     [SerializeField] private float _hitFlashIntensity = 0.6f;
@@ -32,7 +32,7 @@ public class BloodScreenEffect : MonoBehaviour
 
     private void Update()
     {
-        if (playerDamagables == null || _isFlashing) return;
+        if (playerStat == null || _isFlashing) return;
         
        UpdateBloodScreen();
     }
@@ -80,7 +80,7 @@ public class BloodScreenEffect : MonoBehaviour
             return;
         }
 
-        if (playerDamagables == null)
+        if (playerStat == null)
         {
            
             Debug.LogError("BloodScreenEffect: PlayerStats not found!");
@@ -94,7 +94,7 @@ public class BloodScreenEffect : MonoBehaviour
 
     private void UpdateBloodScreen()
     {
-        float healthPercent = playerDamagables.CurHealth / playerDamagables.MaxHealth;
+        float healthPercent = playerStat.CurHealth / playerStat.MaxHealth;
 
         if (healthPercent <= _lowHealthThreshold)
         {

@@ -112,7 +112,7 @@ public class Gun : MonoBehaviour
                 Vector3 attackDirection = ray.direction;
                 attackDirection.y = 0;
                 attackDirection.Normalize();
-                hitTarget.TryTakeDamage(new AttackInfo(_gunStat.DamageForShot, attackDirection, hitInfo.point));
+                hitTarget.TryTakeDamage(new AttackInfo(_gunStat.DamageForShot, attackDirection, hitInfo.point, hitInfo.normal));
             }
         }
     }

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
 
-public class PlayerDamagables : MonoBehaviour, IDamagable
+public class PlayerStat : MonoBehaviour, IDamagable
 {
    [Header("체력")] 
    [SerializeField] private ComsumableStat healthStat;
