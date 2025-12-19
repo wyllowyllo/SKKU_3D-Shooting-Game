@@ -13,7 +13,9 @@ public class PlayerGunFire : MonoBehaviour
     [Header("카메라 참조")]
     [SerializeField] private CameraRotate _camRotate;
     
-    
+    private EZoomMode _zoomMode =  EZoomMode.Normal;
+    [SerializeField] private GameObject _normalCrosshair;
+    [SerializeField] private GameObject _zoomInCrosshair;
     
     // 참조
     private PlayerInput _input;
@@ -32,9 +34,26 @@ public class PlayerGunFire : MonoBehaviour
     {
         if (GameManager.Instance.State != EGameState.Playing) return;
         if (_curGun == null) return;
-            
+
+        ToggleZoomMode();
         TryFire();
         TryReload();
+    }
+
+    private void ToggleZoomMode()
+    {
+        if (_input.Zoom)
+        {
+            _zoomMode = EZoomMode.ZoomIn;
+            _normalCrosshair.SetActive(false);
+            _zoomInCrosshair.SetActive(true);
+        }
+        else
+        {
+            _zoomMode = EZoomMode.Normal;
+            _normalCrosshair.SetActive(true);
+            _zoomInCrosshair.SetActive(false);
+        }
     }
 
     private void Init()

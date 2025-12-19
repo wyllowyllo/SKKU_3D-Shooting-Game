@@ -56,11 +56,11 @@ public class TopviewCamera : MonoBehaviour
     {
         if (_playerInput == null) return;
 
-        if (_playerInput.ZoomIn)
+        if (_playerInput.MapZoomIn)
         {
             ZoomIn();
         }
-        if (_playerInput.ZoomOut)
+        if (_playerInput.MapZoomOut)
         {
             ZoomOut();
         }
