@@ -510,7 +510,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _state: 0
-  _jumpAttackCheckInterval: 10
+  _jumpAttackCheckInterval: 0.5
 --- !u!114 &5384754097570145216
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -579,7 +579,7 @@ MonoBehaviour:
     _value: 0
     _maxValue: 1500
     _regenValue: 0
-  _bloodEffectPrefab: {fileID: 1000013355911406, guid: d32aa916f50cac94db11e6f19821a58f, type: 3}
+  _bloodEffectPrefab: {fileID: 0}
 --- !u!114 &3643088831393565762
 MonoBehaviour:
   m_ObjectHideFlags: 0

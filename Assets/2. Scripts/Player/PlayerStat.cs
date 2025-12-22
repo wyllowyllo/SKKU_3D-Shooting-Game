@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.Events;
 
 public class PlayerStat : MonoBehaviour, IDamagable
@@ -22,7 +23,9 @@ public class PlayerStat : MonoBehaviour, IDamagable
    private Animator _animator;
    
    //이벤트
-   private UnityEvent _hitEvent = new UnityEvent();
+   public static event Action OnDataChanged;
+   //private UnityEvent _hitEvent = new UnityEvent();
+  
    
    // 프로퍼티
    public ComsumableStat HealthStat => healthStat;
@@ -35,17 +38,18 @@ public class PlayerStat : MonoBehaviour, IDamagable
    public float MoveSpeed => _moveSpeed.Value;
    public float RunSpeed => _runSpeed.Value;
    public float JumpPower => _jumpPower.Value;
+   
 
-   public UnityEvent HitEvent => _hitEvent;
+   //public UnityEvent HitEvent => _hitEvent;
 
    // 플래그 변수
    private bool _isDead;
 
    
-   private void Awake()
+   private void Start()
    {
-      HealthStat.Initialize();
-      StaminaStat.Initialize();
+      HealthStat.Initialize(OnDataChanged);
+      StaminaStat.Initialize(OnDataChanged);
    }
    private void Update()
    {
@@ -67,7 +71,7 @@ public class PlayerStat : MonoBehaviour, IDamagable
       {
         // Hit 이펙트
         _bloodScreenEffect?.ShowHitEffect();
-        HitEvent?.Invoke();
+        //HitEvent?.Invoke();
 
         // 레이어 가중치
         _animator?.SetLayerWeight(2, healthStat.Value / HealthStat.MaxValue);

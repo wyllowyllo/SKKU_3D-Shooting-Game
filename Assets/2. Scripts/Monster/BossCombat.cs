@@ -41,7 +41,7 @@ public class BossCombat : MonoBehaviour
         _traceController = GetComponent<TraceController>();
         _playerDamagable = _traceController?.Target?.GetComponent<IDamagable>();
 
-        // 초기 쿨타임을 0으로 설정하여 바로 사용 가능하게 함
+        
         _jumpAttackCooldownTimer = 0f;
     }
 
@@ -60,27 +60,27 @@ public class BossCombat : MonoBehaviour
 
     public void JumpAttack(Vector3 landingPosition)
     {
-        // 점프 공격 실행 시 쿨타임 시작
+        
         _jumpAttackCooldownTimer = _jumpAttackCooldown;
 
-        // 범위 내 적에게 데미지
+       
         Collider[] hits = Physics.OverlapSphere(landingPosition, _jumpAttackRadius);
         foreach (Collider hit in hits)
         {
             IDamagable damagable = hit.GetComponent<IDamagable>();
             if (damagable != null)
             {
-                Vector3 attackDirection = (hit.transform.position - landingPosition).normalized;
-                damagable.TryTakeDamage(new AttackInfo(_jumpAttackDamage, attackDirection));
+                //TODO : 플레이어 넉백
+                //Vector3 attackDirection = (hit.transform.position - landingPosition).normalized; 
+                damagable.TryTakeDamage(new AttackInfo(_jumpAttackDamage));
             }
         }
     }
 
     public bool CanUseJumpAttack(float distanceToTarget)
     {
-        // 거리 조건과 쿨타임 조건을 모두 만족해야 함
-        bool distanceCondition = distanceToTarget >= _jumpAttackMinDistance &&
-                                 distanceToTarget <= _jumpAttackMaxDistance;
+        bool distanceCondition = (distanceToTarget >= _jumpAttackMinDistance && distanceToTarget <= _jumpAttackMaxDistance);
+                                 
         bool cooldownReady = _jumpAttackCooldownTimer <= 0f;
 
         return distanceCondition && cooldownReady;

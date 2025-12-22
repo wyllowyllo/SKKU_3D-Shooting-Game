@@ -30,9 +30,12 @@ public class MonsterHealth : MonoBehaviour, IDamagable
         _health.Decrease(attackInfo.Damage);
         _stateController?.OnDamaged(attackInfo);
 
-        GameObject bloodEffect =  Instantiate(_bloodEffectPrefab, attackInfo.HitPoint, Quaternion.identity, transform);
-        bloodEffect.transform.forward = attackInfo.HitPointNormal;
-        _bloodEffects.Add(bloodEffect);
+        if (_bloodEffectPrefab != null)
+        {
+            GameObject bloodEffect =  Instantiate(_bloodEffectPrefab, attackInfo.HitPoint, Quaternion.identity, transform);
+            bloodEffect.transform.forward = attackInfo.HitPointNormal;
+            _bloodEffects.Add(bloodEffect);
+        }
     }
 
     // 모든 피 이펙트 제거

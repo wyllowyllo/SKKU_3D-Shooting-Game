@@ -115,7 +115,7 @@ public class BossStateController : MonoBehaviour
     {
         float distance = _traceController.DistanceFromTarget;
 
-        // 점프 공격 조건 체크 (주기적으로)
+        
         _jumpAttackCheckTimer += Time.deltaTime;
         if (_jumpAttackCheckTimer >= _jumpAttackCheckInterval)
         {
@@ -123,7 +123,7 @@ public class BossStateController : MonoBehaviour
 
             if (_combatController.CanUseJumpAttack(distance))
             {
-                // 점프 공격 시작
+               
                 _jumpStartPos = transform.position;
                 _jumpTargetPos = _traceController.TargetPosition;
                 _jumpTimer = 0f;
@@ -136,7 +136,7 @@ public class BossStateController : MonoBehaviour
             }
         }
 
-        // 근접 공격 거리 체크
+       
         if (distance <= _combatController.MeleeAttackDistance)
         {
             ChangeState(EBossState.MeleeAttack);
@@ -144,7 +144,7 @@ public class BossStateController : MonoBehaviour
             return;
         }
 
-        // 플레이어를 향해 이동
+      
         _moveController.MoveToTarget(_traceController.TargetPosition);
         _animator?.SetBool("Trace", true);
     }
@@ -179,27 +179,26 @@ public class BossStateController : MonoBehaviour
 
         if (_jumpTimer >= 1f)
         {
-            // 점프 종료
             transform.position = _jumpTargetPos;
             _isJumping = false;
 
-            // 착지 데미지 적용
+           
             _combatController.JumpAttack(_jumpTargetPos);
 
-            // 다시 추적 상태로 전환
+           
             ChangeState(EBossState.Trace);
             _animator?.SetBool("Trace", true);
             return;
         }
 
-        // 포물선 이동
+       
         Vector3 currentPos = Vector3.Lerp(_jumpStartPos, _jumpTargetPos, _jumpTimer);
         float arc = Mathf.Sin(_jumpTimer * Mathf.PI);
         currentPos.y += arc * _combatController.JumpHeight;
 
         transform.position = currentPos;
 
-        // 이동 방향으로 회전
+        
         Vector3 direction = (_jumpTargetPos - currentPos).normalized;
         direction.y = 0;
         if (direction != Vector3.zero)
@@ -217,7 +216,6 @@ public class BossStateController : MonoBehaviour
         if (_knockBackTimer >= _moveController.KnockbackDuration)
         {
             ChangeState(EBossState.Trace);
-            _animator?.SetBool("Hit", false);
         }
     }
 
@@ -226,9 +224,7 @@ public class BossStateController : MonoBehaviour
         _isDie = true;
         _moveController.Pause();
 
-        // 모든 피 이펙트 제거
-        _health?.ClearAllBloodEffects();
-
+        
         AnimReset();
 
         _animator?.SetTrigger("Death");

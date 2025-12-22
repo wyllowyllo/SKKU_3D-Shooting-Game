@@ -47,19 +47,32 @@ public class UI_PlayerStats : MonoBehaviour
     private void Awake()
     { 
          Init();
+         
+         _gunInfo?.OnReload.AddListener(UpdateReloadBar);
+        
+         //_playerStat?.HitEvent.AddListener(UpdateHealthBar);
+
+         // 플레이어 스탯의 데이터의 변화가 있을 때마다 Refresh호출
+         PlayerStat.OnDataChanged += RefreshBars;
     }
 
     private void Start()
     {
-        // 재장전 이벤트 리스너 등록
-        _gunInfo?.OnReload.AddListener(UpdateReloadBar);
         
-        _playerStat?.HitEvent.AddListener(UpdateHealthBar);
+    }
+
+    private void RefreshBars()
+    {
+        UpdateHealthBar();
+        UpdateStaminaBar();
     }
     
     private void LateUpdate()
     {
-        UpdateStatBars();
+        // 유트브에 영상이 올라왔는지 매번 새로고침 하는 것과 똑같다.
+        // 시각적인 변화가 없음에도 데이터를 참조하고 UI를 수정하므로 성능이 저하된다.
+        
+        //UpdateStatBars();
         UpdateBombText();
         UpdateBulletText();
     }
@@ -78,7 +91,7 @@ public class UI_PlayerStats : MonoBehaviour
         }
     }
 
-    private void UpdateStatBars()
+    private void UpdateStaminaBar()
     {
         if (_playerStat == null) return;
 
@@ -87,12 +100,7 @@ public class UI_PlayerStats : MonoBehaviour
         {
             _staminaSlider.value = (_playerStat.CurStamina / _playerStat.MaxStamina);
         }
-        if (_healthSlider != null)
-        {
-            //_healthSlider.value = (_playerStats.CurHealth / _playerStats.MaxHealth);
-            
-         
-        }
+        
     }
 
     private void UpdateHealthBar()
