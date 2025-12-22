@@ -20,6 +20,7 @@ public class BossStateController : MonoBehaviour
 
     // 상수
     private const float DistanceEpsilon = 0.1f;
+    private const float JumpDelay = 0.5f; // 웅크리는 모션 대기 시간
 
     // 타이머
     private float _meleeAttackTimer;
@@ -31,6 +32,7 @@ public class BossStateController : MonoBehaviour
     private Vector3 _jumpStartPos;
     private Vector3 _jumpTargetPos;
     private bool _isJumping;
+    private float _jumpAnimationDuration; // 실제 애니메이션 길이
 
     // 넉백 관련
     private Vector3 _knockBackDir;
@@ -123,15 +125,18 @@ public class BossStateController : MonoBehaviour
 
             if (_combatController.CanUseJumpAttack(distance))
             {
-               
                 _jumpStartPos = transform.position;
                 _jumpTargetPos = _traceController.TargetPosition;
-                _jumpTimer = 0f;
-                _isJumping = true;
+                _jumpTimer = -JumpDelay; // 음수로 시작하여 딜레이 표현
+                _isJumping = false; 
+                _jumpAnimationDuration = 0f;
 
                 ChangeState(EBossState.JumpAttack);
                 _animator?.SetTrigger("JumpAttack");
                 _moveController.Pause();
+
+                // 애니메이션 길이 가져오기
+                StartCoroutine(GetJumpAnimationLength_Coroutine());
                 return;
             }
         }
@@ -173,31 +178,41 @@ public class BossStateController : MonoBehaviour
 
     private void JumpAttack()
     {
+        // 웅크리는 딜레이 처리 (음수 타이머)
+        if (_jumpTimer < 0f)
+        {
+            _jumpTimer += Time.deltaTime;
+            if (_jumpTimer >= 0f)
+            {
+                // 딜레이 끝, 실제 점프 시작
+                _jumpTimer = 0f;
+                _isJumping = true;
+            }
+            return;
+        }
+
         if (!_isJumping) return;
 
-        _jumpTimer += Time.deltaTime / _combatController.JumpDuration;
+        // 애니메이션 길이 가져오기 전에는 기본값 사용
+        float duration = _jumpAnimationDuration > 0f ? _jumpAnimationDuration+JumpDelay : _combatController.JumpDuration;
+        _jumpTimer += Time.deltaTime / duration;
 
         if (_jumpTimer >= 1f)
         {
             transform.position = _jumpTargetPos;
             _isJumping = false;
 
-           
             _combatController.JumpAttack(_jumpTargetPos);
 
-           
             ChangeState(EBossState.Trace);
             return;
         }
 
-       
         Vector3 currentPos = Vector3.Lerp(_jumpStartPos, _jumpTargetPos, _jumpTimer);
         float arc = Mathf.Sin(_jumpTimer * Mathf.PI);
         currentPos.y += arc * _combatController.JumpHeight;
-        //currentPos.y = 1;
         transform.position = currentPos;
 
-        
         Vector3 direction = (_jumpTargetPos - currentPos).normalized;
         direction.y = 0;
         if (direction != Vector3.zero)
@@ -242,6 +257,18 @@ public class BossStateController : MonoBehaviour
         yield return new WaitForSeconds(length);
 
         Destroy(gameObject);
+    }
+
+    private IEnumerator GetJumpAnimationLength_Coroutine()
+    {
+        if (_animator == null) yield break;
+
+        yield return null; // 애니메이션 상태 전환 대기 1프레임
+
+        AnimatorStateInfo stateInfo = _animator.GetCurrentAnimatorStateInfo(0);
+        _jumpAnimationDuration = stateInfo.length;
+
+        //Debug.Log($"점프 애니메이션 길이: {_jumpAnimationDuration}초");
     }
 
     private void Init()
