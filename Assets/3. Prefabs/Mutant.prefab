@@ -386,10 +386,10 @@ GameObject:
   - component: {fileID: 1273418111692052115}
   - component: {fileID: 8264497168359507753}
   - component: {fileID: 6822797175628145705}
-  - component: {fileID: 1310924958779521325}
+  - component: {fileID: 5121739293763724310}
   - component: {fileID: 5384754097570145216}
   - component: {fileID: 7848887108663800796}
-  - component: {fileID: 7189364733754728441}
+  - component: {fileID: 7724838526692303176}
   - component: {fileID: 7351218678254259199}
   - component: {fileID: 3643088831393565762}
   - component: {fileID: 4620532112415430326}
@@ -490,14 +490,14 @@ CharacterController:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Height: 5.5
-  m_Radius: 0.7
+  m_Height: 9.2
+  m_Radius: 1
   m_SlopeLimit: 45
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 1.7, z: 0}
---- !u!114 &1310924958779521325
+  m_Center: {x: 0, y: 3.6, z: -0.2}
+--- !u!114 &5121739293763724310
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -506,12 +506,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 7195589574572324847}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a0457c531512ebb40967a14be7f866a4, type: 3}
+  m_Script: {fileID: 11500000, guid: 08899df13093a634087e275be56e92a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _state: 1
-  _patrolRadius: 10
-  _patrolWaitTime: 2
+  _state: 0
+  _jumpAttackCheckInterval: 10
 --- !u!114 &5384754097570145216
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -542,7 +541,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _target: {fileID: 0}
   _detectDistance: 20
---- !u!114 &7189364733754728441
+--- !u!114 &7724838526692303176
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -551,12 +550,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 7195589574572324847}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 89f82d69bd94410e8c74bb3405c3c181, type: 3}
+  m_Script: {fileID: 11500000, guid: 9e4137254553b3b4984ce53d8dda96c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _attackDistance: 1.5
-  _attackSpeed: 1.2
-  _attackDamage: 5
+  _meleeAttackDistance: 3
+  _meleeAttackSpeed: 1.5
+  _meleeAttackDamage: 10
+  _jumpAttackMinDistance: 5
+  _jumpAttackMaxDistance: 15
+  _jumpAttackCooldown: 5
+  _jumpAttackDamage: 20
+  _jumpAttackRadius: 5
+  _jumpHeight: 10
+  _jumpDuration: 1.5
 --- !u!114 &7351218678254259199
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -571,7 +577,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _health:
     _value: 0
-    _maxValue: 100
+    _maxValue: 1500
     _regenValue: 0
   _bloodEffectPrefab: {fileID: 1000013355911406, guid: d32aa916f50cac94db11e6f19821a58f, type: 3}
 --- !u!114 &3643088831393565762
@@ -700,15 +706,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7425032206536231151, guid: bf305a5598f882b4facd6c8c44530a10, type: 3}
       propertyPath: m_LocalScale.x
-      value: 3
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 7425032206536231151, guid: bf305a5598f882b4facd6c8c44530a10, type: 3}
       propertyPath: m_LocalScale.y
-      value: 3
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 7425032206536231151, guid: bf305a5598f882b4facd6c8c44530a10, type: 3}
       propertyPath: m_LocalScale.z
-      value: 3
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 7425032206536231151, guid: bf305a5598f882b4facd6c8c44530a10, type: 3}
       propertyPath: m_LocalPosition.x

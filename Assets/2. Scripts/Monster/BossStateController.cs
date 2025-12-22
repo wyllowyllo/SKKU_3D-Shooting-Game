@@ -1,0 +1,292 @@
+using System.Collections;
+using UnityEngine;
+
+[RequireComponent(typeof(CharacterController), typeof(MonsterMove))]
+[RequireComponent(typeof(TraceController), typeof(BossCombat), typeof(MonsterHealth))]
+public class BossStateController : MonoBehaviour
+{
+    [Header("보스 State")]
+    [SerializeField] private EBossState _state = EBossState.Idle;
+
+    [Header("점프 공격 설정")]
+    [SerializeField] private float _jumpAttackCheckInterval = 0.5f;
+
+    // 참조
+    private TraceController _traceController;
+    private MonsterMove _moveController;
+    private BossCombat _combatController;
+    private MonsterHealth _health;
+    private Animator _animator;
+
+    // 상수
+    private const float DistanceEpsilon = 0.1f;
+
+    // 타이머
+    private float _meleeAttackTimer;
+    private float _jumpAttackCheckTimer;
+    private float _jumpTimer;
+    private float _knockBackTimer;
+
+    // 점프 공격 관련
+    private Vector3 _jumpStartPos;
+    private Vector3 _jumpTargetPos;
+    private bool _isJumping;
+
+    // 넉백 관련
+    private Vector3 _knockBackDir;
+
+    // 플래그 변수
+    private bool _isDie;
+    private bool _hasEnteredCombat; // Idle에서 Trace로 전환되었는지 추적
+
+    public EBossState State { get => _state; set => _state = value; }
+
+    private void Awake()
+    {
+        Init();
+    }
+
+    private void Update()
+    {
+        if (GameManager.Instance.State != EGameState.Playing) return;
+        if (_traceController.Target == null) return;
+        if (_isDie) return;
+
+        // 보스의 상태에 따라 다른 메서드를 호출
+        switch (State)
+        {
+            case EBossState.Idle:
+                Idle();
+                break;
+            case EBossState.Trace:
+                Trace();
+                break;
+            case EBossState.MeleeAttack:
+                MeleeAttack();
+                break;
+            case EBossState.JumpAttack:
+                JumpAttack();
+                break;
+            case EBossState.Hit:
+                Hit();
+                break;
+            case EBossState.Death:
+                Die();
+                break;
+        }
+    }
+
+    public bool OnDamaged(AttackInfo info)
+    {
+        if (State == EBossState.Death) return false;
+        if (info.Damage <= 0f) return false;
+
+        if (_health.IsLive)
+        {
+            ChangeState(EBossState.Hit);
+
+            _knockBackDir = info.AttackDirection;
+            _knockBackTimer = 0f;
+
+            _animator?.SetBool("Hit", true);
+        }
+        else
+        {
+            _animator?.SetBool("Hit", false);
+            ChangeState(EBossState.Death);
+        }
+
+        return true;
+    }
+
+    private void Idle()
+    {
+        // Idle 상태에서 플레이어 감지 시 Trace로 전환
+        if (_traceController.Detected)
+        {
+            _hasEnteredCombat = true;
+            ChangeState(EBossState.Trace);
+            _animator?.SetTrigger("IdleToTrace");
+            return;
+        }
+    }
+
+    private void Trace()
+    {
+        float distance = _traceController.DistanceFromTarget;
+
+        // 점프 공격 조건 체크 (주기적으로)
+        _jumpAttackCheckTimer += Time.deltaTime;
+        if (_jumpAttackCheckTimer >= _jumpAttackCheckInterval)
+        {
+            _jumpAttackCheckTimer = 0f;
+
+            if (_combatController.CanUseJumpAttack(distance))
+            {
+                // 점프 공격 시작
+                _jumpStartPos = transform.position;
+                _jumpTargetPos = _traceController.TargetPosition;
+                _jumpTimer = 0f;
+                _isJumping = true;
+
+                ChangeState(EBossState.JumpAttack);
+                _animator?.SetTrigger("JumpAttack");
+                _moveController.Pause();
+                return;
+            }
+        }
+
+        // 근접 공격 거리 체크
+        if (distance <= _combatController.MeleeAttackDistance)
+        {
+            ChangeState(EBossState.MeleeAttack);
+            _animator?.SetBool("MeleeAttackIdle", true);
+            return;
+        }
+
+        // 플레이어를 향해 이동
+        _moveController.MoveToTarget(_traceController.TargetPosition);
+        _animator?.SetBool("Trace", true);
+    }
+
+    private void MeleeAttack()
+    {
+        float distance = _traceController.DistanceFromTarget;
+
+        // 플레이어가 너무 멀어지면 다시 추적
+        if (distance > _combatController.MeleeAttackDistance)
+        {
+            ChangeState(EBossState.Trace);
+            _animator?.SetBool("MeleeAttackIdle", false);
+            return;
+        }
+
+        // 공격 타이머
+        _meleeAttackTimer += Time.deltaTime;
+        if (_meleeAttackTimer >= _combatController.MeleeAttackSpeed)
+        {
+            _combatController.MeleeAttack();
+            _animator?.SetTrigger("MeleeAttack");
+            _meleeAttackTimer = 0f;
+        }
+    }
+
+    private void JumpAttack()
+    {
+        if (!_isJumping) return;
+
+        _jumpTimer += Time.deltaTime / _combatController.JumpDuration;
+
+        if (_jumpTimer >= 1f)
+        {
+            // 점프 종료
+            transform.position = _jumpTargetPos;
+            _isJumping = false;
+
+            // 착지 데미지 적용
+            _combatController.JumpAttack(_jumpTargetPos);
+
+            // 다시 추적 상태로 전환
+            ChangeState(EBossState.Trace);
+            _animator?.SetBool("Trace", true);
+            return;
+        }
+
+        // 포물선 이동
+        Vector3 currentPos = Vector3.Lerp(_jumpStartPos, _jumpTargetPos, _jumpTimer);
+        float arc = Mathf.Sin(_jumpTimer * Mathf.PI);
+        currentPos.y += arc * _combatController.JumpHeight;
+
+        transform.position = currentPos;
+
+        // 이동 방향으로 회전
+        Vector3 direction = (_jumpTargetPos - currentPos).normalized;
+        direction.y = 0;
+        if (direction != Vector3.zero)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(direction);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 5f);
+        }
+    }
+
+    private void Hit()
+    {
+        _moveController.Knockback(_knockBackDir);
+
+        _knockBackTimer += Time.deltaTime;
+        if (_knockBackTimer >= _moveController.KnockbackDuration)
+        {
+            ChangeState(EBossState.Trace);
+            _animator?.SetBool("Hit", false);
+        }
+    }
+
+    private void Die()
+    {
+        _isDie = true;
+        _moveController.Pause();
+
+        // 모든 피 이펙트 제거
+        _health?.ClearAllBloodEffects();
+
+        AnimReset();
+
+        _animator?.SetTrigger("Death");
+        StartCoroutine(Die_Coroutine());
+    }
+
+    private IEnumerator Die_Coroutine()
+    {
+        if (_animator == null) yield break;
+
+        yield return null; // Play 적용 대기 1프레임
+
+        AnimatorStateInfo stateInfo = _animator.GetCurrentAnimatorStateInfo(0);
+        float length = stateInfo.length;
+
+        yield return new WaitForSeconds(length);
+
+        Destroy(gameObject);
+    }
+
+    private void Init()
+    {
+        _traceController = GetComponent<TraceController>();
+        _moveController = GetComponent<MonsterMove>();
+        _combatController = GetComponent<BossCombat>();
+        _health = GetComponent<MonsterHealth>();
+        _animator = GetComponentInChildren<Animator>();
+
+        _hasEnteredCombat = false;
+    }
+
+    private void ChangeState(EBossState nextState)
+    {
+        if (State == nextState) return;
+
+        State = nextState;
+        Debug.Log($"보스 상태 전환: {State}");
+
+        if (State == EBossState.MeleeAttack)
+        {
+            _meleeAttackTimer = _combatController.MeleeAttackSpeed;
+        }
+    }
+
+    private void AnimReset()
+    {
+        _animator?.SetBool("Hit", false);
+        _animator?.SetBool("MeleeAttackIdle", false);
+        _animator?.SetBool("Trace", false);
+    }
+
+    private void OnDrawGizmos()
+    {
+        if (_isJumping)
+        {
+            Gizmos.color = Color.cyan;
+            Gizmos.DrawLine(_jumpStartPos, _jumpTargetPos);
+            Gizmos.DrawWireSphere(_jumpTargetPos, _combatController.JumpAttackRadius);
+        }
+    }
+}
