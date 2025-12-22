@@ -88,11 +88,11 @@ public class BossStateController : MonoBehaviour
             _knockBackDir = info.AttackDirection;
             _knockBackTimer = 0f;
 
-            _animator?.SetBool("Hit", true);
+            //_animator?.SetBool("Hit", true);
         }
         else
         {
-            _animator?.SetBool("Hit", false);
+            //_animator?.SetBool("Hit", false);
             ChangeState(EBossState.Death);
         }
 
@@ -106,7 +106,7 @@ public class BossStateController : MonoBehaviour
         {
             _hasEnteredCombat = true;
             ChangeState(EBossState.Trace);
-            _animator?.SetTrigger("IdleToTrace");
+            _animator?.SetTrigger("Detect");
             return;
         }
     }
@@ -146,7 +146,7 @@ public class BossStateController : MonoBehaviour
 
       
         _moveController.MoveToTarget(_traceController.TargetPosition);
-        _animator?.SetBool("Trace", true);
+        //_animator?.SetBool("Trace", true);
     }
 
     private void MeleeAttack()
@@ -187,7 +187,6 @@ public class BossStateController : MonoBehaviour
 
            
             ChangeState(EBossState.Trace);
-            _animator?.SetBool("Trace", true);
             return;
         }
 
@@ -195,7 +194,7 @@ public class BossStateController : MonoBehaviour
         Vector3 currentPos = Vector3.Lerp(_jumpStartPos, _jumpTargetPos, _jumpTimer);
         float arc = Mathf.Sin(_jumpTimer * Mathf.PI);
         currentPos.y += arc * _combatController.JumpHeight;
-
+        //currentPos.y = 1;
         transform.position = currentPos;
 
         
