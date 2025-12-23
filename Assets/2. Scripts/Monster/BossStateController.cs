@@ -9,7 +9,7 @@ public class BossStateController : MonoBehaviour
     [SerializeField] private EBossState _state = EBossState.Idle;
 
     [Header("점프 공격 설정")]
-    [SerializeField] private float _jumpAttackCheckInterval = 0.5f;
+    [SerializeField] private float _jumpAttackCheckInterval = 5f;
 
     // 참조
     private TraceController _traceController;
@@ -194,7 +194,7 @@ public class BossStateController : MonoBehaviour
         if (!_isJumping) return;
 
         // 애니메이션 길이 가져오기 전에는 기본값 사용
-        float duration = _jumpAnimationDuration > 0f ? _jumpAnimationDuration+JumpDelay : _combatController.JumpDuration;
+        float duration = _jumpAnimationDuration > 0f ? _jumpAnimationDuration : _combatController.JumpDuration;
         _jumpTimer += Time.deltaTime / duration;
 
         if (_jumpTimer >= 1f)
