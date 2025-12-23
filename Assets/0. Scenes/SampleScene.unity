@@ -7950,6 +7950,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Mutant
       objectReference: {fileID: 0}
+    - target: {fileID: 7233268500782680031, guid: 417e6d047ad56a74dab0f33179c59243, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 7848887108663800796, guid: 417e6d047ad56a74dab0f33179c59243, type: 3}
       propertyPath: _target
       value: 
