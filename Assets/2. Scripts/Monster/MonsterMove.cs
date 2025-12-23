@@ -113,6 +113,11 @@ public class MonsterMove : MonoBehaviour
        _agent.isStopped = true; //이동 일시정지
        _agent.ResetPath(); // 경로(목적지) 삭제
     }
+
+    public void Resume()
+    {
+        _agent.isStopped = false; // 이동 재개
+    }
     private void RotateToDirection(Vector3 direction)
     {
         Quaternion targetRotation = Quaternion.LookRotation(direction);

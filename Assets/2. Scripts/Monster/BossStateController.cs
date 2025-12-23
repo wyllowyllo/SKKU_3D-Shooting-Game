@@ -141,9 +141,10 @@ public class BossStateController : MonoBehaviour
             }
         }
 
-       
+
         if (distance <= _combatController.MeleeAttackDistance)
         {
+            _moveController.Pause(); // 근접 공격 거리에 도달하면 이동 멈춤
             ChangeState(EBossState.MeleeAttack);
             _animator?.SetBool("MeleeAttackIdle", true);
             return;
@@ -161,6 +162,7 @@ public class BossStateController : MonoBehaviour
         // 플레이어가 너무 멀어지면 다시 추적
         if (distance > _combatController.MeleeAttackDistance)
         {
+            _moveController.Resume(); // 플레이어가 멀어지면 다시 추적
             ChangeState(EBossState.Trace);
             _animator?.SetBool("MeleeAttackIdle", false);
             return;

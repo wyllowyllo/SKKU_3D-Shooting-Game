@@ -5,7 +5,7 @@ public class MonsterCombat : MonoBehaviour
 {
     
     [Header("공격 설정")]
-    [SerializeField] private float _attackDistance = 1f;
+    [SerializeField] private float _attackDistance = 2.5f;
     [SerializeField] private float _attackSpeed = 1.2f;
     [SerializeField] private float _attackDamage = 5f;
 

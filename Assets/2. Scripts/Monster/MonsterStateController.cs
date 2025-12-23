@@ -179,6 +179,7 @@ public class MonsterStateController : MonoBehaviour
         float distance = _traceController.DistanceFromTarget;
         if (distance <= _combatController.AttackDistance)
         {
+            _moveController.Pause(); // 공격 거리에 도달하면 이동 멈춤
             ChangeState(EMonsterState.Attack);
             _animator?.SetBool("AttackIdle", true);
             return;
@@ -240,6 +241,7 @@ public class MonsterStateController : MonoBehaviour
         float distance = _traceController.DistanceFromTarget;
         if (distance > _combatController.AttackDistance)
         {
+            _moveController.Resume(); // 플레이어가 멀어지면 다시 추적
             ChangeState(EMonsterState.Trace);
             _animator?.SetBool("AttackIdle", false);
             return;

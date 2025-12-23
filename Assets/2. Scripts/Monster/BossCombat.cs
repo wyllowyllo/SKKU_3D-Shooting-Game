@@ -3,7 +3,7 @@ using UnityEngine;
 public class BossCombat : MonoBehaviour
 {
     [Header("근접 공격 설정")]
-    [SerializeField] private float _meleeAttackDistance = 3f;
+    [SerializeField] private float _meleeAttackDistance = 4.5f;
     [SerializeField] private float _meleeAttackSpeed = 1.5f;
     [SerializeField] private float _meleeAttackDamage = 10f;
 
