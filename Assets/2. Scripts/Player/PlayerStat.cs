@@ -26,8 +26,8 @@ public class PlayerStat : MonoBehaviour, IDamagable
    private Animator _animator;
    
    //이벤트
-   public static event Action OnDataChanged;
-   //private UnityEvent _hitEvent = new UnityEvent();
+   //public static event Action OnDataChanged;
+   private UnityEvent _hitEvent = new UnityEvent();
   
    
    // 프로퍼티
@@ -44,7 +44,7 @@ public class PlayerStat : MonoBehaviour, IDamagable
    public int Gold => Mathf.RoundToInt(_gold.Value);
    
 
-   //public UnityEvent HitEvent => _hitEvent;
+   public UnityEvent HitEvent => _hitEvent;
 
    // 플래그 변수
    private bool _isDead;
@@ -52,8 +52,8 @@ public class PlayerStat : MonoBehaviour, IDamagable
    
    private void Start()
    {
-      HealthStat.Initialize(OnDataChanged);
-      StaminaStat.Initialize(OnDataChanged);
+      HealthStat.Initialize();
+      StaminaStat.Initialize();
    }
    private void Update()
    {
@@ -75,7 +75,7 @@ public class PlayerStat : MonoBehaviour, IDamagable
       {
         // Hit 이펙트
         _bloodScreenEffect?.ShowHitEffect();
-        //HitEvent?.Invoke();
+        HitEvent?.Invoke();
 
         // 레이어 가중치
         _animator?.SetLayerWeight(2, healthStat.Value / HealthStat.MaxValue);
@@ -105,14 +105,14 @@ public class PlayerStat : MonoBehaviour, IDamagable
    {
       if (amount <= 0) return;
       _gold.Increase(amount);
-      OnDataChanged?.Invoke();
+      //OnDataChanged?.Invoke();
    }
 
    public bool TrySpendGold(int amount)
    {
       if (Gold < amount) return false;
       _gold.Decrease(amount);
-      OnDataChanged?.Invoke();
+      //OnDataChanged?.Invoke();
       return true;
    }
 

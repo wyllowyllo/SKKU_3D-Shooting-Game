@@ -48,20 +48,14 @@ public class UI_PlayerStats : MonoBehaviour
 
     private Coroutine _prevHPRoutine;
     private void Awake()
-    { 
+    {
          Init();
-         
-         _gunInfo?.OnReload.AddListener(UpdateReloadBar);
-        
-         //_playerStat?.HitEvent.AddListener(UpdateHealthBar);
-
-         // 플레이어 스탯의 데이터의 변화가 있을 때마다 Refresh호출
-         PlayerStat.OnDataChanged += RefreshBars;
     }
 
     private void Start()
     {
-        
+         _gunInfo?.OnReload.AddListener(UpdateReloadBar);
+         _playerStat?.HitEvent.AddListener(UpdateHealthBar);
     }
 
     private void RefreshBars()
