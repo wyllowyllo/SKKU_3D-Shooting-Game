@@ -29,8 +29,9 @@ public class MonsterStateController : MonoBehaviour
     [Header("순찰 설정")]
     [SerializeField] private float _patrolRadius = 10f;
     [SerializeField] private float _patrolWaitTime = 2f;
-    
-   
+
+    [Header("Gold Drop")]
+    [SerializeField] private int _goldDropAmount = 5;
 
     // 참조
     private TraceController _traceController;
@@ -288,16 +289,19 @@ public class MonsterStateController : MonoBehaviour
     private IEnumerator Die_Coroutnie()
     {
         if (_animator == null) yield break;
-        
-       
-        
+
+
+
         yield return null; // Play 적용 대기 1프레임
 
         AnimatorStateInfo stateInfo = _animator.GetCurrentAnimatorStateInfo(0);
         float length = stateInfo.length;
 
         yield return new WaitForSeconds(length);
-        
+
+        // 골드 드랍
+        GoldDropManager.DropGold(transform.position, _goldDropAmount);
+
         Destroy(gameObject);
     }
     private void Init()

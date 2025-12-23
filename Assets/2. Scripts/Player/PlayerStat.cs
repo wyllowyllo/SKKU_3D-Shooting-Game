@@ -17,6 +17,9 @@ public class PlayerStat : MonoBehaviour, IDamagable
    [SerializeField] private ValueStat _runSpeed;
    [SerializeField] private ValueStat _jumpPower;
 
+   [Header("화폐")]
+   [SerializeField] private ValueStat _gold;
+
    [Header("UI 이펙트")]
    [SerializeField] private BloodScreenEffect _bloodScreenEffect;
 
@@ -38,6 +41,7 @@ public class PlayerStat : MonoBehaviour, IDamagable
    public float MoveSpeed => _moveSpeed.Value;
    public float RunSpeed => _runSpeed.Value;
    public float JumpPower => _jumpPower.Value;
+   public int Gold => Mathf.RoundToInt(_gold.Value);
    
 
    //public UnityEvent HitEvent => _hitEvent;
@@ -96,5 +100,20 @@ public class PlayerStat : MonoBehaviour, IDamagable
    {
       HealthStat.Regenerate(time);
    }
-  
+
+   public void AddGold(int amount)
+   {
+      if (amount <= 0) return;
+      _gold.Increase(amount);
+      OnDataChanged?.Invoke();
+   }
+
+   public bool TrySpendGold(int amount)
+   {
+      if (Gold < amount) return false;
+      _gold.Decrease(amount);
+      OnDataChanged?.Invoke();
+      return true;
+   }
+
 }

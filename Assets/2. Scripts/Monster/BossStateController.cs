@@ -11,6 +11,9 @@ public class BossStateController : MonoBehaviour
     [Header("점프 공격 설정")]
     [SerializeField] private float _jumpAttackCheckInterval = 5f;
 
+    [Header("Gold Drop")]
+    [SerializeField] private int _goldDropAmount = 50;
+
     // 참조
     private TraceController _traceController;
     private MonsterMove _moveController;
@@ -257,6 +260,9 @@ public class BossStateController : MonoBehaviour
         float length = stateInfo.length;
 
         yield return new WaitForSeconds(length);
+
+        // 골드 드랍
+        GoldDropManager.DropGold(transform.position, _goldDropAmount);
 
         Destroy(gameObject);
     }

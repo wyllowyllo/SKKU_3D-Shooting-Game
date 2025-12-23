@@ -38,7 +38,10 @@ public class UI_PlayerStats : MonoBehaviour
     [Header("Bullet UI")]
     [SerializeField] private TextMeshProUGUI _bulletText;
     [SerializeField] private Slider _reloadGuage;
-    
+
+    [Header("Gold UI")]
+    [SerializeField] private TextMeshProUGUI _goldText;
+
     private PlayerStat _playerStat ;
     private PlayerBombFire _playerBombFire ;
     private Gun _gunInfo;
@@ -65,6 +68,7 @@ public class UI_PlayerStats : MonoBehaviour
     {
         UpdateHealthBar();
         UpdateStaminaBar();
+        UpdateGoldText();
     }
     
     private void LateUpdate()
@@ -95,12 +99,18 @@ public class UI_PlayerStats : MonoBehaviour
     {
         if (_playerStat == null) return;
 
-        
+
         if (_staminaSlider != null)
         {
             _staminaSlider.value = (_playerStat.CurStamina / _playerStat.MaxStamina);
         }
-        
+
+    }
+
+    private void UpdateGoldText()
+    {
+        if (_playerStat == null || _goldText == null) return;
+        _goldText.text = $"Gold: {_playerStat.Gold}";
     }
 
     private void UpdateHealthBar()
