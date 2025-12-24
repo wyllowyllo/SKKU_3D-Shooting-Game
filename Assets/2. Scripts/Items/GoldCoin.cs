@@ -18,7 +18,8 @@ public class GoldCoin : MonoBehaviour
 
     [Header("Scatter Settings")]
     [SerializeField] private float _scatterSettleTime = 1f;
-
+    [SerializeField] private float _torqueForce = 5f;
+    
     [Header("플레이어 탐지용 콜라이더")]
     [SerializeField] private SphereCollider _detectCollider;
     
@@ -55,7 +56,7 @@ public class GoldCoin : MonoBehaviour
 
             // 흩뿌리기 
             _rigidbody.AddForce(scatterDirection * scatterForce, ForceMode.Impulse);
-            _rigidbody.AddTorque(Random.insideUnitSphere * 5f, ForceMode.Impulse);
+            _rigidbody.AddTorque(Random.insideUnitSphere * _torqueForce, ForceMode.Impulse);
         }
         
         _collider.enabled = true;
@@ -112,10 +113,8 @@ public class GoldCoin : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        // Idle 상태일 때만 수집 시작
         if (_currentState != GoldState.Idle) return;
-
-        // 플레이어 감지
+        
         if (other.CompareTag("Player"))
         {
             PlayerStat playerStat = other.GetComponent<PlayerStat>();
@@ -162,7 +161,7 @@ public class GoldCoin : MonoBehaviour
         float oneMinusT = 1f - t;
 
         
-        Vector3 endPosition = _playerTransform.position + Vector3.up * 1f;
+        Vector3 endPosition = _playerTransform.position;
 
         
         Vector3 midPoint = (_startPosition + endPosition) * 0.5f;
