@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using System.Text.RegularExpressions;
+using System.Security.Cryptography;
+using System.Text;
 
 public class LoginScene : MonoBehaviour
 {
@@ -34,11 +36,38 @@ public class LoginScene : MonoBehaviour
 
     // 정규 표현식 패턴
     private const string EmailPattern = @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$";
-    private const string PasswordPattern = @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':""\\|,.<>\/?])[a-zA-Z0-9!@#$%^&*()_+\-=\[\]{};':""\\|,.<>\/?]{7,20}$"; 
+    private const string PasswordPattern = @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':""\\|,.<>\/?])[a-zA-Z0-9!@#$%^&*()_+\-=\[\]{};':""\\|,.<>\/?]{7,20}$";
+
     private void Start()
     {
         AddButtonEvents();
         Refresh();
+    }
+
+    /// <summary>
+    /// SHA256 해시 알고리즘을 사용하여 비밀번호를 암호화
+    /// </summary>
+    /// <param name="password">평문 비밀번호</param>
+    /// <returns>64자리 16진수 해시 문자열</returns>
+    private string HashPassword(string password)
+    {
+        // SHA256 해시 알고리즘 객체 생성 (using으로 자동 리소스 해제)
+        using (SHA256 sha256 = SHA256.Create())
+        {
+            // 1. 문자열을 UTF8 바이트 배열로 변환 후 해시 계산
+            byte[] bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
+
+            // 2. 바이트 배열을 16진수 문자열로 변환
+            StringBuilder builder = new StringBuilder();
+            foreach (byte b in bytes)
+            {
+                // 각 바이트를 2자리 16진수로 변환하여 추가 (예: 255 -> "ff")
+                builder.Append(b.ToString("x2"));
+            }
+
+            // 3. 최종 해시 문자열 반환 (64자리)
+            return builder.ToString();
+        }
     }
 
     private void AddButtonEvents()
@@ -92,9 +121,11 @@ public class LoginScene : MonoBehaviour
             _messageTextUI.text = "아이디/비밀번호를 확인해주세요.";
             return;
         }
-        
-        string myPassword = PlayerPrefs.GetString(id);
-        if (myPassword != password)
+
+        // 3-2. 입력된 비밀번호를 해시화하여 저장된 해시와 비교
+        string hashedPassword = HashPassword(password);
+        string storedHash = PlayerPrefs.GetString(id);
+        if (storedHash != hashedPassword)
         {
             _messageTextUI.text = "아이디/비밀번호를 확인해주세요.";
             return;
@@ -154,7 +185,9 @@ public class LoginScene : MonoBehaviour
             return;
         }
 
-        PlayerPrefs.SetString(id, password);
+        // 5. 비밀번호를 해시화하여 저장
+        string hashedPassword = HashPassword(password);
+        PlayerPrefs.SetString(id, hashedPassword);
         _messageTextUI.text = "회원가입이 완료되었습니다.";
 
         GotoLogin();
