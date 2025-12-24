@@ -29,6 +29,7 @@ public class LoginScene : MonoBehaviour
     [SerializeField] private TMP_InputField _passwordInputField;
     [SerializeField] private TMP_InputField _passwordConfirmInputField;
     
+    private const string LatestID = "latestID"; 
     private void Start()
     {
         AddButtonEvents();
@@ -51,6 +52,13 @@ public class LoginScene : MonoBehaviour
         _loginButton.gameObject.SetActive(_mode == SceneMode.Login);
         _gotoLoginButton.gameObject.SetActive(_mode == SceneMode.Register);
         _registerButton.gameObject.SetActive(_mode == SceneMode.Register);
+        
+        // 마지막에 로그인한 ID로 필드 초기화
+        if (PlayerPrefs.HasKey(LatestID))
+        {
+            _idInputField.text = PlayerPrefs.GetString(LatestID);
+        }
+        
     }
 
     private void Login()
@@ -88,6 +96,7 @@ public class LoginScene : MonoBehaviour
         }
         
         // 4. 있다면 씬 이동
+        PlayerPrefs.SetString(LatestID, id); // 최근 로그인 기록 저장
         SceneManager.LoadScene("LoadingScene");
     }
 
