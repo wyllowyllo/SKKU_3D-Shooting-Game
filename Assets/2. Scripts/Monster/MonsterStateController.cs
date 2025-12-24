@@ -21,7 +21,7 @@ using Random = UnityEngine.Random;
 
 [RequireComponent(typeof(CharacterController), typeof(MonsterMove))]
 [RequireComponent(typeof(TraceController), typeof(MonsterCombat), typeof(MonsterHealth))]
-public class MonsterStateController : MonoBehaviour
+public class MonsterStateController : MonoBehaviour, IStateController
 {
     [Header("몬스터 State")]
     [SerializeField] private EMonsterState _state = EMonsterState.Patrol;

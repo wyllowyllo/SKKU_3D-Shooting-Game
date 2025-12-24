@@ -3,7 +3,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(CharacterController), typeof(MonsterMove))]
 [RequireComponent(typeof(TraceController), typeof(BossCombat), typeof(MonsterHealth))]
-public class BossStateController : MonoBehaviour
+public class BossStateController : MonoBehaviour, IStateController
 {
     [Header("보스 State")]
     [SerializeField] private EBossState _state = EBossState.Idle;
@@ -97,7 +97,6 @@ public class BossStateController : MonoBehaviour
         }
         else
         {
-            //_animator?.SetBool("Hit", false);
             ChangeState(EBossState.Death);
         }
 
@@ -155,7 +154,7 @@ public class BossStateController : MonoBehaviour
 
       
         _moveController.MoveToTarget(_traceController.TargetPosition);
-        //_animator?.SetBool("Trace", true);
+      
     }
 
     private void MeleeAttack()
@@ -244,11 +243,6 @@ public class BossStateController : MonoBehaviour
         _moveController.Pause();
 
         
-        AnimReset();
-
-        // 골드 드랍
-        GoldDropManager.DropGold(transform.position, _goldDropAmount);
-        
         _animator?.SetTrigger("Death");
         StartCoroutine(Die_Coroutine());
     }
@@ -257,14 +251,23 @@ public class BossStateController : MonoBehaviour
     {
         if (_animator == null) yield break;
 
-        yield return null; // Play 적용 대기 1프레임
+        // Death state로 전환될 때까지 대기
+        while (!_animator.GetCurrentAnimatorStateInfo(0).IsName("Death"))
+        {
+            yield return null;
+        }
 
         AnimatorStateInfo stateInfo = _animator.GetCurrentAnimatorStateInfo(0);
         float length = stateInfo.length;
 
         yield return new WaitForSeconds(length);
-        
 
+
+        // 골드 드랍
+        GoldDropManager.DropGold(transform.position, _goldDropAmount);
+
+        yield return new WaitForSeconds(0.5f);
+        
         Destroy(gameObject);
     }
 
@@ -277,7 +280,7 @@ public class BossStateController : MonoBehaviour
         AnimatorStateInfo stateInfo = _animator.GetCurrentAnimatorStateInfo(0);
         _jumpAnimationDuration = stateInfo.length;
 
-        //Debug.Log($"점프 애니메이션 길이: {_jumpAnimationDuration}초");
+      
     }
 
     private void Init()
@@ -304,12 +307,7 @@ public class BossStateController : MonoBehaviour
         }
     }
 
-    private void AnimReset()
-    {
-        _animator?.SetBool("Hit", false);
-        _animator?.SetBool("MeleeAttackIdle", false);
-        _animator?.SetBool("Trace", false);
-    }
+   
 
     private void OnDrawGizmos()
     {

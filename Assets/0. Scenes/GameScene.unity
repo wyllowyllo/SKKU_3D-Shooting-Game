@@ -9125,6 +9125,10 @@ PrefabInstance:
       propertyPath: m_ApplyRootMotion
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4090199773923070701, guid: 417e6d047ad56a74dab0f33179c59243, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5121739293763724310, guid: 417e6d047ad56a74dab0f33179c59243, type: 3}
       propertyPath: _jumpAttackCheckInterval
       value: 5
@@ -9140,6 +9144,10 @@ PrefabInstance:
     - target: {fileID: 7233268500782680031, guid: 417e6d047ad56a74dab0f33179c59243, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 7351218678254259199, guid: 417e6d047ad56a74dab0f33179c59243, type: 3}
+      propertyPath: _health._maxValue
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 7848887108663800796, guid: 417e6d047ad56a74dab0f33179c59243, type: 3}
       propertyPath: _target

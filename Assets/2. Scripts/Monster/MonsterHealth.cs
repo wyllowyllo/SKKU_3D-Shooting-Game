@@ -7,7 +7,7 @@ public class MonsterHealth : MonoBehaviour, IDamagable
 
     [SerializeField] private GameObject _bloodEffectPrefab;
     // 참조
-    private MonsterStateController _stateController;
+    private IStateController _stateController;
 
     // 생성된 피 이펙트 추적
     private List<GameObject> _bloodEffects = new List<GameObject>();
@@ -19,7 +19,8 @@ public class MonsterHealth : MonoBehaviour, IDamagable
 
     private void Awake()
     {
-        _stateController = GetComponent<MonsterStateController>();
+        
+        _stateController = GetComponent<IStateController>();
 
         _health.Initialize();
     }
