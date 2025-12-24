@@ -31,7 +31,7 @@ public class GameManager : MonoBehaviour
 
         _instance = this;
         
-        //LockCursor();
+        LockCursor();
     }
     private void Start()
     {

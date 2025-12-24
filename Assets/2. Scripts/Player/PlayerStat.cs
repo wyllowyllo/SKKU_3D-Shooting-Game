@@ -17,7 +17,7 @@ public class PlayerStat : MonoBehaviour, IDamagable
    [SerializeField] private ValueStat _runSpeed;
    [SerializeField] private ValueStat _jumpPower;
 
-   [Header("화폐")]
+   [Header("코인")]
    [SerializeField] private ValueStat _gold;
 
    [Header("UI 이펙트")]

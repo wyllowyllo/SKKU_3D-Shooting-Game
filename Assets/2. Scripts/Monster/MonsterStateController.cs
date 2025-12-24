@@ -279,8 +279,12 @@ public class MonsterStateController : MonoBehaviour
 
         // 모든 피 이펙트 제거
         _health?.ClearAllBloodEffects();
+        
+        // 골드 드랍
+        GoldDropManager.DropGold(transform.position, _goldDropAmount);
+        
 
-       AnimReset();  // 다른 애니메이션 파라미터 리셋
+        AnimReset();  // 다른 애니메이션 파라미터 리셋
 
         _animator?.SetTrigger("Death");
         StartCoroutine(Die_Coroutnie());
@@ -298,9 +302,7 @@ public class MonsterStateController : MonoBehaviour
         float length = stateInfo.length;
 
         yield return new WaitForSeconds(length);
-
-        // 골드 드랍
-        GoldDropManager.DropGold(transform.position, _goldDropAmount);
+        
 
         Destroy(gameObject);
     }

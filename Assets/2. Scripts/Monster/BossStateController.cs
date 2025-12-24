@@ -246,6 +246,9 @@ public class BossStateController : MonoBehaviour
         
         AnimReset();
 
+        // 골드 드랍
+        GoldDropManager.DropGold(transform.position, _goldDropAmount);
+        
         _animator?.SetTrigger("Death");
         StartCoroutine(Die_Coroutine());
     }
@@ -260,9 +263,7 @@ public class BossStateController : MonoBehaviour
         float length = stateInfo.length;
 
         yield return new WaitForSeconds(length);
-
-        // 골드 드랍
-        GoldDropManager.DropGold(transform.position, _goldDropAmount);
+        
 
         Destroy(gameObject);
     }

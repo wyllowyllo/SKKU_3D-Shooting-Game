@@ -7639,6 +7639,7 @@ GameObject:
   - component: {fileID: 1476378453}
   - component: {fileID: 1476378451}
   - component: {fileID: 1476378452}
+  - component: {fileID: 1476378454}
   m_Layer: 0
   m_Name: Factory
   m_TagString: Untagged
@@ -7676,6 +7677,11 @@ MonoBehaviour:
     _count: 0
     _container: {fileID: 0}
     _nonLazy: 0
+  - _name: GoldFactory
+    _component: {fileID: 2370156116666844230, guid: 4243880a4914d4347aa86b2e76ff1c5d, type: 3}
+    _count: 0
+    _container: {fileID: 0}
+    _nonLazy: 0
 --- !u!4 &1476378453
 Transform:
   m_ObjectHideFlags: 0
@@ -7691,6 +7697,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1476378454
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1476378450}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5d4868d4c51e2a45975c8886629762e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1492290670
 GameObject:
   m_ObjectHideFlags: 0
@@ -9333,6 +9351,10 @@ PrefabInstance:
     - target: {fileID: 1644781677114826218, guid: 3a7ddd71f2ade844187e4a6addc1b145, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1644781677114826218, guid: 3a7ddd71f2ade844187e4a6addc1b145, type: 3}
+      propertyPath: m_TagString
+      value: Player
       objectReference: {fileID: 0}
     - target: {fileID: 1727428621701731663, guid: 3a7ddd71f2ade844187e4a6addc1b145, type: 3}
       propertyPath: _hitEffect

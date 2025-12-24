@@ -18,29 +18,21 @@ public static class GoldDropManager
         int coinCount = CalculateCoinCount(goldAmount);
         int goldPerCoin = Mathf.CeilToInt((float)goldAmount / coinCount);
 
-        // 코인 생성 및 흩뿌리기
+      
         for (int i = 0; i < coinCount; i++)
         {
             GoldCoin coin = GoldFactory.Instance.GetGoldCoin();
             if (coin == null) continue;
-
-            // 흩어질 방향 계산
+            
             Vector3 scatterDirection = CalculateScatterDirection(i, coinCount);
-
-            // 위치 설정 (약간 위에서 시작)
             coin.transform.position = dropPosition + Vector3.up * 0.5f;
-
-            // 코인 초기화
             coin.Initialize(goldPerCoin, scatterDirection, _scatterForce);
         }
     }
 
     private static int CalculateCoinCount(int goldAmount)
     {
-        // 골드 양에 따라 3-5개 코인 생성
-        // 5골드 이하 -> 3개
-        // 10골드 -> 3-4개
-        // 50골드 이상 -> 5개
+        
         int count = Mathf.Clamp(goldAmount / 2, 3, 5);
         return count;
     }
@@ -50,7 +42,7 @@ public static class GoldDropManager
         // 원형 패턴으로 균등하게 분배
         float baseAngle = (360f / total) * index;
 
-        // 약간의 랜덤성 추가
+       
         float randomOffset = Random.Range(-20f, 20f);
         float angle = baseAngle + randomOffset;
         float angleRad = angle * Mathf.Deg2Rad;

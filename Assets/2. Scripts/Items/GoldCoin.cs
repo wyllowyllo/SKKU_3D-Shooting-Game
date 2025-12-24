@@ -5,9 +5,9 @@ public class GoldCoin : MonoBehaviour
 {
     private enum GoldState
     {
-        Scattered,  // 흩어지는 상태
-        Idle,       // 대기 상태
-        Collecting  // 수집 중
+        Scattered,  
+        Idle,      
+        Collecting  
     }
 
     [Header("Gold Settings")]
@@ -17,10 +17,13 @@ public class GoldCoin : MonoBehaviour
     [SerializeField] private float _rotationSpeed = 360f;
 
     [Header("Scatter Settings")]
-    [SerializeField] private float _scatterSettleTime = 2f;
+    [SerializeField] private float _scatterSettleTime = 1f;
 
+    [Header("플레이어 탐지용 콜라이더")]
+    [SerializeField] private SphereCollider _detectCollider;
+    
     private Rigidbody _rigidbody;
-    private Collider[] _colliders;
+    private Collider _collider;
     private GoldState _currentState;
     private Transform _playerTransform;
     private Vector3 _startPosition;
@@ -30,7 +33,8 @@ public class GoldCoin : MonoBehaviour
     private void Awake()
     {
         _rigidbody = GetComponent<Rigidbody>();
-        _colliders = GetComponents<Collider>();
+        _collider = GetComponent<Collider>();
+        
     }
 
     public void Initialize(int value, Vector3 scatterDirection, float scatterForce)
@@ -41,7 +45,7 @@ public class GoldCoin : MonoBehaviour
         _bezierProgress = 0f;
         _isInitialized = true;
 
-        // Rigidbody 활성화 및 물리 적용
+        
         if (_rigidbody != null)
         {
             _rigidbody.isKinematic = false;
@@ -49,18 +53,19 @@ public class GoldCoin : MonoBehaviour
             _rigidbody.linearVelocity = Vector3.zero;
             _rigidbody.angularVelocity = Vector3.zero;
 
-            // 흩뿌리기 효과
+            // 흩뿌리기 
             _rigidbody.AddForce(scatterDirection * scatterForce, ForceMode.Impulse);
             _rigidbody.AddTorque(Random.insideUnitSphere * 5f, ForceMode.Impulse);
         }
-
-        // Collider 활성화
-        foreach (var col in _colliders)
+        
+        _collider.enabled = true;
+        
+        if(_detectCollider != null)
         {
-            col.enabled = true;
+             _detectCollider.enabled = true;
+             _detectCollider.radius = _collectRadius;
         }
-
-        // 일정 시간 후 Idle 상태로 전환
+        
         StartCoroutine(TransitionToIdle());
     }
 
@@ -68,17 +73,23 @@ public class GoldCoin : MonoBehaviour
     {
         yield return new WaitForSeconds(_scatterSettleTime);
 
-        // 속도가 충분히 느려졌거나 시간이 지나면 Idle 상태로
+        // Idle상태 전환
         if (_currentState == GoldState.Scattered)
         {
             _currentState = GoldState.Idle;
 
-            // 물리 정지
+          
             if (_rigidbody != null)
             {
                 _rigidbody.linearVelocity = Vector3.zero;
                 _rigidbody.angularVelocity = Vector3.zero;
             }
+
+            if (_detectCollider != null)
+            {
+                _detectCollider.enabled = true;
+            }
+            
         }
     }
 
@@ -88,8 +99,8 @@ public class GoldCoin : MonoBehaviour
 
         switch (_currentState)
         {
+            case GoldState.Scattered:
             case GoldState.Idle:
-                // 회전 효과
                 transform.Rotate(Vector3.up, _rotationSpeed * Time.deltaTime);
                 break;
 
@@ -122,7 +133,7 @@ public class GoldCoin : MonoBehaviour
         _startPosition = transform.position;
         _bezierProgress = 0f;
 
-        // 물리 비활성화
+        
         if (_rigidbody != null)
         {
             _rigidbody.isKinematic = true;
@@ -146,14 +157,14 @@ public class GoldCoin : MonoBehaviour
             return;
         }
 
-        // 베지어 곡선 계산 (Quadratic Bezier)
+        
         float t = _bezierProgress;
         float oneMinusT = 1f - t;
 
-        // 플레이어의 가슴 높이로 수집
+        
         Vector3 endPosition = _playerTransform.position + Vector3.up * 1f;
 
-        // 컨트롤 포인트: 중간 지점에서 위로 올라간 위치 (아치 효과)
+        
         Vector3 midPoint = (_startPosition + endPosition) * 0.5f;
         Vector3 controlPoint = midPoint + Vector3.up * 2f;
 
@@ -164,7 +175,7 @@ public class GoldCoin : MonoBehaviour
 
         transform.position = position;
 
-        // 회전 효과
+        
         transform.Rotate(Vector3.up, _rotationSpeed * Time.deltaTime * 2f);
     }
 
@@ -185,19 +196,20 @@ public class GoldCoin : MonoBehaviour
         // 풀로 반환
         _isInitialized = false;
         _currentState = GoldState.Idle;
-
-        // Collider 비활성화
-        foreach (var col in _colliders)
+        
+        _collider.enabled = false;
+        if (_detectCollider != null)
         {
-            col.enabled = false;
+            _detectCollider.enabled = false;
         }
+          
 
         GoldFactory.Instance.ReturnGoldCoin(this);
     }
 
     private void OnDisable()
     {
-        // 코루틴 정리
+        
         StopAllCoroutines();
     }
 }
