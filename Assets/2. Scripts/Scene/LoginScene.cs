@@ -3,6 +3,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System.Text.RegularExpressions;
 
 public class LoginScene : MonoBehaviour
 {
@@ -28,8 +29,12 @@ public class LoginScene : MonoBehaviour
     [SerializeField] private TMP_InputField _idInputField;
     [SerializeField] private TMP_InputField _passwordInputField;
     [SerializeField] private TMP_InputField _passwordConfirmInputField;
-    
-    private const string LatestID = "latestID"; 
+
+    private const string LatestID = "latestID";
+
+    // 정규 표현식 패턴
+    private const string EmailPattern = @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$";
+    private const string PasswordPattern = @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':""\\|,.<>\/?])[a-zA-Z0-9!@#$%^&*()_+\-=\[\]{};':""\\|,.<>\/?]{7,20}$"; 
     private void Start()
     {
         AddButtonEvents();
@@ -102,7 +107,7 @@ public class LoginScene : MonoBehaviour
 
     private void Register()
     {
-        // 로그인
+        // 회원가입
         // 1. 아이디 입력을 확인한다.
         string id = _idInputField.text;
         if (string.IsNullOrEmpty(id))
@@ -110,7 +115,14 @@ public class LoginScene : MonoBehaviour
             _messageTextUI.text = "아이디를 입력해주세요.";
             return;
         }
-        
+
+        // 1-1. 아이디 이메일 형식 검사
+        if (!Regex.IsMatch(id, EmailPattern))
+        {
+            _messageTextUI.text = "아이디는 이메일 형식이어야 합니다.";
+            return;
+        }
+
         // 2. 비밀번호 입력을 확인한다.
         string password = _passwordInputField.text;
         if (string.IsNullOrEmpty(password))
@@ -118,15 +130,22 @@ public class LoginScene : MonoBehaviour
             _messageTextUI.text = "패스워드를 입력해주세요.";
             return;
         }
-        
-        // 2. 2ck 비밀번호 입력을 확인한다.
-        string password2 = _passwordInputField.text;
+
+        // 2-1. 비밀번호 규칙 검사
+        if (!Regex.IsMatch(password, PasswordPattern))
+        {
+            _messageTextUI.text = "비밀번호는 7-20자, 영문 대/소문자, 숫자, 특수문자 각 1개 이상 포함해야 합니다.";
+            return;
+        }
+
+        // 3. 비밀번호 확인 입력을 확인한다.
+        string password2 = _passwordConfirmInputField.text;
         if (string.IsNullOrEmpty(password2) || password != password2)
         {
             _messageTextUI.text = "패스워드를 확인해주세요.";
             return;
         }
-        
+
         // 4. 실제 저장된 아이디-비밀번호 계정이 있는지 확인한다.
         // 4-1. 아이디가 있는지 확인한다.
         if (PlayerPrefs.HasKey(id))
@@ -136,6 +155,7 @@ public class LoginScene : MonoBehaviour
         }
 
         PlayerPrefs.SetString(id, password);
+        _messageTextUI.text = "회원가입이 완료되었습니다.";
 
         GotoLogin();
     }
