@@ -10,6 +10,12 @@
         "@modelcontextprotocol/server-sequential-thinking"
       ],
       "env": {}
+    },
+    "mcp-unity": {
+      "command": "node",
+      "args": [
+        "C:/Harbor/SKKU_3D-Shooting-Game/Library/PackageCache/com.gamelovers.mcp-unity@d00cf93a48b9/Server~/build/index.js"
+      ]
     }
   }
 }

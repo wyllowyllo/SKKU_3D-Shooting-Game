@@ -162,7 +162,7 @@ public class Gun : MonoBehaviour
         
         yield return new WaitForSeconds(0.06f);
         
-        OnBangEffect?.Invoke(false);
+        //OnBangEffect?.Invoke(false);
         muzzleFlash.SetActive(false);
         
     }

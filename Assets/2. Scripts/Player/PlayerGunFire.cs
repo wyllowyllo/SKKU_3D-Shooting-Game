@@ -101,6 +101,7 @@ public class PlayerGunFire : MonoBehaviour
 
     private void ToggleFireAnim(bool isOn)
     {
-        _animator?.SetBool("Fire", isOn);
+        //_animator?.SetBool("Fire", isOn);
+        _animator?.SetTrigger("Shoot");
     }
 }

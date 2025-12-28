@@ -23,9 +23,10 @@ public class PlayerMove : MonoBehaviour
     private NavMeshAgent _agent;
     private Animator _animator;
     
-    // 이동 관련 
+    // 이동 관련
     private Vector3 direction;
     private float _yVelocity = 0f;
+    private float _currentAnimSpeed = 0f; // 현재 애니메이션 속도
     
     
     // 플래그 변수
@@ -145,17 +146,23 @@ public class PlayerMove : MonoBehaviour
     private void UpdateAnimation()
     {
         Vector3 horizontalVelocity = new Vector3(_characterController.velocity.x, 0, _characterController.velocity.z);
-        float normalizedSpeed = horizontalVelocity.magnitude / _playerStat.RunSpeed;
+        float targetSpeed = horizontalVelocity.magnitude / _playerStat.RunSpeed;
 
-        _animator.SetFloat("Speed", normalizedSpeed);
+        // Lerp를 사용해서 부드럽게 전환 (값이 클수록 더 빠르게 변화)
+        _currentAnimSpeed = Mathf.Lerp(_currentAnimSpeed, targetSpeed, Time.deltaTime * 10f);
+
+        _animator.SetFloat("Speed", _currentAnimSpeed);
     }
 
     private void UpdateAnimationForTopMode()
     {
         Vector3 horizontalVelocity = new Vector3(_agent.velocity.x, 0, _agent.velocity.z);
-        float normalizedSpeed = horizontalVelocity.magnitude / _playerStat.RunSpeed;
+        float targetSpeed = horizontalVelocity.magnitude / _playerStat.RunSpeed;
 
-        _animator.SetFloat("Speed", normalizedSpeed);
+        // Lerp를 사용해서 부드럽게 전환
+        _currentAnimSpeed = Mathf.Lerp(_currentAnimSpeed, targetSpeed, Time.deltaTime * 10f);
+
+        _animator.SetFloat("Speed", _currentAnimSpeed);
     }
 
     private void Jump()
