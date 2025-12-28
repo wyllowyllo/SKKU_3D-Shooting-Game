@@ -17,6 +17,10 @@ public class Gun : MonoBehaviour
 
     [Header("Muzzle Effects")]
     [SerializeField] private List<GameObject> _muzzleEffects;
+
+    [Header("Bullet Trail")]
+    [SerializeField] private LineRenderer _bulletTrail;
+    [SerializeField] private float _trailDuration = 0.05f;
     
     // 이벤트
     private UnityEvent _onReload;
@@ -97,15 +101,20 @@ public class Gun : MonoBehaviour
     private void ShootRay()
     {
         if (_cam == null) return;
-        
+
         Ray ray = new Ray(_cam.position, _cam.forward);
         RaycastHit hitInfo = new RaycastHit();
-        
+
+        // 총구 위치 (총의 현재 위치)
+        Vector3 muzzlePos = transform.position;
+        Vector3 endPos;
+
         bool isHit =  Physics.Raycast(ray, out hitInfo);
         if (isHit)
         {
-            PlayHitEffect(hitInfo);  
-            
+            endPos = hitInfo.point;
+            PlayHitEffect(hitInfo);
+
             IDamagable hitTarget = hitInfo.collider.GetComponent<IDamagable>();
             if (hitTarget != null)
             {
@@ -115,6 +124,14 @@ public class Gun : MonoBehaviour
                 hitTarget.TryTakeDamage(new AttackInfo(_gunStat.DamageForShot, attackDirection, hitInfo.point, hitInfo.normal));
             }
         }
+        else
+        {
+            // 맞지 않은 경우, 카메라 방향으로 먼 거리 설정
+            endPos = ray.origin + ray.direction * 1000f;
+        }
+
+        // 총알 궤적 렌더링
+        StartCoroutine(BulletTrail_Coroutine(muzzlePos, endPos));
     }
 
     private void PlayHitEffect(RaycastHit hitInfo)
@@ -158,13 +175,26 @@ public class Gun : MonoBehaviour
         GameObject muzzleFlash = _muzzleEffects[Random.Range(0, _muzzleEffects.Count)];
         OnBangEffect?.Invoke(true);
         muzzleFlash.SetActive(true);
-        
-        
+
+
         yield return new WaitForSeconds(0.06f);
-        
+
         //OnBangEffect?.Invoke(false);
         muzzleFlash.SetActive(false);
-        
+
+    }
+
+    private IEnumerator BulletTrail_Coroutine(Vector3 startPos, Vector3 endPos)
+    {
+        if (_bulletTrail == null) yield break;
+
+        _bulletTrail.enabled = true;
+        _bulletTrail.SetPosition(0, startPos);
+        _bulletTrail.SetPosition(1, endPos);
+
+        yield return new WaitForSeconds(_trailDuration);
+
+        _bulletTrail.enabled = false;
     }
     private void Init()
     {
