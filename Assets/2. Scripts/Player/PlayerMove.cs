@@ -51,7 +51,7 @@ public class PlayerMove : MonoBehaviour
     {
         if (GameManager.Instance.State != EGameState.Playing
             && GameManager.Instance.State != EGameState.Auto) return;
-        
+
        SetMoveDirection();
        ApplyMovement();
     }

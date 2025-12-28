@@ -48,8 +48,13 @@ public class PlayerStat : MonoBehaviour, IDamagable
 
    // 플래그 변수
    private bool _isDead;
+   public bool IsDead => _isDead;
 
-   
+   private void Awake()
+   {
+      _animator = GetComponentInChildren<Animator>();
+   }
+
    private void Start()
    {
       HealthStat.Initialize();
@@ -86,9 +91,11 @@ public class PlayerStat : MonoBehaviour, IDamagable
          // TODO : Die 이펙트, 애니메이션
          _isDead = true;
          
+         _animator?.SetTrigger("Death");
          GameManager.Instance.GameOver();
       }
    }
+   
    
   
 
