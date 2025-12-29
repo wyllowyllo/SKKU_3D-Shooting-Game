@@ -12,10 +12,12 @@
       "env": {}
     },
     "mcp-unity": {
+      "type": "stdio",
       "command": "node",
       "args": [
-        "C:/Harbor/SKKU_3D-Shooting-Game/Library/PackageCache/com.gamelovers.mcp-unity@d00cf93a48b9/Server~/build/index.js"
-      ]
+        "C:/Users/skku0/SKKU_3D FPS Game/SKKU_3D-Shooting-Game/Library/PackageCache/com.gamelovers.mcp-unity@d00cf93a48b9/Server~/build/index.js"
+      ],
+      "env": {}
     }
   }
 }

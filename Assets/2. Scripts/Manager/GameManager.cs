@@ -94,7 +94,7 @@ public class GameManager : MonoBehaviour
     
     private IEnumerator StartToPlay_Coroutine()
     {
-        _stateText.text = "Ready";
+        _stateText.text = "Ready..";
         yield return new WaitForSeconds(2f);
         
         _stateText.text = "Go!";
